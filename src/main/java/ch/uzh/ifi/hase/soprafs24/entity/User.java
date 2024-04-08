@@ -28,8 +28,11 @@ public class User implements Serializable {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false, unique = true)
+  @Column(unique = true)
   private String username;
+
+  @Column(nullable = false)
+  private Boolean isUser;
 
   @Column(nullable = false, unique = true)
   private String token;
@@ -60,6 +63,14 @@ public class User implements Serializable {
   public void setUsername(String username) {
     this.username = username;
   }
+
+  public Boolean getIsUser() {
+        return isUser;
+    }
+
+  public void setIsUser(Boolean isUser) {
+        this.isUser = isUser;
+    }
 
   public String getToken() {
     return token;

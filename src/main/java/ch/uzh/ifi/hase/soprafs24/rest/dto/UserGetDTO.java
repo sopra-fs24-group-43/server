@@ -9,6 +9,8 @@ public class UserGetDTO {
   private String username;
   private UserStatus status;
 
+  private Boolean isUser;
+
   public Long getId() {
     return id;
   }
@@ -40,4 +42,12 @@ public class UserGetDTO {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
+
+  public Boolean getIsUser() {
+        return isUser;
+    }
+
+  public void setIsUser(Boolean isUser) {
+        this.isUser = isUser;
+    }
 }

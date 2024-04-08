@@ -39,19 +39,31 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
-  public User createUser(User newUser) {
+  public User createUser(User newUser, Boolean isUser) {
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
-    checkIfUserExists(newUser);
-    // saves the given entity but data is only persisted in the database once
-    // flush() is called
+    newUser.setIsUser(isUser);
+    if (isUser) {
+        checkIfUserExists(newUser);}
+        // saves the given entity but data is only persisted in the database once
+        // flush() is called
+
+    else {
+        newUser.setName(UUID.randomUUID().toString());
+    }
+
     newUser = userRepository.save(newUser);
     userRepository.flush();
-
     log.debug("Created Information for User: {}", newUser);
     return newUser;
   }
 
+
+  public void deleteUser(User guest) {
+      //check if not isUser?
+      userRepository.delete(guest);
+      userRepository.flush();
+  }
   /**
    * This is a helper method that will check the uniqueness criteria of the
    * username and the name
