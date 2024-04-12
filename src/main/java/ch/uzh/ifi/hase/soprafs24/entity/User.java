@@ -3,6 +3,10 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
+
+import java.util.Date;
+import java.util.List;
+
 import java.io.Serializable;
 
 /**
@@ -31,11 +35,32 @@ public class User implements Serializable {
   @Column(nullable = false, unique = true)
   private String username;
 
+  @Column(nullable = false)
+  private String password;
+
   @Column(nullable = false, unique = true)
   private String token;
 
   @Column(nullable = false)
   private UserStatus status;
+
+  @Column(nullable = false)
+  private List<Object> drawings;
+
+  @Column(nullable = false)
+  private List<User> friends;
+
+  @Column(nullable = false)
+  private int level;
+
+  @Column(nullable = false)
+  private Date creationDate;
+
+  @Column(nullable = true)
+  private Date birthday;
+
+  @Column(nullable = false)
+  private Boolean isUser;
 
   public Long getId() {
     return id;
@@ -61,6 +86,14 @@ public class User implements Serializable {
     this.username = username;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
   public String getToken() {
     return token;
   }
@@ -76,4 +109,53 @@ public class User implements Serializable {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
+
+  public void addDrawing(Object drawing){
+    this.drawings.add(drawing);
+  }
+
+  public List<Object> getDrawings(){
+    return drawings;
+  }
+
+  public void addFriend(User friend){
+    this.friends.add(friend);
+  }
+
+  public List<User> getFriends(){
+    return friends;
+  }
+
+  public int getLevel() {
+    return level;
+  }
+
+  public void setLevel(int level) {
+    this.level = level;
+  }
+
+  public Date getCreationDate() {
+    return creationDate;
+  }
+
+  public void setCreationDate(Date creationDate) {
+    this.creationDate = creationDate;
+  }
+
+  public Date getBirthday() {
+    return birthday;
+  }
+
+  public void setBirthday(Date birthday) {
+    this.birthday = birthday;
+  }
+
+  public Boolean getIsUser(){
+    return isUser;
+  }
+
+  public void setIsUser(Boolean isUser){
+    this.isUser = isUser;
+  }
+
 }
