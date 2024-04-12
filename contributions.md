@@ -15,8 +15,9 @@ issue(client) #60 - https://github.com/sopra-fs24-group-43/client/issues/60 Crea
 ## Markiian Dobosh
 
 ### 1st week - 12.04
-Issue(client) #52 - https://github.com/sopra-fs24-group-43/client/issues/52 - implemented the register button ( !!! a short description is optional)  
-Issue(client) #53 - https://github.com/sopra-fs24-group-43/client/issues/53 - implemented the navigation to the lobby after successfull registration  
+Issue(client) #56 - https://github.com/sopra-fs24-group-43/client/issues/56 - created "Login or Register" button on the landing page
+Issue(client) #57 - https://github.com/sopra-fs24-group-43/client/issues/57 - implemented navigation of "Login or Register button" (front)
+Issue(client) #62 - https://github.com/sopra-fs24-group-43/client/issues/62 - add rules to the landing page
 ...
 
 ### 2nd week - 17.04
