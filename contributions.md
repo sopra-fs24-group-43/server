@@ -4,6 +4,7 @@
 
 ### 1st Week - 12.04
 Issue(server) #35 - https://github.com/sopra-fs24-group-43/server/issues/35 Create POST
+
 Issue(server) #37 - https://github.com/sopra-fs24-group-43/server/issues/37 Create User and save in DB
 
 ## Simon Klipp
