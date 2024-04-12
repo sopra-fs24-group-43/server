@@ -15,4 +15,11 @@ Issue(client) #53 - https://github.com/sopra-fs24-group-43/client/issues/53 - im
 
 ## Florian Mattmüller
 
+### 1st week - 12.04
+Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/113 - creating the player entity and its repo
+Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/114 - setting up the websocket config file
+Majority of time was spent reading documentation and guides and watching tutorials on websockets, stomp and JPA
+
+### 2nd week - 17.04
+
 ## Robin Stirnimann
