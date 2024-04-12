@@ -4,6 +4,12 @@
 
 ## Simon Klipp
 
+### 1st week - 12.04
+issue(client) #52 - https://github.com/sopra-fs24-group-43/client/issues/58 Create the "LoginOrRegister" view page
+issue(client) #52 - https://github.com/sopra-fs24-group-43/client/issues/59 Create the "Login" input fields and "Login" button
+issue(client) #52 - https://github.com/sopra-fs24-group-43/client/issues/60 Create the "Register" input fields and "Register" button
+
+
 ## Markiian Dobosh
 
 ### 1st week - 12.04
