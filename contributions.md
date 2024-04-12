@@ -23,3 +23,10 @@ Majority of time was spent reading documentation and guides and watching tutoria
 ### 2nd week - 17.04
 
 ## Robin Stirnimann
+### 1st week - 12.04
+Issue(server) #103 - https://github.com/sopra-fs24-group-43/server/issues/103 - creating guest user entity
+Issue(server) #104 - https://github.com/sopra-fs24-group-43/server/issues/104 - adding controller method for guest user
+Issue(server) #105 - https://github.com/sopra-fs24-group-43/server/issues/105 - adding service method for guest user
+Issue(server) #106 - https://github.com/sopra-fs24-group-43/server/issues/106 - adding guest user deletion
+
+### 2nd week - 17.04
