@@ -39,6 +39,31 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
+  public User loginUser(User userToBeLoggedIn){
+
+      User userInDB = userRepository.findByUsername(userToBeLoggedIn.getUsername());
+      if(userInDB == null) {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "no user by this username exists");
+      } else if (!userInDB.getPassword().equals(userToBeLoggedIn.getPassword())) {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "wrong password");
+      }
+
+      userInDB.setStatus(UserStatus.ONLINE);
+      userRepository.save(userInDB);
+      userRepository.flush();
+      return userInDB;
+  }
+
+  public User logout(User user) {
+      User userToLogOut = userRepository.findUserByToken(user.getToken());
+
+      userToLogOut.setStatus(UserStatus.OFFLINE);
+      userRepository.save(userToLogOut);
+      userRepository.flush();
+      return userToLogOut;
+
+  }
+
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
