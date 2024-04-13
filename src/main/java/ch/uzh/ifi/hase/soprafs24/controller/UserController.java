@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,26 @@ public class UserController {
   UserController(UserService userService) {
     this.userService = userService;
   }
+
+  @PutMapping("/users")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO loginUser(@RequestBody UserPutDTO userPutDTO) {
+
+      User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+      User userInDB = userService.loginUser(userInput);
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userInDB);
+  }
+
+  @PutMapping("/logout")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO logoutUser(@RequestBody UserPutDTO userPutDTO) {
+      User userToLogOut = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+      User userInDB = userService.logout(userToLogOut);
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userInDB);
+
+    }
 
   @GetMapping("/users")
   @ResponseStatus(HttpStatus.OK)
