@@ -12,6 +12,8 @@ public class UserPostDTO {
 
   private Long id;
 
+  private String birth_date;
+
   public String getToken() {return token;}
 
   public void setToken(String token) {this.token = token;}
@@ -29,6 +31,10 @@ public class UserPostDTO {
   public void setPassword(String password) {
         this.password = password;
     }
+
+  public String getBirth_date() {return birth_date;}
+
+  public void setBirth_date(String birth_date) {this.birth_date = birth_date;}
 
   public String getName() {
     return name;

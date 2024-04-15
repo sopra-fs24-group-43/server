@@ -11,9 +11,25 @@ public class UserGetDTO {
 
   private String token;
 
+  private int level;
+
+  private String creation_date;
+
+  private String birth_date;
+
   public String getToken() {return token;}
 
+  public String getCreation_date() {return creation_date;}
+
+  public void setCreation_date(String creation_date) {this.creation_date = creation_date;}
+
+  public String getBirth_date() {return birth_date;}
+
+  public void setBirth_date(String birth_date) {this.birth_date = birth_date;}
+
   public void setToken(String token) {this.token = token;}
+
+  public void setLevel(int level) {this.level = level;}
 
   public Long getId() {
     return id;
