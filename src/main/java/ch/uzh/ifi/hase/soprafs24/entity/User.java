@@ -5,6 +5,8 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Internal User Representation
@@ -49,6 +51,14 @@ public class User implements Serializable {
 
   @Column
   private String birth_date;
+
+  @ElementCollection
+  @Column
+  private List<String> friends;
+
+  public List<String> getFriends() {return friends;}
+
+  public void setFriends(List<String> friends) {this.friends = friends; }
 
   public Date getCreation_date() { return creation_date; }
 

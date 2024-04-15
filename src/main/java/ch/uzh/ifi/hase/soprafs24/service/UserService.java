@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -73,6 +74,17 @@ public class UserService {
       return userById;
   }
 
+    public User getUserByUsername(String username) {
+
+        User userByUsername = userRepository.findUserByUsername(username);
+
+        if (userByUsername == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "username not correct or does not exist");
+        }
+
+        return userByUsername;
+    }
+
   public User loginUser(User userToBeLoggedIn){
 
       User userInDB = userRepository.findByUsername(userToBeLoggedIn.getUsername());
@@ -111,16 +123,39 @@ public class UserService {
     return newUser;
   }
 
-  /**
-   * This is a helper method that will check the uniqueness criteria of the
-   * username and the name
-   * defined in the User entity. The method will do nothing if the input is unique
-   * and throw an error otherwise.
-   *
-   * @param userToBeCreated
-   * @throws org.springframework.web.server.ResponseStatusException
-   * @see User
-   */
+
+  public List<String> getFriends(Long id) {
+      User userById = this.userRepository.findUserById(id);
+      return userById.getFriends();
+    }
+  public User add_or_delete_Friend(User user, String f_username, Boolean b) {
+      if (b) {
+          User userByUsername = userRepository.findByUsername(f_username);
+          if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
+          List<String> friends = user.getFriends();
+          friends.add(f_username);
+          user.setFriends(friends);
+          return user;}
+
+      else {
+          User userByUsername = userRepository.findByUsername(f_username);
+          if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
+          List<String> friends = user.getFriends();
+          friends.remove(f_username);
+          user.setFriends(friends);
+          return user;}
+  }
+/*
+  public User deleteFriend(User user, String f_username) {
+      User userByUsername = userRepository.findByUsername(f_username);
+      if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
+      ArrayList<String> friends = user.getFriends();
+      friends.remove(f_username);
+      user.setFriends(friends);
+      return user;
+  }
+*/
+
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
     User userByName = userRepository.findByName(userToBeCreated.getName());

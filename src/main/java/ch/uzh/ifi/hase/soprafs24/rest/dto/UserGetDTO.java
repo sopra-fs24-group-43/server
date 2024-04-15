@@ -1,6 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserGetDTO {
 
@@ -17,6 +21,12 @@ public class UserGetDTO {
 
   private String birth_date;
 
+  private List<String> friends;
+
+  public List<String> getFriends() {return friends;}
+
+  public void setFriends(List<String> friends) {this.friends = friends;}
+
   public String getToken() {return token;}
 
   public String getCreation_date() {return creation_date;}
@@ -28,6 +38,8 @@ public class UserGetDTO {
   public void setBirth_date(String birth_date) {this.birth_date = birth_date;}
 
   public void setToken(String token) {this.token = token;}
+
+  public int getLevel(int level) {return level;}
 
   public void setLevel(int level) {this.level = level;}
 
