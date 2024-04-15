@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Internal User Representation
@@ -39,6 +40,28 @@ public class User implements Serializable {
 
   @Column
   private String password;
+
+  @Column
+  private int level;
+
+  @Column
+  private Date creation_date;
+
+  @Column
+  private String birth_date;
+
+  public Date getCreation_date() { return creation_date; }
+
+  public void setCreation_date(Date creation_date) { this.creation_date = creation_date; }
+
+  public String getBirth_date() { return birth_date; }
+
+  public void setBirth_date(String birth_date) { this.birth_date = birth_date; }
+
+  public int getLevel() {return level;}
+  public void setLevel(int level) {
+        this.level = level;
+    }
 
   public String getPassword() {return password;}
   public void setPassword(String password) {

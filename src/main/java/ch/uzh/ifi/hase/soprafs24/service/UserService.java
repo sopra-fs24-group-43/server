@@ -39,6 +39,40 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
+  public User editProfile(Long id, User userInput) {
+
+      User user = getUserById(id);
+      if (userInput.getUsername()!=null&& !userInput.getUsername().equals(user.getUsername())){
+          checkIfUserExists(userInput);
+          user.setUsername(userInput.getUsername());
+      }
+
+      if (userInput.getBirth_date() != null ) {
+          user.setBirth_date(userInput.getBirth_date());
+      }
+
+      if (userInput.getName()!=null){
+          user.setName(userInput.getName());
+      }
+
+      userRepository.save(user);
+      userRepository.flush();
+
+      return user;
+
+  }
+
+  public User getUserById(Long userId) {
+
+      User userById = userRepository.findUserById(userId);
+
+      if (userById == null) {
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id not correct or does not exist");
+      }
+
+      return userById;
+  }
+
   public User loginUser(User userToBeLoggedIn){
 
       User userInDB = userRepository.findByUsername(userToBeLoggedIn.getUsername());
