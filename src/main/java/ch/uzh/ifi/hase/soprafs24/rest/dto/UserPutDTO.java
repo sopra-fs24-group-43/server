@@ -1,5 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+
+import java.util.List;
+
 public class UserPutDTO {
     private String name;
 
@@ -12,6 +16,33 @@ public class UserPutDTO {
     private Long id;
 
     private String birth_date;
+
+    private List<String> friends;
+
+    private int level;
+
+    private String creation_date;
+    private UserStatus status;
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
+    public String getCreation_date() {return creation_date;}
+
+    public void setCreation_date(String creation_date) {this.creation_date = creation_date;}
+
+    public int getLevel() {return level;}
+    public void setLevel(int level) {this.level = level;}
+
+    public List<String> getFriends() {return friends;}
+
+    public void setFriends(List<String> friends) {this.friends = friends;}
+
 
     public String getToken() {return token;}
 

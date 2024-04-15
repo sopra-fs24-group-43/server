@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
@@ -12,13 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User Controller
- * This class is responsible for handling all REST request that are related to
- * the user.
- * The controller will receive the request and delegate the execution to the
- * UserService and finally return the result.
- */
+
 @RestController
 public class UserController {
 
@@ -94,4 +89,38 @@ public class UserController {
         User editedUser = userService.editProfile(id, userInput);
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
     }
+
+    @GetMapping("/users/{id}/friends")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<UserGetDTO> getAllFriendsOfUserByID(@PathVariable Long id) {
+        List<String> friends = userService.getFriends(id);
+        List<UserGetDTO> userGetDTOs = new ArrayList<>();
+
+        for (String friend : friends) {
+            User friendByUsername = userService.getUserByUsername(friend);
+            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(friendByUsername));
+        }
+        return userGetDTOs;
+    }
+
+    @PutMapping("/users/{id}/friends")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public UserGetDTO addOrDeleteFriendOfUserByID (@PathVariable Long id, @RequestParam String f_username, @RequestParam Boolean false_for_delete_true_for_add) {
+        User user = userService.getUserById(id);
+        User editedUser = userService.add_or_delete_Friend(user, f_username, false_for_delete_true_for_add);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
+    }
+/*
+    @DeleteMapping("/users/{id}/friends")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public UserGetDTO deleteFriendOfUserByID (@PathVariable Long id, @RequestParam String f_username) {
+        User user = userService.getUserById(id);
+        User editedUser = userService.deleteFriend(user, f_username);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
+    }
+
+ */
 }
