@@ -21,6 +21,8 @@ public class UserPutDTO {
 
     private int level;
 
+    private Boolean isUser;
+
     private String creation_date;
     private UserStatus status;
 
@@ -52,6 +54,14 @@ public class UserPutDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Boolean getIsUser() {
+        return isUser;
+    }
+
+    public void setIsUser(Boolean isUser) {
+        this.isUser = isUser;
     }
 
     public String getBirth_date() {return birth_date;}

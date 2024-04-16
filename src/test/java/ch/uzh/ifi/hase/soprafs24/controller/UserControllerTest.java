@@ -82,7 +82,7 @@ public class UserControllerTest {
     userPostDTO.setName("Test User");
     userPostDTO.setUsername("testUsername");
 
-    given(userService.createUser(Mockito.any())).willReturn(user);
+    given(userService.createUser(Mockito.any(),true)).willReturn(user);
 
     // when/then -> do the request + validate the result
     MockHttpServletRequestBuilder postRequest = post("/users")

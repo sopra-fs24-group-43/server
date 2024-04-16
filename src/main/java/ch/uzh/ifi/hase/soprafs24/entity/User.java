@@ -31,7 +31,7 @@ public class User implements Serializable {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false, unique = true)
+  @Column(unique = true)
   private String username;
 
   @Column(nullable = false, unique = true)
@@ -39,6 +39,9 @@ public class User implements Serializable {
 
   @Column(nullable = false)
   private UserStatus status;
+
+  @Column(nullable = false)
+  private Boolean isUser;
 
   @Column
   private String password;
@@ -55,6 +58,14 @@ public class User implements Serializable {
   @ElementCollection
   @Column
   private List<String> friends;
+
+    public Boolean getIsUser() {
+        return isUser;
+    }
+
+    public void setIsUser(Boolean isUser) {
+        this.isUser = isUser;
+    }
 
   public List<String> getFriends() {return friends;}
 
