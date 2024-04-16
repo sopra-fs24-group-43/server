@@ -13,6 +13,8 @@ public class UserGetDTO {
   private String username;
   private UserStatus status;
 
+  private Boolean isUser;
+
   private String token;
 
   private int level;
@@ -22,6 +24,14 @@ public class UserGetDTO {
   private String birth_date;
 
   private List<String> friends;
+
+    public Boolean getIsUser() {
+        return isUser;
+    }
+
+    public void setIsUser(Boolean isUser) {
+        this.isUser = isUser;
+    }
 
   public List<String> getFriends() {return friends;}
 

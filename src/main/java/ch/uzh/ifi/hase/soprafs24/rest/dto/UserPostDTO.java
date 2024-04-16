@@ -26,6 +26,8 @@ public class UserPostDTO {
 
     private UserStatus status;
 
+    private Boolean isUser;
+
     public UserStatus getStatus() {
         return status;
     }
@@ -40,6 +42,14 @@ public class UserPostDTO {
     public List<String> getFriends() {return friends;}
 
     public void setFriends(List<String> friends) {this.friends = friends;}
+
+    public Boolean getIsUser() {
+        return isUser;
+    }
+
+    public void setIsUser(Boolean isUser) {
+        this.isUser = isUser;
+    }
 
   public int getLevel() {return level;}
   public void setLevel(int level) {this.level = level;}

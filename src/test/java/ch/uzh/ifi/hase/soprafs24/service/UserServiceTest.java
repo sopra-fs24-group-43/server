@@ -42,7 +42,7 @@ public class UserServiceTest {
   public void createUser_validInputs_success() {
     // when -> any object is being save in the userRepository -> return the dummy
     // testUser
-    User createdUser = userService.createUser(testUser);
+    User createdUser = userService.createUser(testUser, true);
 
     // then
     Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
@@ -57,7 +57,7 @@ public class UserServiceTest {
   @Test
   public void createUser_duplicateName_throwsException() {
     // given -> a first user has already been created
-    userService.createUser(testUser);
+    userService.createUser(testUser, true);
 
     // when -> setup additional mocks for UserRepository
     Mockito.when(userRepository.findByName(Mockito.any())).thenReturn(testUser);
@@ -65,13 +65,13 @@ public class UserServiceTest {
 
     // then -> attempt to create second user with same user -> check that an error
     // is thrown
-    assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+    assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser, true));
   }
 
   @Test
   public void createUser_duplicateInputs_throwsException() {
     // given -> a first user has already been created
-    userService.createUser(testUser);
+    userService.createUser(testUser, true);
 
     // when -> setup additional mocks for UserRepository
     Mockito.when(userRepository.findByName(Mockito.any())).thenReturn(testUser);
@@ -79,7 +79,7 @@ public class UserServiceTest {
 
     // then -> attempt to create second user with same user -> check that an error
     // is thrown
-    assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+    assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser, true));
   }
 
 }
