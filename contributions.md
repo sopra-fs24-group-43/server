@@ -44,3 +44,11 @@ Issue(server) #105 - https://github.com/sopra-fs24-group-43/server/issues/105 - 
 Issue(server) #106 - https://github.com/sopra-fs24-group-43/server/issues/106 - adding guest user deletion
 
 ### 2nd week - 17.04
+Issue(server) #116 - https://github.com/sopra-fs24-group-43/server/issues/116 - implementing login
+Issue(server) #117 - https://github.com/sopra-fs24-group-43/server/issues/117 - implementing logout
+Issue(server) #118 - https://github.com/sopra-fs24-group-43/server/issues/118 - displaying profile page
+Issue(server) #119 - https://github.com/sopra-fs24-group-43/server/issues/119 - enable profile editing
+Issue(server) #121 - https://github.com/sopra-fs24-group-43/server/issues/121 - friend list backend
+Issue(server) #122 - https://github.com/sopra-fs24-group-43/server/issues/122 - displaying friend list
+Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - enable adding friends
+Issue(server) #124 - https://github.com/sopra-fs24-group-43/server/issues/124 - enable deleting friends
