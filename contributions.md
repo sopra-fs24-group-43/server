@@ -15,6 +15,12 @@ issue(client) #59 - https://github.com/sopra-fs24-group-43/client/issues/59 Crea
 
 issue(client) #60 - https://github.com/sopra-fs24-group-43/client/issues/60 Create the "Register" input fields and "Register" button
 
+issue(client) #63 - https://github.com/sopra-fs24-group-43/client/issues/63 Implement Login functionality
+
+issue(client) #64 - https://github.com/sopra-fs24-group-43/client/issues/64 Implement Register functionality
+
+
+
 
 ## Markiian Dobosh
 
