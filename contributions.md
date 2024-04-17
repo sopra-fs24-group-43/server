@@ -20,6 +20,8 @@ issue(client) #63 - https://github.com/sopra-fs24-group-43/client/issues/63 Impl
 
 issue(client) #64 - https://github.com/sopra-fs24-group-43/client/issues/64 Implement Register functionality
 
+issue(client) #74 - https://github.com/sopra-fs24-group-43/client/issues/74 Design and format LoginOrRegister Page
+
 
 
 
