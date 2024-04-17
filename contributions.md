@@ -35,12 +35,23 @@ issue(client) #77 - https://github.com/sopra-fs24-group-43/client/issues/77 Impl
 
 ### 1st week - 12.04
 Issue(client) #56 - https://github.com/sopra-fs24-group-43/client/issues/56 - create "Login or Register" button on the landing page
+
 Issue(client) #57 - https://github.com/sopra-fs24-group-43/client/issues/57 - implement navigation of "Login or Register button" (front)
+
 Issue(client) #62 - https://github.com/sopra-fs24-group-43/client/issues/62 - add rules to the landing page
-Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon on the landing page
-...
+
+Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon to the landing page
 
 ### 2nd week - 17.04
+Issue(client) #65 - https://github.com/sopra-fs24-group-43/client/issues/65 - add navigation icon to the landing page
+
+Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/65 - add settings icon to the landing page
+
+Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/65 - add friends icon to the landing page
+
+Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/65 - add all-time leaderboard icon to the landing page
+
+Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/65 - create table of lobbies to the landing page
 
 ## Florian Mattmüller
 
