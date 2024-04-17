@@ -56,12 +56,13 @@ Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/70 - cr
 ## Florian Mattmüller
 
 ### 1st week - 12.04
-Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/113 - creating the player entity and its repo
-Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/114 - setting up the websocket config file
-Majority of time was spent reading documentation and guides and watching tutorials on websockets, stomp and JPA
+Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/113 - creating the player entity and its repo  
+Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/114 - setting up the websocket config file  
+Majority of time was spent reading documentation and guides and watching tutorials on websockets, stomp and JPA  
 
-### 2nd week - 17.04
-
+### 2nd week - 17.04  
+Issue(server) #130 - https://github.com/sopra-fs24-group-43/server/issues/130 - create websocket connection for settings  
+Issue(client) #78 - https://github.com/sopra-fs24-group-43/client/issues/78 - connect to websocket from front-end for settings
 ## Robin Stirnimann
 ### 1st week - 12.04
 Issue(server) #103 - https://github.com/sopra-fs24-group-43/server/issues/103 - creating guest user entity
