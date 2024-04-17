@@ -45,13 +45,13 @@ Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - ad
 ### 2nd week - 17.04
 Issue(client) #65 - https://github.com/sopra-fs24-group-43/client/issues/65 - add navigation icon to the landing page
 
-Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/65 - add settings icon to the landing page
+Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/66 - add settings icon to the landing page
 
-Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/65 - add friends icon to the landing page
+Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/67 - add friends icon to the landing page
 
-Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/65 - add all-time leaderboard icon to the landing page
+Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/68 - add all-time leaderboard icon to the landing page
 
-Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/65 - create table of lobbies to the landing page
+Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/70 - create table of lobbies to the landing page
 
 ## Florian Mattmüller
 
