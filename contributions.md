@@ -22,6 +22,12 @@ issue(client) #64 - https://github.com/sopra-fs24-group-43/client/issues/64 Impl
 
 issue(client) #74 - https://github.com/sopra-fs24-group-43/client/issues/74 Design and format LoginOrRegister Page
 
+issue(client) #75 - https://github.com/sopra-fs24-group-43/client/issues/75 Create a canvas in the game page
+
+issue(client) #76 - https://github.com/sopra-fs24-group-43/client/issues/76 Implement functionality to draw on canvas on game page	
+
+issue(client) #77 - https://github.com/sopra-fs24-group-43/client/issues/77 Implement eraser button to erase drawings on canvas on game page	
+
 
 
 
