@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @ToString
 public class Settings {
-    private String totalRounds;
-    private String totalPlayers;
-    private String roundLength;
+    private int x;
+    private int y;
 }
