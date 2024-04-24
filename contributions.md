@@ -64,6 +64,10 @@ Majority of time was spent reading documentation and guides and watching tutoria
 Issue(server) #130 - https://github.com/sopra-fs24-group-43/server/issues/130 - create websocket connection for settings  
 Issue(client) #78 - https://github.com/sopra-fs24-group-43/client/issues/78 - connect to websocket from front-end for settings
 
+### 3nd week - 24.04
+Issue(server) #100 https://github.com/sopra-fs24-group-43/server/issues/100 - create the game object in back-end
+Issue(server) #101 https://github.com/sopra-fs24-group-43/server/issues/101 - create methods for game object
+
 ## Robin Stirnimann
 
 ### 1st week - 12.04
