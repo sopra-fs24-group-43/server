@@ -63,7 +63,9 @@ Majority of time was spent reading documentation and guides and watching tutoria
 ### 2nd week - 17.04  
 Issue(server) #130 - https://github.com/sopra-fs24-group-43/server/issues/130 - create websocket connection for settings  
 Issue(client) #78 - https://github.com/sopra-fs24-group-43/client/issues/78 - connect to websocket from front-end for settings
+
 ## Robin Stirnimann
+
 ### 1st week - 12.04
 Issue(server) #103 - https://github.com/sopra-fs24-group-43/server/issues/103 - creating guest user entity
 Issue(server) #104 - https://github.com/sopra-fs24-group-43/server/issues/104 - adding controller method for guest user
@@ -79,3 +81,7 @@ Issue(server) #121 - https://github.com/sopra-fs24-group-43/server/issues/121 - 
 Issue(server) #122 - https://github.com/sopra-fs24-group-43/server/issues/122 - displaying friend list
 Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - enable adding friends
 Issue(server) #124 - https://github.com/sopra-fs24-group-43/server/issues/124 - enable deleting friends
+
+### 3nd week - 24.04
+Issue(server) #140 - https://github.com/sopra-fs24-group-43/server/issues/140 - implementing lobby framework (backend)
+Issue(server) #141 - https://github.com/sopra-fs24-group-43/server/issues/141 - implementing lobby creation (backend)
