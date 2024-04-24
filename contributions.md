@@ -15,27 +15,54 @@ issue(client) #59 - https://github.com/sopra-fs24-group-43/client/issues/59 Crea
 
 issue(client) #60 - https://github.com/sopra-fs24-group-43/client/issues/60 Create the "Register" input fields and "Register" button
 
+### 2nd week - 17.04
+issue(client) #63 - https://github.com/sopra-fs24-group-43/client/issues/63 Implement Login functionality
+
+issue(client) #64 - https://github.com/sopra-fs24-group-43/client/issues/64 Implement Register functionality
+
+issue(client) #74 - https://github.com/sopra-fs24-group-43/client/issues/74 Design and format LoginOrRegister Page
+
+issue(client) #75 - https://github.com/sopra-fs24-group-43/client/issues/75 Create a canvas in the game page
+
+issue(client) #76 - https://github.com/sopra-fs24-group-43/client/issues/76 Implement functionality to draw on canvas on game page	
+
+issue(client) #77 - https://github.com/sopra-fs24-group-43/client/issues/77 Implement eraser button to erase drawings on canvas on game page	
+
+
+
 
 ## Markiian Dobosh
 
 ### 1st week - 12.04
 Issue(client) #56 - https://github.com/sopra-fs24-group-43/client/issues/56 - create "Login or Register" button on the landing page
+
 Issue(client) #57 - https://github.com/sopra-fs24-group-43/client/issues/57 - implement navigation of "Login or Register button" (front)
+
 Issue(client) #62 - https://github.com/sopra-fs24-group-43/client/issues/62 - add rules to the landing page
-Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon on the landing page
-...
+
+Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon to the landing page
 
 ### 2nd week - 17.04
+Issue(client) #65 - https://github.com/sopra-fs24-group-43/client/issues/65 - add navigation icon to the landing page
+
+Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/66 - add settings icon to the landing page
+
+Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/67 - add friends icon to the landing page
+
+Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/68 - add all-time leaderboard icon to the landing page
+
+Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/70 - create table of lobbies to the landing page
 
 ## Florian Mattmüller
 
 ### 1st week - 12.04
-Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/113 - creating the player entity and its repo
-Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/114 - setting up the websocket config file
-Majority of time was spent reading documentation and guides and watching tutorials on websockets, stomp and JPA
+Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/113 - creating the player entity and its repo  
+Issue(server) #113 - https://github.com/sopra-fs24-group-43/server/issues/114 - setting up the websocket config file  
+Majority of time was spent reading documentation and guides and watching tutorials on websockets, stomp and JPA  
 
-### 2nd week - 17.04
-
+### 2nd week - 17.04  
+Issue(server) #130 - https://github.com/sopra-fs24-group-43/server/issues/130 - create websocket connection for settings  
+Issue(client) #78 - https://github.com/sopra-fs24-group-43/client/issues/78 - connect to websocket from front-end for settings
 ## Robin Stirnimann
 ### 1st week - 12.04
 Issue(server) #103 - https://github.com/sopra-fs24-group-43/server/issues/103 - creating guest user entity
