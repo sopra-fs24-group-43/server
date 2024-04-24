@@ -10,6 +10,7 @@ public class GameSettingsDTO {
     private String genre;
     private ArrayList<String> wordlist;
     private int wordLength;
+    private int maxPlayers;
 
     public String getAdmin() {
         return admin;
@@ -57,6 +58,14 @@ public class GameSettingsDTO {
 
     public void setWordLength(int wordLength) {
         this.wordLength = wordLength;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
     }
 
 }
