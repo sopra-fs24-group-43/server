@@ -27,8 +27,8 @@ public class WebSocketController {
     @MessageMapping("/message") // /app/message
     @SendTo("/settings")
     public Settings createGame(@Payload Settings message){
-        Game game = new Game(message.getTotalRounds(),message.getTotalPlayers(),message.getRoundLength());
-        GameRepository.addGame(1,game);
+        //Game game = new Game(message.getTotalRounds(),message.getTotalPlayers(),message.getRoundLength());
+        //GameRepository.addGame(1,game);
         return message;
     }
 
@@ -37,23 +37,37 @@ public class WebSocketController {
     public void lookatGame(){
         Game game = GameRepository.findByLobbyId(1);
         HashMap<String, String> payload = new HashMap<String, String>();
-        payload.put("totalRounds",game.totalRounds);
-        payload.put("totalPlayers",game.totalPlayers);
-        payload.put("roundLength",game.roundLength);
+        //payload.put("totalRounds",game.totalRounds);
+        //payload.put("totalPlayers",game.totalPlayers);
+        //payload.put("roundLength",game.roundLength);
 
         this.webSocketService.sendMessageToClients("/settings",payload);
 
     }
 
-    @MessageMapping("lobby/{lobbyId}/endround")
-    @SendTo("lobby/{lobbyId}")
-    public void endround(@DestinationVariable long lobbyId) {
-        Game game = GameRepository.findByLobbyId((int) lobbyId);
+    @MessageMapping("game/{gameId}/endround")
+    @SendTo("game/{gameId}/general")
+    public void endturn(@DestinationVariable long gameId) {
+        Game game = GameRepository.findByLobbyId((int) gameId);
         //List<Player> players = PlayerRepository.findUserByLobbyId(lobbyId);
         //RoundDTO round = roundService.endRound(players)
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
-        this.webSocketService.sendMessageToClients("lobby/{lobbyId}", leaderboardDTO);
+        this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
 
+    }
+    @MessageMapping("game/{gameId}/postgame")
+    @SendTo("game/{gameId}/general")
+    public void postgame(@DestinationVariable long gameId) {
+        Game game = GameRepository.findByLobbyId((int) gameId);
+        LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+
+        this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
+    }
+    @MessageMapping("game/{gameId}/endgame")
+    @SendTo("game/{gameId}/general")
+    public void endgame(@DestinationVariable long gameId) {
+        //PlayerRepository.deleteByLobbyId(lobbyId)
+        GameRepository.removeGame((int) gameId);
     }
 }
