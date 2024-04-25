@@ -1,11 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-import java.util.ArrayList;
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import java.util.Date;
 import ch.uzh.ifi.hase.soprafs24.entity.Leaderboard;
 import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
-import java.util.Random;
+import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
+import java.util.ArrayList;
 
 /*
 public class Game {
@@ -21,7 +21,8 @@ public class Game {
 }
 */
 public class Game {
-    private Random random;
+
+    private RandomGenerators random;
     private ArrayList<Player> players; //
     private Player admin; //
     private int gameId; //not done yet
@@ -38,6 +39,7 @@ public class Game {
 
     //variables used to keep track of the game state
     private HashMap<Player, Integer> points;
+    private HashMap<Player, Integer> pointsOfCurrentRound;
     private Leaderboard leaderboard;
 
     private ArrayList<Answer> answers;
@@ -48,17 +50,17 @@ public class Game {
     private ArrayList<Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
 
     public Game(Player admin) {
-        this.random = new Random();
+        this.random = new RandomGenerators();
         this.admin = admin;
         this.players.add(admin);
-        this.gameId = this.random.nextInt(1000); // needs to be unqiue (check with gamerepository)
+        this.gameId = this.random.random.nextInt(1000); // needs to be unqiue (check with gamerepository)
 
         this.creationDate = new Date();
         this.wordList = new ArrayList<>();
         this.maxPlayers = 5;
         this.maxRounds = 5;
         this.turnLength = 60;
-        //this.gamePassword = generate random unique starting password (8 characters)
+        this.gamePassword = this.random.PasswordGenerator();
 
         //this.wordLength = new ArrayList<Integer>();
         //this.wordLength.add(2);
@@ -68,6 +70,13 @@ public class Game {
         this.currentTurn = 0;
         this.connectedPlayers = new ArrayList<>();
         this.connectedPlayers.add(admin);
-
     }
+    public void addPlayer(Player player) {
+        this.players.add(player);
+    }
+
+    public void removePlayer(Player player){
+        //this.players.remove(Object.valueOf(Player));
+    }
+
 }
