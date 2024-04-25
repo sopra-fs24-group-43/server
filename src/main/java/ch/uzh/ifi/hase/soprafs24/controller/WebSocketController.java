@@ -23,40 +23,40 @@ public class WebSocketController {
 
     @MessageMapping("/lobby/getalllobbies")
     public void getalllobbies(){
-        //this.webSocketService.sendMessageToClients("/lobby", games);
+        //this.webSocketService.sendMessageToClients("/topic/lobby", games);
 
     }
     @MessageMapping("/game/{gameId}/joingame")
     public void joingame(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }
     @MessageMapping("/game/{gameId}/leavegame")
     public void leavegame(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }
     @MessageMapping("/game/{gameId}/updategamesettings")
     public void updategamesettings(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", gamesettingsDTO);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gamesettingsDTO);
 
     }
 
     @MessageMapping("/game/{gameId}/startgame")
     public void startgame(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }
 
     @MessageMapping("/game/{gameId}/nextturn")
     public void nextturn(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }
 
     @MessageMapping("/game/{gameId}/sendguess")
     public void sendguess(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", answer);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
 
     }
 
@@ -67,18 +67,18 @@ public class WebSocketController {
         //RoundDTO round = roundService.endRound(players)
         //LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", leaderboardDTO);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
     }
 
     @MessageMapping("/game/{gameId}/endgame")
     public void endgame(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/general", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }
 
     @MessageMapping("/game/{gameId}/coordinates")
     public void coordinates(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/games/" + gameId + "/coordinates", coordinates);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/coordinates", coordinates);
 
     }
 
