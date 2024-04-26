@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
+import lombok.Getter;
 
 
 import java.util.ArrayList;
@@ -31,19 +32,24 @@ public class Game {
 public class Game {
 
     private RandomGenerators random;
+    @Getter
     private HashMap<Integer, Player> players; //
     private Player admin; //
+    @Getter
     private int gameId; //not done yet
     private Date creationDate; //
     private List<String> wordList; //init null, is a List not a ArrayList!!!
     //Settings (all accessible to admin, the ones we dont implement yet can just be a default value )
     private int currentWordIndex;
+    @Getter
     private int maxPlayers; //
     private int maxRounds; //
     private int turnLength; //in seconds
+    @Getter
     private String gamePassword; //not done yet, can be left for changesettings
     private String genre; //
     private ArrayList<Integer> wordLength; //not sure if necessary
+    @Getter
     private String lobbyName; //
 
 

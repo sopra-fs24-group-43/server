@@ -1,10 +1,12 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 
+import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Settings;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GamesDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
@@ -91,9 +95,30 @@ public class WebSocketController {
     }
     @MessageMapping("/lobby/getallgames")
     public void getalllobbies(){
-        HashMap games = GameRepository.getallGames();
-
-        this.webSocketService.sendMessageToClients("/topic/lobby", games);
+        HashMap<Integer,Game> games = GameRepository.getallGames();
+        GamesDTO gamesDTO = new GamesDTO();
+        List<Integer> listGameIds = new ArrayList<>();
+        List<String> listLobbyName = new ArrayList<>();
+        List<List<Player>> listPlayers = new ArrayList<>();
+        List<Integer> listMaxPlayers = new ArrayList<>();
+        List<String> listGamePassword = new ArrayList<>();
+        games.forEach((number, game) -> {
+            listGameIds.add(game.getGameId());
+            listLobbyName.add(game.getLobbyName());
+            List<Player> players = new ArrayList<>();
+            game.getPlayers().forEach((nr, player) -> {
+                players.add(player);
+            });
+            listPlayers.add(players);
+            listMaxPlayers.add(game.getMaxPlayers());
+            listGamePassword.add(game.getGamePassword());
+        });
+        gamesDTO.setGameId(listGameIds);
+        gamesDTO.setLobbyName(listLobbyName);
+        gamesDTO.setPlayers(listPlayers);
+        gamesDTO.setMaxPlayers(listMaxPlayers);
+        gamesDTO.setGamePassword(listGamePassword);
+        this.webSocketService.sendMessageToClients("/topic/lobby", gamesDTO);
 
     }
     @MessageMapping("/games/{gameId}/joingame")
@@ -149,9 +174,9 @@ public class WebSocketController {
         Game game = GameRepository.findByGameId((int) gameId);
         ArrayList<Player> players = PlayerRepository.findUserByGameId(gameId);
 
-        //LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+        LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
     }
 
     @MessageMapping("/games/{gameId}/endgame")
@@ -165,9 +190,9 @@ public class WebSocketController {
     @SendTo("game/{gameId}/general")
     public void postgame(@DestinationVariable long gameId) {
         Game game = GameRepository.findByGameId((int) gameId);
-        LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+        //LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
-        this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
+        //this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
     }
 
     @MessageMapping("/games/{gameId}/coordinates")
