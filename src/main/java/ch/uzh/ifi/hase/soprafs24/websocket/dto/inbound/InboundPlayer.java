@@ -1,10 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound;
 
-import ch.uzh.ifi.hase.soprafs24.entity.Player;
-
 import java.util.ArrayList;
 
-public class inboundPlayer {
+public class InboundPlayer {
     private String username;
     private int userId;
     private int gameId;

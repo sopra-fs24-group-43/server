@@ -15,7 +15,7 @@ import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.inboundPlayer;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 @Controller
 public class WebSocketController {
@@ -23,6 +23,7 @@ public class WebSocketController {
     RandomGenerators randomGenerators;
     public WebSocketController( WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
+        this.randomGenerators = new RandomGenerators();
     }
     /*
     @MessageMapping("/message") // /app/message
@@ -60,19 +61,21 @@ public class WebSocketController {
     }
     */
     @MessageMapping("/lobby/creategame")
-    public void creategame(inboundPlayer inboundPlayer){
+    public void creategame(InboundPlayer inboundPlayer){
 
         Player player = new Player(inboundPlayer.getUsername(),
                 inboundPlayer.getUserId(), inboundPlayer.getGameId(),
                 inboundPlayer.getFriends(), inboundPlayer.getRole());
         Game game = new Game(player);
         int gameId = 1;
-        while (GameRepository.gameIdtaken(gameId)){
+        while (GameRepository.gameIdtaken(gameId)) {
             gameId = randomGenerators.GameIdGenerator();
         }
+        player.setGameId(gameId);
+        game.setGameId(gameId);
         GameRepository.addGame(gameId,game);
 
-        this.webSocketService.sendMessageToClients("/topic/lobby", game);
+        this.webSocketService.sendMessageToClients("/topic/lobby", player);
 
     }
     @MessageMapping("/lobby/deletegame") //should be braodcasted to the players inside the game also (when setting up the settings) thats why two sendMessageToClients
@@ -91,17 +94,19 @@ public class WebSocketController {
 
     }
     @MessageMapping("/games/{gameId}/joingame")
-    public void joingame(@DestinationVariable int gameId, inboundPlayer inboundPlayer){
+    public void joingame(@DestinationVariable int gameId, InboundPlayer inboundPlayer){
         Player player = new Player(inboundPlayer.getUsername(),
-                inboundPlayer.getUserId(), inboundPlayer.getGameId(),
+                inboundPlayer.getUserId(), gameId,
                 inboundPlayer.getFriends(), inboundPlayer.getRole());
         Game game = GameRepository.findByGameId(gameId);
         game.addPlayer(player);
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", player);
 
     }
     @MessageMapping("/games/{gameId}/leavegame")
-    public void leavegame(@DestinationVariable int gameId){
+    public void leavegame(@DestinationVariable int gameId, InboundPlayer inboundPlayer){
+        Game game = GameRepository.findByGameId(gameId);
+        game.removePlayer(inboundPlayer.getUserId());
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }

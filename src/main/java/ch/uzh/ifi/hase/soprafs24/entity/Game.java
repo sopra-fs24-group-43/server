@@ -5,7 +5,10 @@ import ch.uzh.ifi.hase.soprafs24.entity.Leaderboard;
 import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
+
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
+
 
 /*
 public class Game {
@@ -23,7 +26,7 @@ public class Game {
 public class Game {
 
     private RandomGenerators random;
-    private ArrayList<Player> players; //
+    private HashMap<Integer, Player> players; //
     private Player admin; //
     private int gameId; //not done yet
     private Date creationDate; //
@@ -52,8 +55,9 @@ public class Game {
     public Game(Player admin) {
         this.random = new RandomGenerators();
         this.admin = admin;
-        this.players.add(admin);
-        this.gameId = this.random.random.nextInt(1000); // needs to be unqiue (check with gamerepository)
+        this.players = new HashMap<Integer, Player>();
+        this.players.put(admin.getUserId(), admin);
+        //this.gameId = this.random.random.nextInt(1000); // needs to be unqiue (check with gamerepository)
 
         this.creationDate = new Date();
         this.wordList = new ArrayList<>();
@@ -72,11 +76,13 @@ public class Game {
         this.connectedPlayers.add(admin);
     }
     public void addPlayer(Player player) {
-        this.players.add(player);
+        this.players.put(player.getUserId(), player);
+    }
+    public void setGameId(int gameId) {this.gameId = gameId;}
+
+    public void removePlayer(int userId){
+        this.players.remove(userId);
     }
 
-    public void removePlayer(Player player){
-        //this.players.remove(Object.valueOf(Player));
-    }
 
 }
