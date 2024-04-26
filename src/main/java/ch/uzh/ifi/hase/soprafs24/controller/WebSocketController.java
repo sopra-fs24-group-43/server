@@ -155,8 +155,18 @@ public class WebSocketController {
 
     @MessageMapping("/games/{gameId}/endgame")
     public void endgame(@DestinationVariable int gameId){
+        GameRepository.removeGame((int) gameId);
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
+    }
+
+    @MessageMapping("game/{gameId}/postgame")
+    @SendTo("game/{gameId}/general")
+    public void postgame(@DestinationVariable long gameId) {
+        Game game = GameRepository.findByLobbyId((int) gameId);
+        LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+
+        this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
     }
 
     @MessageMapping("/games/{gameId}/coordinates")
