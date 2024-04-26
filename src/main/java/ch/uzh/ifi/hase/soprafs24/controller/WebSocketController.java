@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Settings;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -163,7 +164,7 @@ public class WebSocketController {
     @MessageMapping("game/{gameId}/postgame")
     @SendTo("game/{gameId}/general")
     public void postgame(@DestinationVariable long gameId) {
-        Game game = GameRepository.findByLobbyId((int) gameId);
+        Game game = GameRepository.findByGameId((int) gameId);
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
         this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
