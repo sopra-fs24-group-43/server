@@ -35,6 +35,7 @@ public class Game {
     private Date creationDate; //
     private List<String> wordList; //init null, is a List not a ArrayList!!!
     //Settings (all accessible to admin, the ones we dont implement yet can just be a default value )
+    private int currentWordIndex;
     private int maxPlayers; //
     private int maxRounds; //
     private int turnLength; //in seconds
@@ -122,10 +123,15 @@ public class Game {
             this.drawingOrder.add(id);
         });
         this.Drawer = 0;
+        this.currentWordIndex = 0;
     }
 
     public void chooseNewDrawer() {
         this.Drawer = this.Drawer+1;
         this.Drawer = this.Drawer % this.players.size();
     }
+    public String getCurrentWord(){
+        return this.wordList.get(this.currentWordIndex);
+    }
+
 }
