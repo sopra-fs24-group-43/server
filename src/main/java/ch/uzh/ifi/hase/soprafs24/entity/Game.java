@@ -134,4 +134,26 @@ public class Game {
         return this.wordList.get(this.currentWordIndex);
     }
 
+     public LeaderBoardDTO calculateLeaderboard() {
+         if (endgame){
+             for (Player player : players) {
+                 this.points.put(player, this.points.get(player));
+             }
+             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+             leaderboardDTO.setPlayers(this.players);
+             leaderboardDTO.setTotalPoints(this.points);
+
+             return leaderboardDTO;
+         } else {
+             for (Player player : players) {
+                 this.points.put(player, this.points.get(player) + this.pointsOfCurrentTurn.get(player));
+             }
+             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+             leaderboardDTO.setPlayers(this.players);
+             leaderboardDTO.setTotalPoints(this.points);
+
+             return leaderboardDTO;
+         }
+     }    
+
 }
