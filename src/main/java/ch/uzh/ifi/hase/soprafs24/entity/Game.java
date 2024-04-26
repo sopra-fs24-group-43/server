@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 import java.util.Date;
 
+import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import java.util.HashMap;
@@ -11,7 +12,11 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+<<<<<<< HEAD
 import lombok.Getter;
+=======
+import java.util.concurrent.atomic.AtomicInteger;
+>>>>>>> 02cafe028778afbe431deb6c178f54507695104b
 
 
 /*
@@ -50,11 +55,13 @@ public class Game {
     @Getter
     private String lobbyName; //
 
-    //variables used to keep track of the game state
+
     private HashMap<Player, Integer> points;
-    private HashMap<Player, Integer> pointsOfCurrentRound;
+    private HashMap<Player, Integer> pointsOfCurrentTurn;
+
     private LeaderBoardDTO leaderboardDTO;
 
+    //variables used to keep track of the game state
     private ArrayList<Answer> answers;
     private int answersReceived;
     private int Drawer; //identified with index in drawingOrder
@@ -78,7 +85,7 @@ public class Game {
         this.gamePassword = this.random.PasswordGenerator();
         this.lobbyName = Integer.toString(this.gameId);
         this.points = new HashMap<Player, Integer>();
-        this.pointsOfCurrentRound = new HashMap<Player, Integer>();
+        this.pointsOfCurrentTurn = new HashMap<Player, Integer>();
         this.answersReceived = 0;
         this.currentRound = 0;
         this.currentTurn = 0;
@@ -125,7 +132,7 @@ public class Game {
         this.wordList = shufflewordList();
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
-            this.pointsOfCurrentRound.put(player, 0);
+            this.pointsOfCurrentTurn.put(player, 0);
             this.drawingOrder.add(id);
         });
         this.Drawer = 0;
@@ -149,6 +156,7 @@ public class Game {
             leaderboardDTO.setPlayers(this.players);
             leaderboardDTO.setTotalPoints(this.points);
 
+<<<<<<< HEAD
             return leaderboardDTO;
          } else {
             for (Player player : players) {
@@ -157,6 +165,78 @@ public class Game {
             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
             leaderboardDTO.setPlayers(this.players);
             leaderboardDTO.setTotalPoints(this.points);
+=======
+    public LeaderBoardDTO calculateLeaderboard() {
+        LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+        this.pointsOfCurrentTurn.forEach((key, value) -> {this.points.put(key, this.points.get(key)+value);});
+
+        leaderboardDTO.setUserIdToPlayer(this.players);
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> map2 = new HashMap<>();
+
+        this.points.forEach((key, value) -> {map.put(key.getUserId(), value);});
+        leaderboardDTO.setTotalPoints(map);
+        this.points.forEach((key, value) -> {key.setTotalPoints(value);});
+
+        this.pointsOfCurrentTurn.forEach((key, value) -> {map2.put(key.getUserId(), value);});
+        leaderboardDTO.setNewlyEarnedPoints(map2);
+        this.pointsOfCurrentTurn.forEach((key, value) -> {key.setNewlyEarnedPoints(value);});
+
+
+        leaderboardDTO.setPodium(assignPodiumPosition());
+        this.assignPodiumPosition().forEach((key, value) -> {
+            PlayerRepository.findByPlayerId(key).setPodiumPosition(value);
+        });
+
+        return leaderboardDTO;
+
+    }
+
+    public HashMap<Integer, Integer> assignPodiumPosition() {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        this.points.forEach((key, value) -> {
+            AtomicInteger i = new AtomicInteger();
+            i.set(1);
+            this.points.forEach((key2, value2) -> {
+                if (value<value2) {
+                    i.getAndIncrement();
+                }
+            });
+            map.put(key.getUserId(), i.get());
+        });
+        return map;
+    }
+
+
+
+/*
+    private Boolean endgame;
+
+     public LeaderBoardDTO calculateLeaderboard() {
+         if (endgame){
+             for (Player player : players) {
+                 this.points.put(player, this.points.get(player));
+             }
+             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+             leaderboardDTO.setPlayers(this.players);
+             leaderboardDTO.setTotalPoints(this.points);
+
+             return leaderboardDTO;
+         } else {
+             for (Player player : players) {
+                 this.points.put(player, this.points.get(player) + this.pointsOfCurrentTurn.get(player));
+             }
+             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+             leaderboardDTO.setPlayers(this.players);
+             leaderboardDTO.setTotalPoints(this.points);
+
+             return leaderboardDTO;
+         }
+*/
+
+
+>>>>>>> 02cafe028778afbe431deb6c178f54507695104b
 
             return leaderboardDTO;
         }
