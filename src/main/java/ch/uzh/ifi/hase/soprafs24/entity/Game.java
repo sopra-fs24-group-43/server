@@ -12,11 +12,9 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-<<<<<<< HEAD
 import lombok.Getter;
-=======
-import java.util.concurrent.atomic.AtomicInteger;
->>>>>>> 02cafe028778afbe431deb6c178f54507695104b
+
+
 
 
 /*
@@ -236,10 +234,5 @@ public class Game {
 */
 
 
->>>>>>> 02cafe028778afbe431deb6c178f54507695104b
 
-            return leaderboardDTO;
-        }
-    }
-*/
 }
