@@ -28,7 +28,20 @@ issue(client) #76 - https://github.com/sopra-fs24-group-43/client/issues/76 Impl
 
 issue(client) #77 - https://github.com/sopra-fs24-group-43/client/issues/77 Implement eraser button to erase drawings on canvas on game page	
 
+### 3rd week - 24.04
+issue(client) #79 - https://github.com/sopra-fs24-group-43/client/issues/79 - Create a color palette to choose from while drawing	
 
+issue(client) #80 - https://github.com/sopra-fs24-group-43/client/issues/80 - Create buttons to change the thickness of the pen while drawing	
+
+issue(client) #81 - https://github.com/sopra-fs24-group-43/client/issues/81 - Create a "fill out" option to fill out a bordered space while drawing	
+
+issue(client) #82 - https://github.com/sopra-fs24-group-43/client/issues/82 - Create an "Erase All" button which erases the entire canvas.
+
+issue(client) #83 - https://github.com/sopra-fs24-group-43/client/issues/83 - Modify the "Draw", "Eraser", "Fill" buttons so that they have an outline which indicates which button is selected.	
+
+issue(client) #84 - https://github.com/sopra-fs24-group-43/client/issues/84 - Create a "signifier button" which shows which color is selected at the moment.	
+
+issue(client) #89 - https://github.com/sopra-fs24-group-43/client/issues/89 - Implementing button signifiers which show which draw thickness is selected.	
 
 
 ## Markiian Dobosh
