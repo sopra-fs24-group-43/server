@@ -17,6 +17,8 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 @Controller
 public class WebSocketController {
     WebSocketService webSocketService;
@@ -75,7 +77,7 @@ public class WebSocketController {
         game.setGameId(gameId);
         GameRepository.addGame(gameId,game);
 
-        this.webSocketService.sendMessageToClients("/topic/lobby", player);
+        this.webSocketService.sendMessageToClients("/topic/lobby", inboundPlayer);
 
     }
     @MessageMapping("/lobby/deletegame") //should be braodcasted to the players inside the game also (when setting up the settings) thats why two sendMessageToClients
@@ -100,7 +102,7 @@ public class WebSocketController {
                 inboundPlayer.getFriends(), inboundPlayer.getRole());
         Game game = GameRepository.findByGameId(gameId);
         game.addPlayer(player);
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", player);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", inboundPlayer);
 
     }
     @MessageMapping("/games/{gameId}/leavegame")
@@ -111,13 +113,18 @@ public class WebSocketController {
 
     }
     @MessageMapping("/games/{gameId}/updategamesettings")
-    public void updategamesettings(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gamesettingsDTO);
+    public void updategamesettings(@DestinationVariable int gameId, GameSettingsDTO gameSettingsDTO){
+        Game game = GameRepository.findByGameId(gameId);
+        game.updateGameSettings(gameSettingsDTO);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameSettingsDTO);
 
     }
 
     @MessageMapping("/games/{gameId}/startgame")
-    public void startgame(@DestinationVariable int gameId){
+    public void startgame(@DestinationVariable int gameId, GameSettingsDTO gameSettingsDTO){
+        Game game = GameRepository.findByGameId(gameId);
+        game.updateGameSettings(gameSettingsDTO);
+        game.startGame();
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }
@@ -129,8 +136,10 @@ public class WebSocketController {
     }
 
     @MessageMapping("/games/{gameId}/sendguess")
-    public void sendguess(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
+    public void sendguess(@DestinationVariable int gameId, Answer answer){
+        Game game = GameRepository.findByGameId(gameId);
+        game.addAnswer(answer);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
 
     }
 
@@ -138,7 +147,7 @@ public class WebSocketController {
     public void endturn(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId((int) gameId);
         ArrayList<Player> players = PlayerRepository.findUserByGameId(gameId);
-        //RoundDTO round = roundService.endRound(players)
+
         //LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);

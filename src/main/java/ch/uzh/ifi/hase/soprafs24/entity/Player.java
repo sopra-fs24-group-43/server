@@ -7,6 +7,9 @@ public class Player {
     private int gameId;
     private ArrayList<Integer> friends; //the userId's of their friends
     private String role; // "admin" or "player"
+    private  int totalPoints;
+    private  int newlyEarnedPoints;
+    private int podiumPosition;
 
     public  Player (String username, int userId, int gameId, ArrayList<Integer> friends,String role) {
         this.username = username;

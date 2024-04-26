@@ -18,7 +18,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/topic"); //where you subscribe to, can have additional /things
         registry.setApplicationDestinationPrefixes("/app"); //not explicit (dont write"/app/games") in controller but explicit in stomp (do write "/app/games")
     }
 
