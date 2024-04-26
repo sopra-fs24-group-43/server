@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
@@ -19,6 +20,9 @@ import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GamesDTO;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Coordinates;
+
 @Controller
 public class WebSocketController {
     WebSocketService webSocketService;
@@ -62,7 +66,7 @@ public class WebSocketController {
 
     }
     */
-    @MessageMapping("/lobby/creategame")
+    @MessageMapping("/landing/creategame")
     public void creategame(InboundPlayer inboundPlayer){
 
         Player player = new Player(inboundPlayer.getUsername(),
@@ -77,24 +81,51 @@ public class WebSocketController {
         game.setGameId(gameId);
         GameRepository.addGame(gameId,game);
 
-        this.webSocketService.sendMessageToClients("/topic/lobby", inboundPlayer);
+        this.webSocketService.sendMessageToClients("/topic/landing", inboundPlayer);
 
     }
-    @MessageMapping("/lobby/deletegame") //should be braodcasted to the players inside the game also (when setting up the settings) thats why two sendMessageToClients
+    @MessageMapping("/landing/deletegame") //should be braodcasted to the players inside the game also (when setting up the settings) thats why two sendMessageToClients
     public void deletegame(int gameId){
         Game game = GameRepository.findByGameId(gameId);
         GameRepository.removeGame(gameId);
 
-        //this.webSocketService.sendMessageToClients("/topic/lobby", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
     }
-    @MessageMapping("/lobby/getallgames")
+    @MessageMapping("/landing/getallgames")
     public void getalllobbies(){
-        HashMap games = GameRepository.getallGames();
 
-        this.webSocketService.sendMessageToClients("/topic/lobby", games);
+        HashMap<Integer,Game> games = GameRepository.getallGames();
+        GamesDTO gamesDTO = new GamesDTO();
+        List<Integer> listGameIds = new ArrayList<>();
+        List<String> listLobbyName = new ArrayList<>();
+        List<List<Player>> listPlayers = new ArrayList<>();
+        List<Integer> listMaxPlayers = new ArrayList<>();
+        List<String> listGamePassword = new ArrayList<>();
+        games.forEach((number, game) -> {
+            listGameIds.add(game.getGameId());
+            listLobbyName.add(game.getLobbyName());
+            List<Player> players = new ArrayList<>();
+            game.getPlayers().forEach((nr, player) -> {
+                players.add(player);
+            });
+            listPlayers.add(players);
+            listMaxPlayers.add(game.getMaxPlayers());
+            listGamePassword.add(game.getGamePassword());
+        });
+        gamesDTO.setType("gamesDTO");
+        gamesDTO.setGameId(listGameIds);
+        gamesDTO.setLobbyName(listLobbyName);
+        gamesDTO.setPlayers(listPlayers);
+        gamesDTO.setMaxPlayers(listMaxPlayers);
+        gamesDTO.setGamePassword(listGamePassword);
+
+
+
+        this.webSocketService.sendMessageToClients("/topic/landing", gamesDTO);
 
     }
+
     @MessageMapping("/games/{gameId}/joingame")
     public void joingame(@DestinationVariable int gameId, InboundPlayer inboundPlayer){
         Player player = new Player(inboundPlayer.getUsername(),
@@ -159,7 +190,7 @@ public class WebSocketController {
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
     }
-
+    /*
     @MessageMapping("game/{gameId}/postgame")
     @SendTo("game/{gameId}/general")
     public void postgame(@DestinationVariable long gameId) {
@@ -168,11 +199,11 @@ public class WebSocketController {
 
         this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
     }
-
+    */
     @MessageMapping("/games/{gameId}/coordinates")
-    public void coordinates(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/coordinates", coordinates);
-
+    public void sendCanvas(@DestinationVariable int gameId, Coordinates coordinates){
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/coordinates", coordinates);
     }
+
 
 }

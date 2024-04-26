@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
 
 
 /*
@@ -29,19 +30,24 @@ public class Game {
 public class Game {
 
     private RandomGenerators random;
+    @Getter
     private HashMap<Integer, Player> players; //
     private Player admin; //
+    @Getter
     private int gameId; //not done yet
     private Date creationDate; //
     private List<String> wordList; //init null, is a List not a ArrayList!!!
     //Settings (all accessible to admin, the ones we dont implement yet can just be a default value )
     private int currentWordIndex;
+    @Getter
     private int maxPlayers; //
     private int maxRounds; //
     private int turnLength; //in seconds
+    @Getter
     private String gamePassword; //not done yet, can be left for changesettings
     private String genre; //
     private ArrayList<Integer> wordLength; //not sure if necessary
+    @Getter
     private String lobbyName; //
 
     //variables used to keep track of the game state
@@ -133,27 +139,27 @@ public class Game {
     public String getCurrentWord(){
         return this.wordList.get(this.currentWordIndex);
     }
+/*
+    public LeaderBoardDTO calculateLeaderboard() {
+        if (endgame){
+            for (Player player : players) {
+                this.points.put(player, this.points.get(player));
+            }
+            LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+            leaderboardDTO.setPlayers(this.players);
+            leaderboardDTO.setTotalPoints(this.points);
 
-     public LeaderBoardDTO calculateLeaderboard() {
-         if (endgame){
-             for (Player player : players) {
-                 this.points.put(player, this.points.get(player));
-             }
-             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-             leaderboardDTO.setPlayers(this.players);
-             leaderboardDTO.setTotalPoints(this.points);
-
-             return leaderboardDTO;
+            return leaderboardDTO;
          } else {
-             for (Player player : players) {
-                 this.points.put(player, this.points.get(player) + this.pointsOfCurrentTurn.get(player));
-             }
-             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-             leaderboardDTO.setPlayers(this.players);
-             leaderboardDTO.setTotalPoints(this.points);
+            for (Player player : players) {
+                this.points.put(player, this.points.get(player) + this.pointsOfCurrentTurn.get(player));
+            }
+            LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+            leaderboardDTO.setPlayers(this.players);
+            leaderboardDTO.setTotalPoints(this.points);
 
-             return leaderboardDTO;
-         }
-     }    
-
+            return leaderboardDTO;
+        }
+    }
+*/
 }

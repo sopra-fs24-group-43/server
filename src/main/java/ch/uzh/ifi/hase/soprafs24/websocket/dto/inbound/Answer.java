@@ -7,6 +7,4 @@ public class Answer {
 
     private int secTimeLeft;
     private String answerString;
-
-
 }
