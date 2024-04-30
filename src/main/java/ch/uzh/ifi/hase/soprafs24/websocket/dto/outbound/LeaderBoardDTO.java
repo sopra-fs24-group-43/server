@@ -6,9 +6,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class LeaderBoardDTO {
-
+    //maybe indicate next turn
     private HashMap<Integer, Player> userIdToPlayer;  //<userId, Player>
     private HashMap<Integer, Integer> totalPoints;  //<userId, totalPoints>
-    private  HashMap<Integer, Integer> newlyEarnedPoints;  //<userId, newlyEarnedPoints>
-    private  HashMap<Integer, Integer> Podium;  //<userId, Podium>
+    private HashMap<Integer, Integer> newlyEarnedPoints;  //<userId, newlyEarnedPoints>
+    private HashMap<Integer, Integer> Podium;  //<userId, Podium>
 }

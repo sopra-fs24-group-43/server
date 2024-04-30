@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Settings;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -90,8 +91,8 @@ public class WebSocketController {
         Game game = GameRepository.findByGameId(gameId);
         GameRepository.removeGame(gameId);
 
-        //this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);//-->maybe refresh "getallgames" instead?
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);//or automatically change view back to homepage in frontend?
     }
     @MessageMapping("/landing/getallgames")
     public void getalllobbies(){
@@ -141,7 +142,8 @@ public class WebSocketController {
     public void leavegame(@DestinationVariable int gameId, InboundPlayer inboundPlayer){
         Game game = GameRepository.findByGameId(gameId);
         game.removePlayer(inboundPlayer.getUserId());
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        GameStateDTO gameStateDTO = game.gameStateDTO();
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
 
     }
     @MessageMapping("/games/{gameId}/updategamesettings")
@@ -157,13 +159,27 @@ public class WebSocketController {
         Game game = GameRepository.findByGameId(gameId);
         game.updateGameSettings(gameSettingsDTO);
         game.startGame();
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        game.setCurrentTurn(1);
+        game.setCurrentRound(1);
+        GameStateDTO gameStateDTO = game.gameStateDTO();
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
 
     }
 
     @MessageMapping("/games/{gameId}/nextturn")
     public void nextturn(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        Game game = GameRepository.findByGameId(gameId);
+        if (game.getCurrentRound()==game.getMaxRounds()&&game.getCurrentTurn()==5) {
+                game.setEndGame(true);
+            }
+        else if (game.getCurrentTurn()==5) {
+            game.setCurrentRound(game.getCurrentRound()+1);
+            game.setCurrentTurn(1);
+        } else {
+            game.setCurrentTurn(game.getCurrentTurn()+1);
+        }
+        GameStateDTO gameStateDTO = game.gameStateDTO();
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
 
     }
 
@@ -175,23 +191,22 @@ public class WebSocketController {
 
     }
 
-    @MessageMapping("/games/{gameId}/endturn")
+    @MessageMapping("/games/{gameId}/endturn")//how to connect endturn and nextturn...
     public void endturn(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId((int) gameId);
         ArrayList<Player> players = PlayerRepository.findUserByGameId(gameId);
 
-        //LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+        LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
     }
 
-    @MessageMapping("/games/{gameId}/endgame")
+    @MessageMapping("/games/{gameId}/endgame")//needed?
     public void endgame(@DestinationVariable int gameId){
-        GameRepository.removeGame((int) gameId);
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
-
+        GameRepository.removeGame(gameId);
+        //send players back to homepage in frontend?
     }
-    /*
+    /*//old
     @MessageMapping("game/{gameId}/postgame")
     @SendTo("game/{gameId}/general")
     public void postgame(@DestinationVariable long gameId) {
