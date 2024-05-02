@@ -165,8 +165,8 @@ public class WebSocketController {
 
     @MessageMapping("/games/{gameId}/endturn")//how to connect endturn and nextturn...
     public void endturn(@DestinationVariable int gameId){
-        Game game = GameRepository.findByGameId((int) gameId);
-        ArrayList<Player> players = PlayerRepository.findUserByGameId(gameId);
+        Game game = GameRepository.findByGameId(gameId);
+        //ArrayList<Player> players = PlayerRepository.findUserByGameId(gameId);
 
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 

@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class User implements Serializable {
   private int level;
 
   @Column
-  private Date creation_date;
+  private LocalDate creation_date;
 
   @Column
   private String birth_date;
@@ -59,11 +60,11 @@ public class User implements Serializable {
   @Column
   private List<String> friends;
 
-    public Boolean getIsUser() {
+  public Boolean getIsUser() {
         return isUser;
     }
 
-    public void setIsUser(Boolean isUser) {
+  public void setIsUser(Boolean isUser) {
         this.isUser = isUser;
     }
 
@@ -71,9 +72,9 @@ public class User implements Serializable {
 
   public void setFriends(List<String> friends) {this.friends = friends; }
 
-  public Date getCreation_date() { return creation_date; }
+  public LocalDate getCreation_date() { return creation_date; }
 
-  public void setCreation_date(Date creation_date) { this.creation_date = creation_date; }
+  public void setCreation_date(LocalDate creation_date) { this.creation_date = creation_date; }
 
   public String getBirth_date() { return birth_date; }
 
