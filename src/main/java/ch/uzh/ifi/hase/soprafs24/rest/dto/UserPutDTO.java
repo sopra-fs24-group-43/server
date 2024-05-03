@@ -1,9 +1,13 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
-
+@Getter
+@Setter
 public class UserPutDTO {
     private String name;
 
@@ -23,9 +27,9 @@ public class UserPutDTO {
 
     private Boolean isUser;
 
-    private String creation_date;
+    private LocalDate creation_date;
     private UserStatus status;
-
+/*
     public UserStatus getStatus() {
         return status;
     }
@@ -34,9 +38,9 @@ public class UserPutDTO {
         this.status = status;
     }
 
-    public String getCreation_date() {return creation_date;}
+    public LocalDate getCreation_date() {return creation_date;}
 
-    public void setCreation_date(String creation_date) {this.creation_date = creation_date;}
+    public void setCreation_date(LocalDate creation_date) {this.creation_date = creation_date;}
 
     public int getLevel() {return level;}
     public void setLevel(int level) {this.level = level;}
@@ -90,6 +94,6 @@ public class UserPutDTO {
 
     public void setUsername(String username) {
         this.username = username;
-    }
+    }*/
 }
 

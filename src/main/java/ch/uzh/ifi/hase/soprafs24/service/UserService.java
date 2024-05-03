@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -120,6 +121,8 @@ public class UserService {
     else {
         newUser.setName(UUID.randomUUID().toString());
     }
+    newUser.setCreation_date(LocalDate.now());
+    newUser.setLevel(1);
     newUser = userRepository.save(newUser);
     userRepository.flush();
 
