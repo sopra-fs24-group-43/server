@@ -19,6 +19,7 @@ import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Coordinates;
 @Controller
 public class WebSocketController {
     WebSocketService webSocketService;
@@ -62,7 +63,7 @@ public class WebSocketController {
 
     }
     */
-    @MessageMapping("/lobby/creategame")
+    @MessageMapping("/landing/creategame")
     public void creategame(InboundPlayer inboundPlayer){
 
         Player player = new Player(inboundPlayer.getUsername(),
@@ -80,7 +81,7 @@ public class WebSocketController {
         this.webSocketService.sendMessageToClients("/topic/lobby", inboundPlayer);
 
     }
-    @MessageMapping("/lobby/deletegame") //should be braodcasted to the players inside the game also (when setting up the settings) thats why two sendMessageToClients
+    @MessageMapping("/landing/deletegame") //should be braodcasted to the players inside the game also (when setting up the settings) thats why two sendMessageToClients
     public void deletegame(int gameId){
         Game game = GameRepository.findByGameId(gameId);
         GameRepository.removeGame(gameId);
@@ -88,7 +89,7 @@ public class WebSocketController {
         //this.webSocketService.sendMessageToClients("/topic/lobby", questionToSend);
         //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
     }
-    @MessageMapping("/lobby/getallgames")
+    @MessageMapping("/landing/getallgames")
     public void getalllobbies(){
         HashMap games = GameRepository.getallGames();
 
@@ -160,9 +161,8 @@ public class WebSocketController {
     }
 
     @MessageMapping("/games/{gameId}/coordinates")
-    public void coordinates(@DestinationVariable int gameId){
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/coordinates", coordinates);
-
+    public void sendCanvas(@DestinationVariable int gameId, Coordinates coordinates){
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/coordinates", coordinates);
     }
 
 }
