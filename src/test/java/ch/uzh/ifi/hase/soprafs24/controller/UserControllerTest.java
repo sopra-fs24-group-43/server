@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -63,6 +64,7 @@ public class UserControllerTest {
       user.setCreation_date(LocalDate.now());
       List<String> friends = new ArrayList<String>();
       friends.add("2");
+      friends.add("3");
       user.setFriends(friends);
       user.setLevel(1);
       user.setPassword("1");
@@ -265,9 +267,48 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
     }
-//todo:friendslist...
+    /*//TODO!
+    @Test
+    public void test_add_friends() throws Exception {
 
-        /**
+        // this mocks the UserService -> we define above what the userService should
+        // return when getUsers() is called
+        given(userService.add_or_delete_Friend(Mockito.any(),eq("user2"),eq(true))).willReturn(user);
+
+        // when
+        MockHttpServletRequestBuilder putRequest = put("/users/" + user.getId() + "/friends").contentType(MediaType.APPLICATION_JSON)
+                .param("f_username", "user2")
+                .param("false_for_delete_true_for_add", "true");
+
+
+        // then
+        mockMvc.perform(putRequest).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andExpect(jsonPath("$.friends", hasSize(3)))
+                .andExpect(jsonPath("$.friends", is(user.getFriends())));
+    }
+
+
+    @Test
+    public void test_get_friends() throws Exception {
+
+        // String friend_3 = user.getFriends();
+        // this mocks the UserService -> we define above what the userService should
+        // return when getUsers() is called
+        given(userService.getFriends(eq(1L))).willReturn(user.getFriends());
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/users/" + user.getId() + "/friends").contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest).andExpect(status().isOk())
+                //.andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$.friends.[0].username", is(user.getFriends().get(0))))
+                .andExpect(jsonPath("$[0]", is(user.getFriends())));
+    }
+//test_delete_friends
+
+    /**
          * Helper Method to convert userPostDTO into a JSON string such that the input
          * can be processed
          * Input will look like this: {"name": "Test User", "username": "testUsername"}
