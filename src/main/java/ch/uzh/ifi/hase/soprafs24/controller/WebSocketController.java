@@ -83,18 +83,17 @@ public class WebSocketController {
         GameRepository.addGame(gameId,game);
 
         this.webSocketService.sendMessageToClients("/topic/landing", inboundPlayer);
-
     }
-    @MessageMapping("/landing/deletegame") //should be braodcasted to the players inside the game also (when setting up the settings) thats why two sendMessageToClients
+    @MessageMapping("/landing/deletegame")
     public void deletegame(int gameId){
         Game game = GameRepository.findByGameId(gameId);
         GameRepository.removeGame(gameId);
 
-        //this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); //should return something
     }
-    @MessageMapping("/landing/getallgames")
-    public void getalllobbies(){
+    @MessageMapping("/landing/{userId}/getallgames")
+    public void getalllobbies(@DestinationVariable int userId){
 
         HashMap<Integer,Game> games = GameRepository.getallGames();
         GamesDTO gamesDTO = new GamesDTO();
@@ -123,25 +122,27 @@ public class WebSocketController {
 
 
 
-        this.webSocketService.sendMessageToClients("/topic/landing", gamesDTO);
+        this.webSocketService.sendMessageToClients("/topic/landing/" + userId, gamesDTO);
 
     }
 
     @MessageMapping("/games/{gameId}/joingame")
     public void joingame(@DestinationVariable int gameId, InboundPlayer inboundPlayer){
+
         Player player = new Player(inboundPlayer.getUsername(),
-                inboundPlayer.getUserId(), gameId,
+                inboundPlayer.getUserId(), inboundPlayer.getGameId(),
                 inboundPlayer.getFriends(), inboundPlayer.getRole());
         Game game = GameRepository.findByGameId(gameId);
         game.addPlayer(player);
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", inboundPlayer);
+
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", inboundPlayer); //should return something joiner doesnt need to receive it
 
     }
     @MessageMapping("/games/{gameId}/leavegame")
     public void leavegame(@DestinationVariable int gameId, InboundPlayer inboundPlayer){
         Game game = GameRepository.findByGameId(gameId);
         game.removePlayer(inboundPlayer.getUserId());
-        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); should return something
 
     }
     @MessageMapping("/games/{gameId}/updategamesettings")
