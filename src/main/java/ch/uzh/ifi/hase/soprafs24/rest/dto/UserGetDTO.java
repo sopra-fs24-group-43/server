@@ -2,11 +2,17 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class UserGetDTO {
+
 
   private Long id;
   private String name;
@@ -15,21 +21,23 @@ public class UserGetDTO {
 
   private Boolean isUser;
 
+
   private String token;
 
   private int level;
 
-  private String creation_date;
+
+  private LocalDate creation_date;
 
   private String birth_date;
 
   private List<String> friends;
-
-    public Boolean getIsUser() {
+/*
+  public Boolean getIsUser() {
         return isUser;
     }
 
-    public void setIsUser(Boolean isUser) {
+  public void setIsUser(Boolean isUser) {
         this.isUser = isUser;
     }
 
@@ -37,11 +45,7 @@ public class UserGetDTO {
 
   public void setFriends(List<String> friends) {this.friends = friends;}
 
-  public String getToken() {return token;}
-
-  public String getCreation_date() {return creation_date;}
-
-  public void setCreation_date(String creation_date) {this.creation_date = creation_date;}
+  //public void setCreation_date(LocalDate creation_date) {this.creation_date = creation_date;}
 
   public String getBirth_date() {return birth_date;}
 
@@ -53,13 +57,9 @@ public class UserGetDTO {
 
   public void setLevel(int level) {this.level = level;}
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
+    //public void setId(Long id) {
+    //this.id = id;
+  //}
 
   public String getName() {
     return name;
@@ -83,5 +83,5 @@ public class UserGetDTO {
 
   public void setStatus(UserStatus status) {
     this.status = status;
-  }
+  }*/
 }

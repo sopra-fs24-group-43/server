@@ -3,6 +3,7 @@ import java.util.Date;
 
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
@@ -12,9 +13,10 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import lombok.Getter;
-
-
+import lombok.Setter;
 
 
 /*
@@ -30,6 +32,8 @@ public class Game {
      }
 }
 */
+@Getter
+@Setter
 public class Game {
 
     private RandomGenerators random;
@@ -67,8 +71,10 @@ public class Game {
     private int currentRound; //incremented once currentturn = connectedPlayers and startturn is called
     private int currentTurn; //incremented on startturn
     private ArrayList<Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
+    private Boolean endGame;
 
     public Game(Player admin) {
+        this.endGame = false;
         this.random = new RandomGenerators();
         this.admin = admin;
         this.players = new HashMap<Integer, Player>();
@@ -102,6 +108,7 @@ public class Game {
 
     public void removePlayer(int userId){
         this.players.remove(userId);
+        this.connectedPlayers.remove(userId);
     }
 
     public void updateGameSettings(GameSettingsDTO gameSettingsDTO) {
@@ -136,6 +143,8 @@ public class Game {
         });
         this.Drawer = 0;
         this.currentWordIndex = 0;
+        this.currentRound = 0;
+        this.currentTurn = 0;
     }
 
     public void chooseNewDrawer() {
@@ -145,7 +154,18 @@ public class Game {
     public String getCurrentWord(){
         return this.wordList.get(this.currentWordIndex);
     }
-/*
+
+    public GameStateDTO gameStateDTO() {
+        GameStateDTO gameStateDTO = new GameStateDTO();
+        gameStateDTO.setCurrentRound(this.currentRound);
+        gameStateDTO.setCurrentTurn(this.currentTurn);
+        gameStateDTO.setCurrentWordIndex(this.currentWordIndex);
+        gameStateDTO.setDrawer(this.Drawer);
+        return gameStateDTO;
+    }
+
+
+/*//old
     public LeaderBoardDTO calculateLeaderboard() {
         if (endgame){
             for (Player player : players) {
@@ -155,7 +175,6 @@ public class Game {
             leaderboardDTO.setPlayers(this.players);
             leaderboardDTO.setTotalPoints(this.points);
 
-
             return leaderboardDTO;
          } else {
             for (Player player : players) {
@@ -164,6 +183,7 @@ public class Game {
             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
             leaderboardDTO.setPlayers(this.players);
             leaderboardDTO.setTotalPoints(this.points);
+*/
 
     public LeaderBoardDTO calculateLeaderboard() {
         LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
