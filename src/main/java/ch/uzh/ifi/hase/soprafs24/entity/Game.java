@@ -1,21 +1,23 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 import java.util.Date;
 
-import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorDrawer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
-
+import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorGuesser;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.Time;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -63,6 +65,8 @@ public class Game {
     private int currentTurn; //incremented on startturn
     private ArrayList<Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
     private Boolean endGame;
+    private int remainingTime;
+    private int currentCorrectGuesses;
 
     public Game(Player admin) {
         this.endGame = false;
@@ -87,14 +91,39 @@ public class Game {
         this.currentTurn = 0;
         this.connectedPlayers = new ArrayList<>();
         this.connectedPlayers.add(admin);
+        this.remainingTime = 0;
+        this.currentCorrectGuesses = 0;
     }
     public void addPlayer(Player player) {
         this.players.put(player.getUserId(), player);
     }
     public void setGameId(int gameId) {this.gameId = gameId;}
-    public void addAnswer(Answer answer) {
+
+    public int addAnswer(Answer answer) {
         this.answers.add(answer);
         this.answersReceived++;
+
+        int result = compareAnswer(answer.getAnswerString());
+
+        if (result == 1){
+            currentCorrectGuesses++;
+            Player player = players.get(answer.getUserId());
+            player.setNewlyEarnedPoints(PointCalculatorGuesser.calculate(turnLength, remainingTime, currentCorrectGuesses));
+            players.get(drawingOrder.get(Drawer)).setNewlyEarnedPoints(PointCalculatorDrawer.calculate(turnLength, remainingTime, currentCorrectGuesses));
+        }
+        return result;
+    }
+
+
+
+
+    public int compareAnswer(String guess){
+        String solution = this.getCurrentWord();
+        if (guess.equalsIgnoreCase(solution)){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     public void removePlayer(int userId){
