@@ -94,7 +94,7 @@ Issue(server) #101 https://github.com/sopra-fs24-group-43/server/issues/101 - cr
 Issue(server) #113 https://github.com/sopra-fs24-group-43/server/issues/113 - removed collosions between gameId and userId in playerrepo  
 Issue(server) #99 https://github.com/sopra-fs24-group-43/server/issues/99 - removed collosions between gameId and userId in playerrepo  
 Issue(client) #32 - https://github.com/sopra-fs24-group-43/client/issues/32 - fixed bugs related to ws connection in Landingpage view and moved the joingame button to the Table element; users can now create and join games (with some bugs left) and get transported to the Lobby page  
-
+Issue(client) #31 - https://github.com/sopra-fs24-group-43/client/issues/31  
 ## Robin Stirnimann
 
 ### 1st week - 12.04
