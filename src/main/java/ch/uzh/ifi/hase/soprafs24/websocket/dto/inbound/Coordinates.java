@@ -11,4 +11,6 @@ public class Coordinates {
     private int y;
     private int newX;
     private int newY;
+    private String selectedColor;
+    private int strokeSize;
 }
