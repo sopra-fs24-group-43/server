@@ -155,7 +155,7 @@ public class Game {
             leaderboardDTO.setPlayers(this.players);
             leaderboardDTO.setTotalPoints(this.points);
 
-<<<<<<< HEAD
+
             return leaderboardDTO;
          } else {
             for (Player player : players) {
@@ -164,7 +164,7 @@ public class Game {
             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
             leaderboardDTO.setPlayers(this.players);
             leaderboardDTO.setTotalPoints(this.points);
-=======
+
     public LeaderBoardDTO calculateLeaderboard() {
         LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
         this.pointsOfCurrentTurn.forEach((key, value) -> {this.points.put(key, this.points.get(key)+value);});
