@@ -25,7 +25,7 @@ import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GamesDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Coordinates;
-import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+
 
 @Controller
 public class WebSocketController {
@@ -61,11 +61,11 @@ public class WebSocketController {
     public void deletegame(int gameId){
         Game game = GameRepository.findByGameId(gameId);
         GameRepository.removeGame(gameId);
-        ArrayList<Player> players = PlayerRepository.findUsersByGameId(gameId);
-        for (Player player: players) {
-            int playerId = player.getUserId();
-            PlayerRepository.removePlayer(playerId,gameId);
-        }
+        HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId); //<gameId, Player>
+        players.forEach((key, value) -> {
+            PlayerRepository.removePlayer(value.getUserId(), key);
+        });
+        PlayerRepository.removeGameId(gameId);
 
         QuestionToSend questionToSend = new QuestionToSend("deletegame");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); //should return something
@@ -193,8 +193,8 @@ public class WebSocketController {
 
     @MessageMapping("/games/{gameId}/endturn")//how to connect endturn and nextturn...
     public void endturn(@DestinationVariable int gameId){
-        Game game = GameRepository.findByGameId((int) gameId);
-        ArrayList<Player> players = PlayerRepository.findUsersByGameId(gameId);
+        Game game = GameRepository.findByGameId(gameId);
+        HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId);
 
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 

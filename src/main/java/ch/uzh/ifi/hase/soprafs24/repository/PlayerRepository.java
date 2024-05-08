@@ -38,6 +38,9 @@ public class PlayerRepository {
             }
         });
     }
+    public static void removeGameId(int gameId) {
+        playerRepogameId.remove(gameId);
+    }
 
     public static Player findByUserId(int userId) {
         Player player = playerRepouserId.get(userId);
