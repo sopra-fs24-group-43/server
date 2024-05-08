@@ -66,6 +66,15 @@ Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/68 - ad
 
 Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/70 - create table of lobbies to the landing page
 
+### 3rd week - 24.04
+Issue(client) #87 - https://github.com/sopra-fs24-group-43/client/issues/87 - implement the websocket connection  
+Issue(client) #88 - https://github.com/sopra-fs24-group-43/client/issues/88 - implement sending the canvas data to the server and rendering it on all clients  
+
+### 4th week - 03.05
+Issue(client) #97 - https://github.com/sopra-fs24-group-43/client/issues/97 - set and automativcaly change the max players setting  
+Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - set and automativcaly change the drawtime setting  
+Issue(client) #99 - https://github.com/sopra-fs24-group-43/client/issues/99 - set and automativcaly change the rounds setting  
+
 ## Florian Mattmüller
 
 ### 1st week - 12.04

@@ -78,7 +78,8 @@ public class Game {
         this.maxRounds = 5;
         this.turnLength = 60;
         this.gamePassword = this.random.PasswordGenerator();
-        this.lobbyName = Integer.toString(this.gameId);
+        //this.lobbyName = Integer.toString(this.gameId);
+        this.lobbyName = this.admin.getUsername() + "'s lobby";
         this.points = new HashMap<Player, Integer>();
         this.pointsOfCurrentTurn = new HashMap<Player, Integer>();
         this.answersReceived = 0;
