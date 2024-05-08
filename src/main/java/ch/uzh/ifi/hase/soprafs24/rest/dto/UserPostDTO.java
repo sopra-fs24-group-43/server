@@ -25,7 +25,7 @@ public class UserPostDTO {
   private int level;
 
     private List<String> friends;
-
+    private List<String> openFriendRequests;
     private LocalDate creation_date;
 
     private UserStatus status;

@@ -140,12 +140,14 @@ public class UserService {
       User userById = this.userRepository.findUserById(id);
       return userById.getFriends();
     }
-  public User add_or_delete_Friend(User user, String f_username, Boolean b) {
+  public User add_or_delete_Friend(User user, String f_username, Boolean b) {//test with frontend!
       if (b) {
           User userByUsername = userRepository.findByUsername(f_username);
           if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
           List<String> friends = user.getFriends();
+          System.out.println(friends);
           friends.add(f_username);
+          System.out.println(friends);
           user.setFriends(friends);
           return user;}
 
@@ -155,6 +157,31 @@ public class UserService {
           List<String> friends = user.getFriends();
           friends.remove(f_username);
           user.setFriends(friends);
+          return user;}
+  }
+
+  public void sendFriendRequest(User user, String friend_username) {
+      User friend = userRepository.findByUsername(friend_username);
+      List<String> friendRequests = friend.getOpenFriendRequests();
+      friendRequests.add(user.getUsername());
+      friend.setOpenFriendRequests(friendRequests);
+  }
+
+  public List<String> getOpenFriendRequests(Long id) {
+      User userById = this.userRepository.findUserById(id);
+      return userById.getOpenFriendRequests();
+  }
+
+  public User accept_or_deny_Friend_Request (User user, String friend_username, Boolean b){
+      if (b) {
+          List<String> friends = user.getFriends();
+          System.out.println(friends);
+          friends.add(friend_username);
+          System.out.println(friends);
+          user.setFriends(friends);
+          return user;}
+
+      else {
           return user;}
   }
 /*

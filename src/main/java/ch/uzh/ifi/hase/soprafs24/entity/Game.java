@@ -151,6 +151,8 @@ public class Game {
         gameStateDTO.setCurrentTurn(this.currentTurn);
         gameStateDTO.setCurrentWordIndex(this.currentWordIndex);
         gameStateDTO.setDrawer(this.Drawer);
+        gameStateDTO.setConnectedPlayers(this.connectedPlayers);
+        gameStateDTO.setEndGame(this.endGame);
         return gameStateDTO;
     }
 

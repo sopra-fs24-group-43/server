@@ -20,7 +20,7 @@ public class UserGetDTO {
   private UserStatus status;
 
   private Boolean isUser;
-
+  private List<String> openFriendRequests;
 
   private String token;
 

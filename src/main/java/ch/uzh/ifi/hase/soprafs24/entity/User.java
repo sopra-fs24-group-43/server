@@ -60,6 +60,10 @@ public class User implements Serializable {
   @Column
   private List<String> friends;
 
+  @ElementCollection
+  @Column
+  private List<String> openFriendRequests;
+
   public Boolean getIsUser() {
         return isUser;
     }
@@ -69,8 +73,10 @@ public class User implements Serializable {
     }
 
   public List<String> getFriends() {return friends;}
+  public List<String> getOpenFriendRequests() {return openFriendRequests;}
 
   public void setFriends(List<String> friends) {this.friends = friends; }
+  public void setOpenFriendRequests(List<String> openFriendRequests) {this.openFriendRequests = openFriendRequests; }
 
   public LocalDate getCreation_date() { return creation_date; }
 

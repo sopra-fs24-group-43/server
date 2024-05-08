@@ -22,7 +22,7 @@ public class UserPutDTO {
     private String birth_date;
 
     private List<String> friends;
-
+    private List<String> openFriendRequests;
     private int level;
 
     private Boolean isUser;

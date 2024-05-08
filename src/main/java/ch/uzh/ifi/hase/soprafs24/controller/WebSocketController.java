@@ -162,7 +162,7 @@ public class WebSocketController {
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
 
     }
-
+    //add type, boolean for endgame last
     @MessageMapping("/games/{gameId}/endturn")//how to connect endturn and nextturn...
     public void endturn(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);

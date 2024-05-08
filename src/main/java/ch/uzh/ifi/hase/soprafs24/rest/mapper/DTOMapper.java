@@ -39,6 +39,7 @@ public interface DTOMapper {
   @Mapping(source = "username", target = "username")
   @Mapping(source = "status", target = "status")
   @Mapping(source = "token", target = "token")
+  @Mapping(source = "openFriendRequests", target = "openFriendRequests")
   @Mapping(source = "creation_date", target = "creation_date")
   @Mapping(source = "birth_date", target = "birth_date")
   @Mapping(source = "level", target = "level")

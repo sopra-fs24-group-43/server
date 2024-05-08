@@ -267,7 +267,7 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
     }
-    /*//TODO!
+    //TODO!
     @Test
     public void test_add_friends() throws Exception {
 
@@ -279,7 +279,7 @@ public class UserControllerTest {
         MockHttpServletRequestBuilder putRequest = put("/users/" + user.getId() + "/friends").contentType(MediaType.APPLICATION_JSON)
                 .param("f_username", "user2")
                 .param("false_for_delete_true_for_add", "true");
-
+        System.out.println(user.getFriends());
 
         // then
         mockMvc.perform(putRequest).andExpect(status().isCreated())
