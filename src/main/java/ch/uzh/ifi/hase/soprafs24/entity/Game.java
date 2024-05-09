@@ -207,7 +207,7 @@ public class Game {
 
         leaderboardDTO.setPodium(assignPodiumPosition());
         this.assignPodiumPosition().forEach((key, value) -> {
-            PlayerRepository.findByPlayerId(key).setPodiumPosition(value);
+            PlayerRepository.findByUserId(key).setPodiumPosition(value);
         });
 
         return leaderboardDTO;
