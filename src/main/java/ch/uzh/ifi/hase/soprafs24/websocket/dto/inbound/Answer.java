@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound;
 
 public class Answer {
+    private String type;
     private String username;
     private int userId;
     private int gameId;

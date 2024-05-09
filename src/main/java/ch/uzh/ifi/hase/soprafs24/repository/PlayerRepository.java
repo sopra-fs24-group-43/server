@@ -4,39 +4,56 @@ import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PlayerRepository {
-    private static final HashMap<Integer, Player> playerRepo = new HashMap<>();
-
+    private static final HashMap<Integer, Player> playerRepouserId = new HashMap<>(); //<userId, Player>
+    private static final HashMap<Integer, HashMap<Integer, Player>> playerRepogameId = new HashMap<>(); //<gameId, <userId, Player>>
     private PlayerRepository() {
     }
 
-    public static void addPlayer(int playerId, int gameId, Player player) {
+    public static void addPlayer(int userId, int gameId, Player player) {
 
 
-        playerRepo.put(playerId, player);
-        playerRepo.put(gameId, player);
+        playerRepouserId.put(userId, player);
+        HashMap<Integer, Player> playersinsamegame = findUsersByGameId(gameId);
+        if (playersinsamegame.isEmpty()){
+            HashMap<Integer, Player> playersinsamegame2 = new HashMap<>();
+            playersinsamegame2.put(userId, player);
+            playerRepogameId.put(gameId, playersinsamegame2);
+        }
+        else {
+            playersinsamegame.put(userId, player);
+            playerRepogameId.put(gameId, playersinsamegame);
+        }
     }
 
     public static void removePlayer(int playerId, int gameId) {
-        playerRepo.remove(playerId);
-        playerRepo.remove(gameId);
+        playerRepouserId.remove(playerId);
+        playerRepogameId.forEach((key, value) -> {
+            if (key == gameId) {
+                value.remove(playerId);
+            }
+        });
+    }
+    public static void removeGameId(int gameId) {
+        playerRepogameId.remove(gameId);
     }
 
-    public static Player findByPlayerId(int playerId) {
-        Player player = playerRepo.get(playerId);
+    public static Player findByUserId(int userId) {
+        Player player = playerRepouserId.get(userId);
         if (player == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This player does not exist!");
         }
         return player;
     }
-    public static ArrayList<Player> findUserByGameId(int gameId) {
-        ArrayList<Player> players = new ArrayList<>();
-        playerRepo.forEach((key, value) -> {
+    public static HashMap<Integer, Player> findUsersByGameId(int gameId) {
+        HashMap<Integer, Player> players = new HashMap<>();
+        playerRepogameId.forEach((key, value) -> {
             if (key == gameId) {
-                players.add(value);
+                players.putAll(value);
             }
         });
         return players;

@@ -1,8 +1,5 @@
 package ch.uzh.ifi.hase.soprafs24.websocket;
 
-import ch.uzh.ifi.hase.soprafs24.entity.Game;
-import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Settings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.handler.annotation.MessageMapping;
