@@ -13,4 +13,5 @@ public class Coordinates {
     private int newY;
     private String selectedColor;
     private int strokeSize;
+    private boolean eraserSelected;
 }

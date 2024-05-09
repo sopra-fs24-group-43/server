@@ -27,6 +27,7 @@ import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.EraseAllCoordinates;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillCoordinates;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.EraserCoordinates;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.DrawCoordinates;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillToolCoordinates;
 
 @Controller
 public class WebSocketController {
@@ -228,5 +229,10 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/draw")
     public void fillCanvas(@DestinationVariable int gameId, DrawCoordinates drawCoordinates) {
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/draw", drawCoordinates);
+    }
+
+    @MessageMapping("/games/{gameId}/fillTool")
+    public void fillCanvas(@DestinationVariable int gameId, FillToolCoordinates fillToolCoordinates) {
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/fillTool", fillToolCoordinates);
     }
 }
