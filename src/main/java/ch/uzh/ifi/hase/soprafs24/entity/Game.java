@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.client.RestTemplate;
 
 
 /*
@@ -118,6 +119,18 @@ public class Game {
         this.gamePassword = gameSettingsDTO.getGamePassword();
         this.lobbyName = gameSettingsDTO.getLobbyName();
     }
+    public List<String> setWordList() {
+        ArrayList<String> wordlist = new ArrayList<>();
+        final String uri = "https://random-word-api.herokuapp.com/word";
+        for (int i = 0;i<(maxRounds*5);i++){
+            RestTemplate restTemplate = new RestTemplate();
+            String result = restTemplate.getForObject(uri, String.class);
+            result=result.substring(2,result.length()-2);
+            wordlist.add(result);
+        }
+        System.out.println(wordlist);
+        return wordlist;
+    }
     public List<String> shufflewordList() {
         ArrayList<String> wordpool = new ArrayList<String>();
         List<String> wordpool2;
@@ -135,7 +148,7 @@ public class Game {
     }
     public void startGame() {
         this.genre = "Everything";
-        this.wordList = shufflewordList();
+        this.wordList = setWordList();
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);
@@ -205,7 +218,7 @@ public class Game {
 
         leaderboardDTO.setPodium(assignPodiumPosition());
         this.assignPodiumPosition().forEach((key, value) -> {
-            PlayerRepository.findByPlayerId(key).setPodiumPosition(value);
+            PlayerRepository.findByUserId(key).setPodiumPosition(value);
         });
 
         return leaderboardDTO;
