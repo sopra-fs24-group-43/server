@@ -38,7 +38,6 @@ public class WebSocketController {
 
     @MessageMapping("/landing/creategame")
     public void creategame(InboundPlayer inboundPlayer){ //the client can't know the gameId of the game when he first creates it so he can just pass some int (e.g. 1001)
-
         Player player = new Player(inboundPlayer.getUsername(),
                 inboundPlayer.getUserId(), inboundPlayer.getGameId(),
                 inboundPlayer.getFriends(), inboundPlayer.getRole());
@@ -55,6 +54,7 @@ public class WebSocketController {
         QuestionToSend questionToSend = new QuestionToSend("creategame");
         questionToSend.setGameId(gameId);
         questionToSend.setUserId(player.getUserId());
+        //deletegame(gameId);
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);
     }
     @MessageMapping("/games/{gameId}/deletegame")
@@ -68,7 +68,8 @@ public class WebSocketController {
         PlayerRepository.removeGameId(gameId);
 
         QuestionToSend questionToSend = new QuestionToSend("deletegame");
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); //should return something
+        //this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); //should return something
+        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);
     }
     @MessageMapping("/landing/{userId}/getallgames")
     public void getalllobbies(@DestinationVariable int userId){
@@ -135,11 +136,11 @@ public class WebSocketController {
         questionToSend.setCurrentPlayerCount(currentPlayerCount);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
 
-
+/*
         GameStateDTO gameStateDTO = game.gameStateDTO();
         PlayerRepository.removePlayer(inboundPlayer.getUserId(),gameId);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
-
+*/
 
     }
     @MessageMapping("/games/{gameId}/updategamesettings")

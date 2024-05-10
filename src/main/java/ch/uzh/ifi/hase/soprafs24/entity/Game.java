@@ -15,10 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import lombok.Getter;
 import lombok.Setter;
-
-
+import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
+import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 /*
 public class Game {
      public String totalRounds;
@@ -96,6 +97,14 @@ public class Game {
         this.currentTurn = 0;
         this.connectedPlayers = new ArrayList<>();
         this.connectedPlayers.add(admin);
+    }
+    public void calldeletegame(int gameId){
+
+        WebSocketService webSocketService = new WebSocketService();
+        //WebSocketController webSocketController = new WebSocketController(webSocketService);
+        //webSocketController.deletegame(gameId);
+        QuestionToSend questionToSend = new QuestionToSend("deletegame");
+        webSocketService.sendMessageToClients("/topic/landing", questionToSend);
     }
     public void addPlayer(Player player) {
         this.players.put(player.getUserId(), player);
@@ -205,7 +214,7 @@ public class Game {
 
         leaderboardDTO.setPodium(assignPodiumPosition());
         this.assignPodiumPosition().forEach((key, value) -> {
-            PlayerRepository.findByPlayerId(key).setPodiumPosition(value);
+            PlayerRepository.findByUserId(key).setPodiumPosition(value);
         });
 
         return leaderboardDTO;
