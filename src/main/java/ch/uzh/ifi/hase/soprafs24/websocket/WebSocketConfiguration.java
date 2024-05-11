@@ -22,6 +22,11 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.enableSimpleBroker("/topic"); //where you subscribe to, can have additional /things
         registry.setApplicationDestinationPrefixes("/app"); //not explicit (dont write"/app/games") in controller but explicit in stomp (do write "/app/games")
     }
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setSendBufferSizeLimit(512 * 1024); //521K = 512 * 1024, 1024 = Kilo, 512K is the default
+        registration.setMessageSizeLimit(128 * 1024); //64K is the default
+    }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {

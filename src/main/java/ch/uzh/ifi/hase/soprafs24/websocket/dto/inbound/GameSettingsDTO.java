@@ -10,7 +10,6 @@ public class GameSettingsDTO {
     private int turnLength;
     private String gamePassword;
     private String lobbyName;
-
     public void setType(String type) {
         this.type = type;
     }

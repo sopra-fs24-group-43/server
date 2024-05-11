@@ -9,6 +9,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 public class GameStateDTO {
+    private String type;
     private Boolean endGame;
     private ArrayList<Player> connectedPlayers;
     private int currentRound;
