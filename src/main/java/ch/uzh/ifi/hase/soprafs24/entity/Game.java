@@ -37,25 +37,21 @@ public class Game {
 @Setter
 public class Game {
 
+    private boolean gameStarted;  //is set to true once get startgame was called
     private RandomGenerators random;
-    @Getter
     private HashMap<Integer, Player> players; //
     private Player admin; //
-    @Getter
     private int gameId; //not done yet
     private Date creationDate; //
     private List<String> wordList; //init null, is a List not a ArrayList!!!
     //Settings (all accessible to admin, the ones we dont implement yet can just be a default value )
     private int currentWordIndex;
-    @Getter
     private int maxPlayers; //
     private int maxRounds; //
     private int turnLength; //in seconds
-    @Getter
     private String gamePassword; //not done yet, can be left for changesettings
     private String genre; //
     private ArrayList<Integer> wordLength; //not sure if necessary
-    @Getter
     private String lobbyName; //
 
 
@@ -75,6 +71,7 @@ public class Game {
     private Boolean endGame;
 
     public Game(Player admin) {
+        this.gameStarted = false;
         this.endGame = false;
         this.random = new RandomGenerators();
         this.admin = admin;
@@ -98,13 +95,11 @@ public class Game {
         this.connectedPlayers = new ArrayList<>();
         this.connectedPlayers.add(admin);
     }
-    public void calldeletegame(int gameId){
-
-        WebSocketService webSocketService = new WebSocketService();
-        //WebSocketController webSocketController = new WebSocketController(webSocketService);
-        //webSocketController.deletegame(gameId);
-        QuestionToSend questionToSend = new QuestionToSend("deletegame");
-        webSocketService.sendMessageToClients("/topic/landing", questionToSend);
+    public Boolean getGameStarted() {
+        return this.gameStarted;
+    }
+    public void setGameStarted(Boolean gameStarted){
+        this.gameStarted = gameStarted;
     }
     public void addPlayer(Player player) {
         this.players.put(player.getUserId(), player);
@@ -127,6 +122,16 @@ public class Game {
         this.gamePassword = gameSettingsDTO.getGamePassword();
         this.lobbyName = gameSettingsDTO.getLobbyName();
     }
+    public GameSettingsDTO getGameSettingsDTO(){
+        GameSettingsDTO gameSettingsDTO = new GameSettingsDTO();
+        gameSettingsDTO.setType("GameSettingsDTO");
+        gameSettingsDTO.setMaxPlayers(this.maxPlayers);
+        gameSettingsDTO.setMaxRounds(this.maxRounds);
+        gameSettingsDTO.setTurnLength(this.turnLength);
+        gameSettingsDTO.setGamePassword(this.gamePassword);
+        gameSettingsDTO.setLobbyName(this.lobbyName);
+        return gameSettingsDTO;
+    }
     public List<String> shufflewordList() {
         ArrayList<String> wordpool = new ArrayList<String>();
         List<String> wordpool2;
@@ -143,6 +148,7 @@ public class Game {
         return wordpool2;
     }
     public void startGame() {
+        this.gameStarted = true;
         this.genre = "Everything";
         this.wordList = shufflewordList();
         this.players.forEach((id, player) -> {
@@ -152,8 +158,8 @@ public class Game {
         });
         this.Drawer = 0;
         this.currentWordIndex = 0;
-        this.currentRound = 0;
-        this.currentTurn = 0;
+        this.currentRound = 1;
+        this.currentTurn = 1;
     }
 
     public void chooseNewDrawer() {
@@ -168,7 +174,7 @@ public class Game {
         GameStateDTO gameStateDTO = new GameStateDTO();
         gameStateDTO.setCurrentRound(this.currentRound);
         gameStateDTO.setCurrentTurn(this.currentTurn);
-        gameStateDTO.setCurrentWordIndex(this.currentWordIndex);
+        gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
         gameStateDTO.setDrawer(this.Drawer);
         return gameStateDTO;
     }
