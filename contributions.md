@@ -90,6 +90,12 @@ Issue(client) #78 - https://github.com/sopra-fs24-group-43/client/issues/78 - co
 Issue(server) #100 https://github.com/sopra-fs24-group-43/server/issues/100 - create the game object in back-end
 Issue(server) #101 https://github.com/sopra-fs24-group-43/server/issues/101 - create methods for game object
 
+4th week - 03.05
+Issue(server) #113 https://github.com/sopra-fs24-group-43/server/issues/113 - removed collosions between gameId and userId in playerrepo  
+Issue(server) #99 https://github.com/sopra-fs24-group-43/server/issues/99 - removed collosions between gameId and userId in playerrepo  
+Issue(client) #32 - https://github.com/sopra-fs24-group-43/client/issues/32 - fixed bugs related to ws connection in Landingpage view and moved the joingame button to the Table element; users can now create and join games (with some bugs left) and get transported to the Lobby page  
+Issue(client) #31 - https://github.com/sopra-fs24-group-43/client/issues/31 - also part of #32  
+Issue(client) #30 - https://github.com/sopra-fs24-group-43/client/issues/30 - also part of #32  
 ## Robin Stirnimann
 
 ### 1st week - 12.04
