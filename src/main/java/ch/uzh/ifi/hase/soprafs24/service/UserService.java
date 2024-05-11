@@ -127,10 +127,10 @@ public class UserService {
     newUser.setLevel(1);
     newUser = userRepository.save(newUser);
     userRepository.flush();
-
     log.debug("Created Information for User: {}", newUser);
     return newUser;
   }
+
 
     public void deleteUser(User guest) {
         //check if not isUser?

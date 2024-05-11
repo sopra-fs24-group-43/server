@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 import java.util.Date;
 
+import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
@@ -81,7 +82,7 @@ public class Game {
         this.players = new HashMap<Integer, Player>();
         this.players.put(admin.getUserId(), admin);
         //this.gameId = this.random.random.nextInt(1000); // needs to be unqiue (check with gamerepository)
-
+        this.genre = genre;
         this.creationDate = new Date();
         this.wordList = new ArrayList<>();
         this.maxPlayers = 5;
@@ -119,18 +120,16 @@ public class Game {
         this.gamePassword = gameSettingsDTO.getGamePassword();
         this.lobbyName = gameSettingsDTO.getLobbyName();
     }
-    public List<String> setWordList() {
+
+    public List<String> setWordList(String genre) {
         ArrayList<String> wordlist = new ArrayList<>();
-        final String uri = "https://random-word-api.herokuapp.com/word";
-        for (int i = 0;i<(maxRounds*5);i++){
-            RestTemplate restTemplate = new RestTemplate();
-            String result = restTemplate.getForObject(uri, String.class);
-            result=result.substring(2,result.length()-2);
-            wordlist.add(result);
-        }
-        System.out.println(wordlist);
-        return wordlist;
+        int nr = this.maxRounds*5;
+        List<String> wordlist1 = getWordlist.getWordlist(genre);
+        Collections.shuffle(wordlist1);
+        List<String> wordlist2 = wordlist1.subList(0,nr);
+        return wordlist2;
     }
+    /*
     public List<String> shufflewordList() {
         ArrayList<String> wordpool = new ArrayList<String>();
         List<String> wordpool2;
@@ -145,10 +144,10 @@ public class Game {
         wordpool2 = wordpool.subList(0,25);
 
         return wordpool2;
-    }
+    }*/
     public void startGame() {
-        this.genre = "Everything";
-        this.wordList = setWordList();
+        this.genre = "Ocean";
+        this.wordList = setWordList(this.genre);
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);
