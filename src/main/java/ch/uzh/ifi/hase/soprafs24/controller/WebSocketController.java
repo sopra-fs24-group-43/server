@@ -22,6 +22,11 @@ import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Coordinates;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.EraseAllCoordinates;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillCoordinates;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.EraserCoordinates;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.DrawCoordinates;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillToolCoordinates;
 
 
 @Controller
@@ -225,5 +230,30 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/coordinates") //also change the MessageMapping and channel to sendCanvas
     public void sendCanvas(@DestinationVariable int gameId, Coordinates coordinates){
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/coordinates", coordinates);
+    }
+
+    @MessageMapping("/games/{gameId}/fill")
+    public void fillCanvas(@DestinationVariable int gameId, FillCoordinates fillCoordinates) {
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/fill", fillCoordinates);
+    }
+
+    @MessageMapping("/games/{gameId}/eraseAll")
+    public void fillCanvas(@DestinationVariable int gameId, EraseAllCoordinates eraseAllCoordinates) {
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/eraseAll", eraseAllCoordinates);
+    }
+
+    @MessageMapping("/games/{gameId}/eraser")
+    public void fillCanvas(@DestinationVariable int gameId, EraserCoordinates eraserCoordinates) {
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/eraser", eraserCoordinates);
+    }
+
+    @MessageMapping("/games/{gameId}/draw")
+    public void fillCanvas(@DestinationVariable int gameId, DrawCoordinates drawCoordinates) {
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/draw", drawCoordinates);
+    }
+
+    @MessageMapping("/games/{gameId}/fillTool")
+    public void fillCanvas(@DestinationVariable int gameId, FillToolCoordinates fillToolCoordinates) {
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/fillTool", fillToolCoordinates);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -120,6 +121,7 @@ public class UserService {
 
     else {
         newUser.setName(UUID.randomUUID().toString());
+
     }
     newUser.setCreation_date(LocalDate.now());
     newUser.setLevel(1);

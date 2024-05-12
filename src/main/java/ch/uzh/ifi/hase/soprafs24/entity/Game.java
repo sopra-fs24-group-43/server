@@ -18,6 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Getter;
 import lombok.Setter;
 
+import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
+import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
+import org.springframework.web.client.RestTemplate;
+
 /*
 public class Game {
      public String totalRounds;
@@ -130,7 +134,8 @@ public class Game {
             this.lobbyName = gameSettingsDTO.getLobbyName();
         }
     }
-    public GameSettingsDTO getGameSettingsDTO(){
+
+    public GameSettingsDTO getGameSettingsDTO() {
         GameSettingsDTO gameSettingsDTO = new GameSettingsDTO();
         gameSettingsDTO.setType("GameSettingsDTO");
         gameSettingsDTO.setMaxPlayers(this.maxPlayers);
@@ -139,6 +144,19 @@ public class Game {
         gameSettingsDTO.setGamePassword(this.gamePassword);
         gameSettingsDTO.setLobbyName(this.lobbyName);
         return gameSettingsDTO;
+    }
+    public List<String> setWordList() {
+        ArrayList<String> wordlist = new ArrayList<>();
+        final String uri = "https://random-word-api.herokuapp.com/word";
+        for (int i = 0;i<(maxRounds*5);i++){
+            RestTemplate restTemplate = new RestTemplate();
+            String result = restTemplate.getForObject(uri, String.class);
+            result=result.substring(2,result.length()-2);
+            wordlist.add(result);
+        }
+        System.out.println(wordlist);
+        return wordlist;
+
     }
     public List<String> shufflewordList() {
         ArrayList<String> wordpool = new ArrayList<String>();
@@ -158,7 +176,7 @@ public class Game {
     public void startGame() {
         this.gameStarted = true;
         this.genre = "Everything";
-        this.wordList = shufflewordList();
+        this.wordList = setWordList();
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);

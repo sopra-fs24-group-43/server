@@ -40,6 +40,12 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         return new ThreadPoolTaskScheduler();
     }
 
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setSendBufferSizeLimit(3 * 512 * 1024); //521K = 512 * 1024, 1024 = Kilo, 512K is the default
+        registration.setMessageSizeLimit(3 * 128 * 1024); //64k is the default
+    }
+
 }
 
 
