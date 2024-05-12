@@ -145,6 +145,7 @@ public class Game {
         gameSettingsDTO.setLobbyName(this.lobbyName);
         return gameSettingsDTO;
     }
+
     public List<String> setWordList() {
         ArrayList<String> wordlist = new ArrayList<>();
         final String uri = "https://random-word-api.herokuapp.com/word";
