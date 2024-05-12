@@ -96,6 +96,7 @@ public class Game {
         this.currentTurn = 0;
         this.connectedPlayers = new ArrayList<>();
         this.connectedPlayers.add(admin);
+        this.drawingOrder = new ArrayList<Integer>();
     }
     public Boolean getGameStarted() {
         return this.gameStarted;
