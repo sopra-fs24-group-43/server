@@ -158,7 +158,7 @@ public class WebSocketController {
     public void getlobbyinfo(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
         LobbyInfo lobbyInfo = new LobbyInfo();
-        lobbyInfo.setType("lobbyInfo");
+        lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
         lobbyInfo.setPlayers(game.getPlayers());
         lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());

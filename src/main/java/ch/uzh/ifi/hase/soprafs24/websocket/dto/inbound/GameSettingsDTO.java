@@ -2,12 +2,12 @@ package ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound;
 
 import java.util.ArrayList;
 
-public class GameSettingsDTO {
+public class GameSettingsDTO { //maxRounds, max Players, turnLength
     private String type;
 
-    private int maxPlayers;
-    private int maxRounds;
-    private int turnLength;
+    private Integer maxPlayers;
+    private Integer maxRounds;
+    private Integer turnLength;
     private String gamePassword;
     private String lobbyName;
     public void setType(String type) {
@@ -19,19 +19,19 @@ public class GameSettingsDTO {
     public void setMaxPlayers(int maxPlayers) {
         this.maxPlayers = maxPlayers;
     }
-    public int getMaxPlayers() {
+    public Integer getMaxPlayers() {
         return this.maxPlayers;
     }
     public void setMaxRounds(int maxRounds) {
         this.maxRounds = maxRounds;
     }
-    public int getMaxRounds() {
+    public Integer getMaxRounds() {
         return this.maxRounds;
     }
     public void setTurnLength(int turnLength) {
         this.turnLength = turnLength;
     }
-    public int getTurnLength() {
+    public Integer getTurnLength() {
         return this.turnLength;
     }
     public void setGamePassword(String gamePassword) {
