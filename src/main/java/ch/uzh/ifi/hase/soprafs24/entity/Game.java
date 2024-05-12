@@ -134,6 +134,7 @@ public class Game {
         gameSettingsDTO.setGamePassword(this.gamePassword);
         gameSettingsDTO.setLobbyName(this.lobbyName);
         return gameSettingsDTO;
+    }
 
     public List<String> setWordList() {
         ArrayList<String> wordlist = new ArrayList<>();

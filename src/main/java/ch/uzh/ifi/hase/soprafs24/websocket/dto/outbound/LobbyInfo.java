@@ -10,6 +10,7 @@ import java.util.HashMap;
 @Setter
 @Getter
 public class LobbyInfo {
+    private String type;
     private int gameId;
     private HashMap<Integer, Player> Players; // <userId, Player>
     private GameSettingsDTO gameSettingsDTO;
