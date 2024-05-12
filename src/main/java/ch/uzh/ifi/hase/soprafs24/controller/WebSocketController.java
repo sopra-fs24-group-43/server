@@ -153,6 +153,7 @@ public class WebSocketController {
     public void getlobbyinfo(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
         LobbyInfo lobbyInfo = new LobbyInfo();
+        lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
         lobbyInfo.setPlayers(game.getPlayers());
         lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
@@ -160,9 +161,8 @@ public class WebSocketController {
     }
 
     @MessageMapping("/games/{gameId}/startgame")
-    public void startgame(@DestinationVariable int gameId, GameSettingsDTO gameSettingsDTO){
+    public void startgame(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
-        game.updateGameSettings(gameSettingsDTO);
         game.startGame();
         GameStateDTO gameStateDTO = game.gameStateDTO();
         QuestionToSend questionToSend = new QuestionToSend("startgame"); //this is solely for the Table to take the game off the List of lobbies

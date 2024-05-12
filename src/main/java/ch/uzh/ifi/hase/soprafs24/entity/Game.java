@@ -15,11 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import lombok.Getter;
 import lombok.Setter;
-import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
-import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
+
 /*
 public class Game {
      public String totalRounds;
@@ -116,11 +114,21 @@ public class Game {
     }
 
     public void updateGameSettings(GameSettingsDTO gameSettingsDTO) {
-        this.maxPlayers = gameSettingsDTO.getMaxPlayers();
-        this.maxRounds = gameSettingsDTO.getMaxRounds();
-        this.turnLength = gameSettingsDTO.getTurnLength();
-        this.gamePassword = gameSettingsDTO.getGamePassword();
-        this.lobbyName = gameSettingsDTO.getLobbyName();
+        if (gameSettingsDTO.getMaxPlayers() != null) {
+            this.maxPlayers = gameSettingsDTO.getMaxPlayers();
+        }
+        if (gameSettingsDTO.getMaxRounds() != null) {
+            this.maxRounds = gameSettingsDTO.getMaxRounds();
+        }
+        if (gameSettingsDTO.getTurnLength() != null) {
+            this.turnLength = gameSettingsDTO.getTurnLength();
+        }
+        if (gameSettingsDTO.getGamePassword() != null) {
+            this.gamePassword = gameSettingsDTO.getGamePassword();
+        }
+        if (gameSettingsDTO.getLobbyName() != null) {
+            this.lobbyName = gameSettingsDTO.getLobbyName();
+        }
     }
     public GameSettingsDTO getGameSettingsDTO(){
         GameSettingsDTO gameSettingsDTO = new GameSettingsDTO();
@@ -172,6 +180,7 @@ public class Game {
 
     public GameStateDTO gameStateDTO() {
         GameStateDTO gameStateDTO = new GameStateDTO();
+        gameStateDTO.setType("GameStateDTO");
         gameStateDTO.setCurrentRound(this.currentRound);
         gameStateDTO.setCurrentTurn(this.currentTurn);
         gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
