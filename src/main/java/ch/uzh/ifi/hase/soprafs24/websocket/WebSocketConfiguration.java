@@ -39,9 +39,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public TaskScheduler heartBeatScheduler() {
         return new ThreadPoolTaskScheduler();
     }
-
-
-
 }
 
 
