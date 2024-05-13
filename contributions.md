@@ -68,10 +68,6 @@ issue(client) #105 - https://github.com/sopra-fs24-group-43/client/issues/105 - 
 issue(client) #107 - https://github.com/sopra-fs24-group-43/client/issues/107 - Implementing websocket compatibility for the "color change buttons" functionality.
 
 ### 6th week - 15.05
-issue(client) #104 - https://github.com/sopra-fs24-group-43/client/issues/104 - Implementing websocket compatibility for the eraser.
-
-issue(client) #100 - https://github.com/sopra-fs24-group-43/client/issues/100 - Implementing websocket compatibility for the "fill out" functionality.
-
 issue(client) #124 - https://github.com/sopra-fs24-group-43/client/issues/124 - Change the design of the whole website to make it easier on the eyes and look better.
 
 issue(client) #127 - https://github.com/sopra-fs24-group-43/client/issues/127 - Implementing hotkey for "Draw" tool.
