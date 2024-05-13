@@ -71,6 +71,8 @@ public class Game {
     private int currentTurn; //incremented on startturn
     private ArrayList<Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
     private Boolean endGame;
+    private Boolean isInGuessingPhase;
+    private int timeLeftInTurn;
 
     public Game(Player admin) {
         this.gameStarted = false;
@@ -198,7 +200,7 @@ public class Game {
         return this.wordList.get(this.currentWordIndex);
     }
 
-    public GameStateDTO gameStateDTO() {
+    public GameStateDTO receiveGameStateDTO() {
         GameStateDTO gameStateDTO = new GameStateDTO();
         gameStateDTO.setType("GameStateDTO");
         gameStateDTO.setCurrentRound(this.currentRound);

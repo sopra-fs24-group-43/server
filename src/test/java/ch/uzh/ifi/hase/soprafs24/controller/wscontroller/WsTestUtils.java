@@ -1,12 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.controller.wscontroller;
 
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -15,8 +13,10 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class WsTestUtils {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -46,6 +46,27 @@ public class WsTestUtils {
         public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
             log.info("Exception: " + exception);
             super.handleException(session, command, headers, payload, exception);
+        }
+    }
+
+    public static class MyStompFrameHandlerQuestionToSend implements StompFrameHandler {
+
+        private final Consumer<String> frameHandler;
+
+        public MyStompFrameHandlerQuestionToSend(Consumer<String> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return QuestionToSend.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            QuestionToSend obj = (QuestionToSend) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload.toString());
         }
     }
 }
