@@ -6,7 +6,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 public class Player {
     private String username;
-    private int userId;
+    private int userId; //can be a userId or a guestId
+    private boolean isGuest;
     private int gameId;
     private ArrayList<Integer> friends; //the userId's of their friends
     private String role; // "admin" or "player"
@@ -15,18 +16,29 @@ public class Player {
     private  int totalPoints;
     @Getter
     @Setter
-    private  int newlyEarnedPoints;
+    private  int  newlyEarnedPoints;
     @Getter
     @Setter
     private int podiumPosition;
 
-    public  Player (String username, int userId, int gameId, ArrayList<Integer> friends,String role) {
+    public  Player (String username, int userId, boolean isguest, int gameId, ArrayList<Integer> friends,String role) {
         this.username = username;
         this.userId = userId;
+        this.isGuest = isguest;
         this.gameId = gameId;
         this.friends = friends;
         this.role = role;
+        /*
+        when the player is a geust:
+        username = "guestplayer" + guestId
+        userId = random negative guestid
+        isGuest = false
+        gameId = gameId
+        friends = [] (I think)
+        role = role
+        */
     }
+
 
     public void setUsername(String username) {
         this.username = username;
@@ -57,5 +69,11 @@ public class Player {
     }
     public String getRole() {
         return this.role;
+    }
+    public void setIsGuest(boolean isGuest) {
+        this.isGuest = isGuest;
+    }
+    public boolean getIsGuest() {
+        return this.isGuest;
     }
 }

@@ -1,4 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.utils;
+import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+
 import java.util.Random;
 public class RandomGenerators {
     public Random random = new Random();
@@ -19,5 +21,13 @@ public class RandomGenerators {
     public int GameIdGenerator() {
         int gameId = this.random.nextInt(1000);
         return gameId;
+    }
+
+    public int GuestIdGenerator() {
+        int guestId = this.random.nextInt(10000) - 10000;
+        while(PlayerRepository.guestIdtaken(guestId)) {
+            guestId = this.random.nextInt(10000) - 10000;
+        }
+        return guestId;
     }
 }
