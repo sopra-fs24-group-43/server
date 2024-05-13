@@ -43,6 +43,44 @@ issue(client) #84 - https://github.com/sopra-fs24-group-43/client/issues/84 - Cr
 
 issue(client) #89 - https://github.com/sopra-fs24-group-43/client/issues/89 - Implementing button signifiers which show which draw thickness is selected.	
 
+### 4th week - 03.05
+issue(client) #90 - https://github.com/sopra-fs24-group-43/client/issues/90 - Implementing a chat input field.
+
+issue(client) #91 - https://github.com/sopra-fs24-group-43/client/issues/91 - Implementing a chat where guesses of all users will be shown with the respective usernames.
+
+issue(client) #92 - https://github.com/sopra-fs24-group-43/client/issues/92 - Implement a "send" button for the chat which also works with the key press "enter".
+
+issue(client) #102 - https://github.com/sopra-fs24-group-43/client/issues/102 - Implementing a "ButtonComponent" for all the color buttons.
+
+issue(client) #89 - https://github.com/sopra-fs24-group-43/client/issues/106 - Create a "Guessing Chat" title for the chat indicating its functionality.
+
+### 5th week - 08.05
+issue(client) #88 - https://github.com/sopra-fs24-group-43/client/issues/88 - implement sending the canvas data to the server and rendering it on all clients.
+
+issue(client) #100 - https://github.com/sopra-fs24-group-43/client/issues/100 - Implementing websocket compatibility for the "fill out" functionality.
+
+issue(client) #101 - https://github.com/sopra-fs24-group-43/client/issues/101 - Implementing websocket compatibility for the pen thickness changes.
+
+issue(client) #104 - https://github.com/sopra-fs24-group-43/client/issues/104 - Implementing websocket compatibility for the eraser.
+
+issue(client) #105 - https://github.com/sopra-fs24-group-43/client/issues/105 - Implementing websocket compatibility for the "erase all" functionality.
+
+issue(client) #107 - https://github.com/sopra-fs24-group-43/client/issues/107 - Implementing websocket compatibility for the "color change buttons" functionality.
+
+### 6th week - 15.05
+issue(client) #104 - https://github.com/sopra-fs24-group-43/client/issues/104 - Implementing websocket compatibility for the eraser.
+
+issue(client) #100 - https://github.com/sopra-fs24-group-43/client/issues/100 - Implementing websocket compatibility for the "fill out" functionality.
+
+issue(client) #124 - https://github.com/sopra-fs24-group-43/client/issues/124 - Change the design of the whole website to make it easier on the eyes and look better.
+
+issue(client) #127 - https://github.com/sopra-fs24-group-43/client/issues/127 - Implementing hotkey for "Draw" tool.
+
+issue(client) #128 - https://github.com/sopra-fs24-group-43/client/issues/128 - Implementing hotkey for "Fill" tool.
+
+issue(client) #129 - https://github.com/sopra-fs24-group-43/client/issues/129 - Implementing hotkey for "Eraser" tool.
+
+issue(client) #130 - https://github.com/sopra-fs24-group-43/client/issues/130 - Implementing hotkey for "Erase All" tool.
 
 ## Markiian Dobosh
 
