@@ -141,6 +141,12 @@ public class WebSocketController {
         questionToSend.setLeaver(player);
         questionToSend.setWasAdmin(wasAdmin); //what should happen if player was the admin? (delete game or give admin to other player?)
         questionToSend.setCurrentPlayerCount(currentPlayerCount);
+        LobbyInfo lobbyInfo = new LobbyInfo();
+        lobbyInfo.setType("getlobbyinfo");
+        lobbyInfo.setGameId(gameId);
+        lobbyInfo.setPlayers(game.getPlayers());
+        lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
 

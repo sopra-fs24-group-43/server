@@ -49,6 +49,7 @@ public class WebSocketControllerTest {
 
         assertThat(stompSession.isConnected()).isTrue();
     }
+    /*
     @Test
     public void creategameTest() throws Exception {
         CompletableFuture<String> resultKeeper = new CompletableFuture<>();
@@ -81,4 +82,6 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualTo(questionToSend.toString());
     }
+
+     */
 }

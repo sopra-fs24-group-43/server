@@ -69,7 +69,7 @@ public class Game {
     private ArrayList<Integer> drawingOrder; //identified with userId
     private int currentRound; //incremented once currentturn = connectedPlayers and startturn is called
     private int currentTurn; //incremented on startturn
-    private ArrayList<Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
+    private HashMap<Integer, Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
     private Boolean endGame;
     private Boolean isInGuessingPhase;
     private int timeLeftInTurn;
@@ -96,8 +96,8 @@ public class Game {
         this.answersReceived = 0;
         this.currentRound = 0;
         this.currentTurn = 0;
-        this.connectedPlayers = new ArrayList<>();
-        this.connectedPlayers.add(admin);
+        this.connectedPlayers = new HashMap<Integer, Player>();
+        this.connectedPlayers.put(admin.getUserId(), admin);
         this.drawingOrder = new ArrayList<Integer>();
     }
     public Boolean getGameStarted() {
