@@ -22,11 +22,11 @@ public class PlayerRepository {
     public static InboundPlayer createPlayerFromGuest() {
         // gameId = null, role = null and only added to playerRepoguest
         int guestId = randomgenerators.GuestIdGenerator();
-        String guestusername = "guestuser" + guestId;
+        String guestusername = "guestuser" + guestId*-1;
         boolean isGuest = true;
-        Integer gameId = null;
+        Integer gameId = -1;
         ArrayList<Integer> friends = new ArrayList<>();
-        String role = null;
+        String role = "guest";
         Player player = new Player(guestusername, guestId, isGuest, gameId, friends, role);
         playerRepoguest.put(guestId, player);
 
