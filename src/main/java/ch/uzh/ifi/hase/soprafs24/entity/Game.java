@@ -39,32 +39,23 @@ public class Game {
 public class Game {
 
     private RandomGenerators random;
-    @Getter
     private HashMap<Integer, Player> players; //
     private Player admin; //
-    @Getter
     private int gameId; //not done yet
     private Date creationDate; //
     private List<String> wordList; //init null, is a List not a ArrayList!!!
     //Settings (all accessible to admin, the ones we dont implement yet can just be a default value )
     private int currentWordIndex;
-    @Getter
     private int maxPlayers; //
     private int maxRounds; //
     private int turnLength; //in seconds
-    @Getter
     private String gamePassword; //not done yet, can be left for changesettings
     private String genre; //
     private ArrayList<Integer> wordLength; //not sure if necessary
-    @Getter
     private String lobbyName; //
-
-
     private HashMap<Player, Integer> points;
     private HashMap<Player, Integer> pointsOfCurrentTurn;
-
     private LeaderBoardDTO leaderboardDTO;
-
     //variables used to keep track of the game state
     private ArrayList<Answer> answers;
     private int answersReceived;
@@ -98,6 +89,7 @@ public class Game {
         this.currentTurn = 0;
         this.connectedPlayers = new ArrayList<>();
         this.connectedPlayers.add(admin);
+        this.drawingOrder = new ArrayList<>();
     }
     public void addPlayer(Player player) {
         this.players.put(player.getUserId(), player);
@@ -122,10 +114,10 @@ public class Game {
     }
 
     public List<String> setWordList(String genre) {
-        ArrayList<String> wordlist = new ArrayList<>();
-        int nr = this.maxRounds*5;
-        List<String> wordlist1 = getWordlist.getWordlist(genre);
-        Collections.shuffle(wordlist1);
+        //ArrayList<String> wordlist = new ArrayList<>();
+        int nr = this.maxRounds*this.connectedPlayers.size();
+        List<String> wordlist1 = getWordlist.getWords(genre);
+        //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
         List<String> wordlist2 = wordlist1.subList(0,nr);
         return wordlist2;
     }
@@ -146,7 +138,7 @@ public class Game {
         return wordpool2;
     }*/
     public void startGame() {
-        this.genre = "Ocean";
+        this.genre = "Science";//input
         this.wordList = setWordList(this.genre);
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
@@ -199,25 +191,25 @@ public class Game {
 
     public LeaderBoardDTO calculateLeaderboard() {
         LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-        this.pointsOfCurrentTurn.forEach((key, value) -> {this.points.put(key, this.points.get(key)+value);});
+        this.pointsOfCurrentTurn.forEach((player, points) -> {this.points.put(player, this.points.get(player)+points);});
 
         leaderboardDTO.setUserIdToPlayer(this.players);
 
         HashMap<Integer, Integer> map = new HashMap<>();
         HashMap<Integer, Integer> map2 = new HashMap<>();
 
-        this.points.forEach((key, value) -> {map.put(key.getUserId(), value);});
+        this.points.forEach((player, points) -> {map.put(player.getUserId(), points);});
         leaderboardDTO.setTotalPoints(map);
-        this.points.forEach((key, value) -> {key.setTotalPoints(value);});
+        this.points.forEach((player, points) -> {player.setTotalPoints(points);});
 
-        this.pointsOfCurrentTurn.forEach((key, value) -> {map2.put(key.getUserId(), value);});
+        this.pointsOfCurrentTurn.forEach((player, points) -> {map2.put(player.getUserId(), points);});
         leaderboardDTO.setNewlyEarnedPoints(map2);
-        this.pointsOfCurrentTurn.forEach((key, value) -> {key.setNewlyEarnedPoints(value);});
+        this.pointsOfCurrentTurn.forEach((player, points) -> {player.setNewlyEarnedPoints(points);});
 
 
         leaderboardDTO.setPodium(assignPodiumPosition());
-        this.assignPodiumPosition().forEach((key, value) -> {
-            PlayerRepository.findByUserId(key).setPodiumPosition(value);
+        this.assignPodiumPosition().forEach((player, points) -> {
+            PlayerRepository.findByUserId(player).setPodiumPosition(points);
         });
 
         return leaderboardDTO;

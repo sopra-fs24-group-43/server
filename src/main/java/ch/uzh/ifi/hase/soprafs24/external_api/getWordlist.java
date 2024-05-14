@@ -7,6 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
@@ -14,7 +18,25 @@ import java.util.List;
 
 public class getWordlist {
     private getWordlist() {}
-
+    public static List<String> getWords(String genre) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://twinword-word-associations-v1.p.rapidapi.com/associations/?entry="+genre))
+                    .header("X-RapidAPI-Key", "99c8d838cdmsh893fe75567c4b4fp1fd315jsn278211498350")
+                    .header("X-RapidAPI-Host", "twinword-word-associations-v1.p.rapidapi.com")
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            List<String> list = parser(response);
+            //List<String> wordlist = JsonParser(response);
+            System.out.println(list);
+            return list;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "error occurred while fetching wordlist" + e.getMessage());
+        }}
+    /*//old
     public static List<String> getWordlist(String genre) {
         try {
             final String uri = "https://api.datamuse.com/words?rel_jja="+genre;
@@ -40,6 +62,19 @@ public class getWordlist {
             }
         }
         return wordlist2;
+    }*/
+    public static List<String> parser(HttpResponse response) {
+        String list = response.toString();
+        List<String> list3 = new ArrayList<>();
+        String[] list2 = list.split(":");
+        for (int i = 0; i<list2.length;i++) {
+            if (i==6) {
+                list3.add("[");
+                list3.add(list2[i]);
+                list3.add("]");
+            }
+        }
+        return list3;
     }
 }
 
