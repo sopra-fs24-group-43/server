@@ -202,14 +202,18 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/sendguess")
     public void sendguess(@DestinationVariable int gameId, Answer answer){
         Game game = GameRepository.findByGameId(gameId);
-        if (game.addAnswer(answer) == 1){
-            answer.setIsCorrect(true);
-            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
-        } else {
+        int flag = game.addAnswer(answer);
+        if (flag == 2){
+            answer.setPlayerHasGuessedCorrectly(true);
             answer.setIsCorrect(false);
-            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general/", answer);
+        } else if (flag == 1){
+            answer.setPlayerHasGuessedCorrectly(false);
+            answer.setIsCorrect(true);
+        } else {
+            answer.setPlayerHasGuessedCorrectly(false);
+            answer.setIsCorrect(false);
         }
-
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
     }
 
     @MessageMapping("/games/{gameId}/endturn")//how to connect endturn and nextturn...

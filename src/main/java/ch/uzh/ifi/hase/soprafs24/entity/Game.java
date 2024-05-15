@@ -77,7 +77,9 @@ public class Game {
     private int timeLeftInTurn;
     private int currentCorrectGuesses;
     private int remainingTime;
-    private HashMap<String, Boolean> PlayerCorrectGuesses;
+    private HashMap<String, Boolean> playerCorrectGuesses;
+    private HashMap<String, Integer> playerIdByName;
+    private Boolean roundIsActive;
 
     public Game(Player admin) {
         this.gameStarted = false;
@@ -106,7 +108,9 @@ public class Game {
         this.drawingOrder = new ArrayList<Integer>();
         this.currentCorrectGuesses = 0;
         this.remainingTime = 0;
-        this.PlayerCorrectGuesses = new HashMap<String, Boolean>();
+        this.playerCorrectGuesses = new HashMap<String, Boolean>();
+        this.playerIdByName = new HashMap<String, Integer>();
+        this.roundIsActive = false;
     }
     public Boolean getGameStarted() {
         return this.gameStarted;
@@ -116,23 +120,33 @@ public class Game {
     }
     public void addPlayer(Player player) {
         this.players.put(player.getUserId(), player);
+        this.playerIdByName.put(player.getUsername(), player.getUserId());
     }
     public void setGameId(int gameId) {this.gameId = gameId;}
 
     public int addAnswer(Answer answer) {
         this.answers.add(answer);
         this.answersReceived++;
-
-        int result = compareAnswer(answer.getAnswerString());
         String name = answer.getUsername();
-        if (result == 1){
-            if (this.PlayerCorrectGuesses.get(name))
-            currentCorrectGuesses++;
-            Player player = players.get(name);
-            player.setNewlyEarnedPoints(PointCalculatorGuesser.calculate(turnLength, remainingTime, currentCorrectGuesses));
-            players.get(drawingOrder.get(Drawer)).setNewlyEarnedPoints(PointCalculatorDrawer.calculate(turnLength, remainingTime, currentCorrectGuesses));
+
+        if(roundIsActive){
+         return 0;
         }
-        return result;
+
+        if (this.playerCorrectGuesses.get(name)){
+            return 2;
+        }
+
+        if (compareAnswer(answer.getAnswerString()) == 1){
+            this.currentCorrectGuesses++;
+            Player player = players.get(playerIdByName.get(name));
+            this.pointsOfCurrentTurn.put(player, PointCalculatorGuesser.calculate(turnLength, remainingTime, currentCorrectGuesses));
+            this.pointsOfCurrentTurn.put(players.get(drawingOrder.get(Drawer)), PointCalculatorDrawer.calculate(turnLength, remainingTime, currentCorrectGuesses) + pointsOfCurrentTurn.get(players.get(drawingOrder.get(Drawer))));
+            this.playerCorrectGuesses.put(name, true);
+
+        }
+
+        return 0;
     }
 
     public int compareAnswer(String answer) {
@@ -144,6 +158,7 @@ public class Game {
     }
 
     public void removePlayer(int userId){
+        this.playerIdByName.remove(players.get(userId).getUsername());
         this.players.remove(userId);
         this.connectedPlayers.remove(userId);
     }
@@ -215,6 +230,7 @@ public class Game {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);
             this.drawingOrder.add(id);
+            this.playerCorrectGuesses.put(player.getUsername(), false);
         });
         this.Drawer = 0;
         this.currentWordIndex = 0;
