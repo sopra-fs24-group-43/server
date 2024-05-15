@@ -78,6 +78,21 @@ issue(client) #129 - https://github.com/sopra-fs24-group-43/client/issues/129 - 
 
 issue(client) #130 - https://github.com/sopra-fs24-group-43/client/issues/130 - Implementing hotkey for "Erase All" tool.
 
+issue(client) #137 - https://github.com/sopra-fs24-group-43/client/issues/137 - 
+
+issue(client) #138 - https://github.com/sopra-fs24-group-43/client/issues/138 - Create a "Dark Mode" checkbox inside the settings view
+
+issue(client) #140 - https://github.com/sopra-fs24-group-43/client/issues/140 - Implement / Create an independent chat component for easier reuse later
+
+issue(client) #141 - https://github.com/sopra-fs24-group-43/client/issues/141 - Implementing chat component into lobby view
+
+issue(client) #143 - https://github.com/sopra-fs24-group-43/client/issues/143 - Implementing specific styles file(.scss) for chat component
+
+issue(client) #144 - https://github.com/sopra-fs24-group-43/client/issues/144 - Implement websocket compatibility for the chat functionality
+
+issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
+
+
 ## Markiian Dobosh
 
 ### 1st week - 12.04
