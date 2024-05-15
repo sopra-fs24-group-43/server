@@ -96,23 +96,15 @@ issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - 
 ## Markiian Dobosh
 
 ### 1st week - 12.04
-Issue(client) #56 - https://github.com/sopra-fs24-group-43/client/issues/56 - create "Login or Register" button on the landing page
-
-Issue(client) #57 - https://github.com/sopra-fs24-group-43/client/issues/57 - implement navigation of "Login or Register button" (front)
-
-Issue(client) #62 - https://github.com/sopra-fs24-group-43/client/issues/62 - add rules to the landing page
-
-Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon to the landing page
-
+Issue(client) #56 - https://github.com/sopra-fs24-group-43/client/issues/56 - create "Login or Register" button on the landing page  
+Issue(client) #57 - https://github.com/sopra-fs24-group-43/client/issues/57 - implement navigation of "Login or Register button" (front)  
+Issue(client) #62 - https://github.com/sopra-fs24-group-43/client/issues/62 - add rules to the landing page  
+Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon to the landing page  
 ### 2nd week - 17.04
-Issue(client) #65 - https://github.com/sopra-fs24-group-43/client/issues/65 - add navigation icon to the landing page
-
-Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/66 - add settings icon to the landing page
-
-Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/67 - add friends icon to the landing page
-
-Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/68 - add all-time leaderboard icon to the landing page
-
+Issue(client) #65 - https://github.com/sopra-fs24-group-43/client/issues/65 - add navigation icon to the landing page  
+Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/66 - add settings icon to the landing page  
+Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/67 - add friends icon to the landing page  
+Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/68 - add all-time leaderboard icon to the landing page  
 Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/70 - create table of lobbies to the landing page
 
 ### 3rd week - 24.04
@@ -122,8 +114,25 @@ Issue(client) #88 - https://github.com/sopra-fs24-group-43/client/issues/88 - im
 ### 4th week - 03.05
 Issue(client) #97 - https://github.com/sopra-fs24-group-43/client/issues/97 - set and automativcaly change the max players setting  
 Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - set and automativcaly change the drawtime setting  
-Issue(client) #99 - https://github.com/sopra-fs24-group-43/client/issues/99 - set and automativcaly change the rounds setting  
+Issue(client) #99 - https://github.com/sopra-fs24-group-43/client/issues/99 - set and automativcaly change the rounds setting 
 
+### 5th week - 08.05
+Issue(client) #113 - https://github.com/sopra-fs24-group-43/client/issues/113 - show the players in the lobby
+Issue(client) #114 - https://github.com/sopra-fs24-group-43/client/issues/114 - implement the websocket connection to the lobby  
+
+### 6th week - 15.05
+Issue(client) #33 - https://github.com/sopra-fs24-group-43/client/issues/33 - display the changes the creator makes, to the others  
+Issue(client) #34 - https://github.com/sopra-fs24-group-43/client/issues/34 - connect the lobby view to the game view once the game starts  
+Issue(client) #35 - https://github.com/sopra-fs24-group-43/client/issues/35 - send the necessary info about the lobby state to the back-end  
+Issue(client) #25 - https://github.com/sopra-fs24-group-43/client/issues/25 - only the creator can change the settings of the game  
+Issue(client) #26 - https://github.com/sopra-fs24-group-43/client/issues/26 - the setting are saved to the server in real time  
+Issue(client) #27 - https://github.com/sopra-fs24-group-43/client/issues/27 - implement the websocket connection to the lobby  
+Issue(client) #28 - https://github.com/sopra-fs24-group-43/client/issues/28 - the changes are visible to the other players but for them the settings are disabled  
+Issue(client) #97 - https://github.com/sopra-fs24-group-43/client/issues/97 - set and automativcaly change the max players setting  
+Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - set and automativcaly change the drawtime setting  
+Issue(client) #133 - https://github.com/sopra-fs24-group-43/client/issues/133 - implement the button for quiting the lobby  
+Issue(client) #134 - https://github.com/sopra-fs24-group-43/client/issues/134 - implement the button for deleting the lobby  
+ 
 ## Florian Mattmüller
 
 ### 1st week - 12.04
