@@ -189,3 +189,18 @@ Issue(server) #124 - https://github.com/sopra-fs24-group-43/server/issues/124 - 
 ### 3nd week - 24.04
 Issue(server) #140 - https://github.com/sopra-fs24-group-43/server/issues/140 - implementing lobby framework (backend)
 Issue(server) #141 - https://github.com/sopra-fs24-group-43/server/issues/141 - implementing lobby creation (backend)
+
+### 4th week - 03.05
+Issue(server) #143 - https://github.com/sopra-fs24-group-43/server/issues/143 - implement end turn in websocketcontroller, which calculates and updates leaderboard
+Issue(server) #144 - https://github.com/sopra-fs24-group-43/server/issues/144 - implement postgame (websockets)
+Issue(server) #145 - https://github.com/sopra-fs24-group-43/server/issues/145 - implement endgame (websockets)
+
+### 5th week - 08.05
+Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added rest endpoint tests (part of 161)
+Issue(server) #121 - https://github.com/sopra-fs24-group-43/server/issues/121 - fixing friend request implementation
+Issue(server) #122 - https://github.com/sopra-fs24-group-43/server/issues/122 - fixes for displaying friends
+Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - fixes for adding to friend list
+
+### 6th week - 15.05
+Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for entity, repository (part of 161)
+Issue(server) #155 - https://github.com/sopra-fs24-group-43/server/issues/155 - added implementation for external api call
