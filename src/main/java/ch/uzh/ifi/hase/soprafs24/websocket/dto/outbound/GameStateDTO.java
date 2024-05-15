@@ -16,6 +16,7 @@ public class GameStateDTO {
     private int currentTurn;
     //private int currentWordIndex;
     private ArrayList<String> threeWords;
-    private int Drawer;
+    private int drawer;
+    private ArrayList<Integer> drawingOrder; //<userId>
 
 }

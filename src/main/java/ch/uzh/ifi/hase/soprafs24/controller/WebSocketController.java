@@ -231,9 +231,6 @@ public class WebSocketController {
 
         if (game.getCurrentCorrectGuesses() >= game.getPlayers().size() && game.getTimeLeftInTurn() >= 1){
             timerService.doShutDownTimer(game.getGameId());
-
-            HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId);
-
             LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
             leaderboardDTO.setType("leaderboard");
             this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);

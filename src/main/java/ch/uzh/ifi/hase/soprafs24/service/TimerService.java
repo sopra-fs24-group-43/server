@@ -1,8 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
+import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.TimerOut;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.sendback;
@@ -40,6 +43,13 @@ public class TimerService {
             Game game = GameRepository.findByGameId(timerOut.getGameId());
             game.setTimeLeftInTurn(timerOut.getTime());
             this.webSocketService.sendMessageToClients(destination, timerOut);
+            if (game.getCurrentCorrectGuesses() < game.getPlayers().size() && timerOut.getTime() == 0 && timerOut.getGamePhase() == "drawing"){
+                //should be "drawing"
+                LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+                leaderboardDTO.setType("leaderboard");
+                this.webSocketService.sendMessageToClients("/topic/games/" + timerOut.getGameId() + "/general", leaderboardDTO);
+
+            }
         }
     }
     public void doTimer(int Length, int Interval, int gameId, String destination, String gamePhase){
