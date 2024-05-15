@@ -203,4 +203,4 @@ Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - 
 
 ### 6th week - 15.05
 Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for entity, repository (part of 161)
-Issue(server) #155 - https://github.com/sopra-fs24-group-43/server/issues/155 - added implementation for external api call
+Issue(server) #155 - https://github.com/sopra-fs24-group-43/server/issues/155 - added implementation for external api call (getting the words based on category)
