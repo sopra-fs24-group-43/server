@@ -260,6 +260,7 @@ public class Game {
         gameStateDTO.setThreeWords(threeWords);
         //gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
         gameStateDTO.setDrawer(this.Drawer);
+        gameStateDTO.setDrawingOrder(this.drawingOrder);
         return gameStateDTO;
     }
 
