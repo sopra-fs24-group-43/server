@@ -71,7 +71,7 @@ public class WebSocketControllerTest {
         inboundPlayer.setFriends(friends);
         inboundPlayer.setRole("admin");
 
-        doNothing().when(gameService).updateGameSettings(gameSettingsDTO, lobbyId);
+        doNothing().when(gameService).updateGameSettings(GameSettingsDTO, lobbyId);
 
         Thread.sleep(1000);
         // when
