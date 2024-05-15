@@ -78,7 +78,7 @@ issue(client) #129 - https://github.com/sopra-fs24-group-43/client/issues/129 - 
 
 issue(client) #130 - https://github.com/sopra-fs24-group-43/client/issues/130 - Implementing hotkey for "Erase All" tool.
 
-issue(client) #137 - https://github.com/sopra-fs24-group-43/client/issues/137 - 
+issue(client) #137 - https://github.com/sopra-fs24-group-43/client/issues/137 - Implement a Settings pop-up window (view) which can be accessed from each view / from the header
 
 issue(client) #138 - https://github.com/sopra-fs24-group-43/client/issues/138 - Create a "Dark Mode" checkbox inside the settings view
 
