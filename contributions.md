@@ -160,7 +160,7 @@ Issue(client) #118 - https://github.com/sopra-fs24-group-43/client/issues/118 - 
 Issue(client) #119 - https://github.com/sopra-fs24-group-43/client/issues/119 - Landingpage debugged     
 Issue(client) #116 - https://github.com/sopra-fs24-group-43/client/issues/116 - handle relaod Event listener    
 Issue(client) #117 - https://github.com/sopra-fs24-group-43/client/issues/117 - clean up subs and event listeners before navigation    
-- add getLobbyInfo ws method    
+Issue(client) #32 - https://github.com/sopra-fs24-group-43/client/issues/32 - add getLobbyInfo ws method      
 Issue(server) #20 https://github.com/sopra-fs24-group-43/server/issues/20 - change timer based on #correct guesses  
 Issue(server) #160 https://github.com/sopra-fs24-group-43/server/issues/160 - implement TimerService and TimerRepo  
 Issue(server) #161 https://github.com/sopra-fs24-group-43/server/issues/161 - add ws tests (only 2)    
