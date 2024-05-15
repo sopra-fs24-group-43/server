@@ -42,14 +42,16 @@ public class TimerService {
             this.webSocketService.sendMessageToClients(destination, timerOut);
         }
     }
-    public void doTimer(int Length, int Interval, int gameId, String destination){
-
+    public void doTimer(int Length, int Interval, int gameId, String destination, String gamePhase){
+        doShutDownTimer(gameId);
         ScheduledThreadPoolExecutor threadPool
                 = new ScheduledThreadPoolExecutor(2);
+
         TimerRepository.addTimer(gameId, threadPool);
         HashMap<Integer, ScheduledFuture> tasks = new HashMap<>();
         TimerOut timerOut = new TimerOut();
         timerOut.setType("TimerOut");
+        timerOut.setGamePhase(gamePhase);
         timerOut.setGameId(gameId);
         timerOut.setTime(Length);
         timerOut.setInterval(Interval);
@@ -59,7 +61,8 @@ public class TimerService {
         this.webSocketService.sendMessageToClients(destination, timerOut); //sends out e.g. 60 = Length as the start of the timer
         for (int i = Length-1; i >= 0; i = i - Interval) { //e.g. starts at 59 goes to 0, the 60 would be displayed on client side before the first response (with 59) arrives in the client
             TimerOut timerOut2 = new TimerOut();
-            timerOut2.setType("TimerOut2");
+            timerOut2.setType("TimerOut");
+            timerOut2.setGamePhase(gamePhase);
             timerOut2.setGameId(gameId);
             timerOut2.setTime(i);
             timerOut2.setInterval(Interval);
@@ -73,7 +76,7 @@ public class TimerService {
         threadPool.shutdown();
     }
 
-    public void setLowerTime(int Length, int Interval, int gameId, String destination) {
+    public void setLowerTime(int Length, int Interval, int gameId, String destination, String gamephase) {
         //for checking whether the timer should be set to a lower Length after a correct guess
         //then deletes the current timer and start a new one with the new shorter Length
         ScheduledThreadPoolExecutor threadPool =  TimerRepository.findTimerByGameId(gameId);
@@ -85,7 +88,7 @@ public class TimerService {
         else {
             List<Runnable> remainingTasks = threadPool.shutdownNow(); //dont know yet if I need to cancel them
             TimerRepository.deleteTimer(gameId);
-            doTimer(Length, Interval, gameId, destination);
+            doTimer(Length, Interval, gameId, destination, gamephase);
         }
         /*
         tasks.forEach((key, value) -> {
@@ -97,9 +100,11 @@ public class TimerService {
         */
     }
     public void doShutDownTimer(int gameId) {
-        //for deleting the current timer because all players guessed correctly before the time ran out
+        //for deleting the current timer because all players guessed correctly before the time ran out or stopping old timer
         ScheduledThreadPoolExecutor threadPool =  TimerRepository.findTimerByGameId(gameId);
-        List<Runnable> remainingTasks = threadPool.shutdownNow();
-        TimerRepository.deleteTimer(gameId);
+        if (threadPool != null) {
+            List<Runnable> remainingTasks = threadPool.shutdownNow();
+            TimerRepository.deleteTimer(gameId);
+        }
     }
 }
