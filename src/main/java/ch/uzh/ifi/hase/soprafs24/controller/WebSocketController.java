@@ -66,7 +66,7 @@ public class WebSocketController {
         //and for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
     @MessageMapping("/games/{gameId}/deletegame")
-    public void deletegame(int gameId){
+    public void deletegame(@DestinationVariable int gameId){
         GameRepository.removeGame(gameId);
         HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId); //<gameId, Player>
         players.forEach((key, value) -> {
@@ -200,11 +200,19 @@ public class WebSocketController {
         }
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
 
-        //timerService.doTimer(game.getTurnLength(),1, gameId, "/topic/games/" + gameId + "/general");
+        timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
 
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
     }
 
+    @MessageMapping("/games/{gameId}/sendchosenword")
+    public void sendchosenword(@DestinationVariable int gameId, ChooseWordDTO chooseWordDTO) {
+        Game game = GameRepository.findByGameId(gameId);
+        game.setActualCurrentWord(chooseWordDTO.getWord());
+        chooseWordDTO.setType("startdrawing");
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", chooseWordDTO);
+        timerService.doTimer(game.getTurnLength(),1, gameId, "/topic/games/" + gameId + "/general", "drawing"); //Timer to play turn (drawing & guessing)
+    }
     @MessageMapping("/games/{gameId}/sendguess")
     public void sendguess(@DestinationVariable int gameId, Answer answer){
         Game game = GameRepository.findByGameId(gameId);
@@ -219,7 +227,7 @@ public class WebSocketController {
         HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId);
 
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
-
+        leaderboardDTO.setType("leaderboard");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
     }
 
@@ -229,7 +237,7 @@ public class WebSocketController {
             GameRepository.removeGame(gameId);
             //send players back to homepage in frontend?
         }
-        */
+*/
     /*//old
     @MessageMapping("game/{gameId}/postgame")
     @SendTo("game/{gameId}/general")

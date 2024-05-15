@@ -64,6 +64,7 @@ public class Game {
 
     //variables used to keep track of the game state
     private ArrayList<Answer> answers;
+    private String actualCurrentWord;
     private int answersReceived;
     private int Drawer; //identified with index in drawingOrder
     private ArrayList<Integer> drawingOrder; //identified with userId
@@ -187,7 +188,7 @@ public class Game {
             this.drawingOrder.add(id);
         });
         this.Drawer = 0;
-        this.currentWordIndex = 0;
+        this.currentWordIndex = 1;
         this.currentRound = 1;
         this.currentTurn = 1;
     }
@@ -205,7 +206,12 @@ public class Game {
         gameStateDTO.setType("GameStateDTO");
         gameStateDTO.setCurrentRound(this.currentRound);
         gameStateDTO.setCurrentTurn(this.currentTurn);
-        gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
+        ArrayList<String> threeWords = new ArrayList<>();
+        threeWords.add(wordList.get(this.currentWordIndex-1));
+        threeWords.add(wordList.get(this.currentWordIndex));
+        threeWords.add(wordList.get(this.currentWordIndex+1));
+        gameStateDTO.setThreeWords(threeWords);
+        //gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
         gameStateDTO.setDrawer(this.Drawer);
         return gameStateDTO;
     }

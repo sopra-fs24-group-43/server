@@ -5,6 +5,7 @@ import lombok.Setter;
 @Getter
 public class TimerOut {
     private String type; //TimerOut
+    private String gamePhase; //drawing, choosing
     private int gameId;
     private int time; //1 to game.TurnLength
     private int interval; //Interval in which these get sent out
