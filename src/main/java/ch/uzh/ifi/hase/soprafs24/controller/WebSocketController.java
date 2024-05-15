@@ -228,6 +228,16 @@ public class WebSocketController {
             answer.setIsCorrect(false);
         }
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
+
+        if (game.getCurrentCorrectGuesses() >= game.getPlayers().size() && game.getTimeLeftInTurn() >= 1){
+            timerService.doShutDownTimer(game.getGameId());
+
+            HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId);
+
+            LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+            leaderboardDTO.setType("leaderboard");
+            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
+        }
     }
 
     @MessageMapping("/games/{gameId}/endturn")//how to connect endturn and nextturn...
