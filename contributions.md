@@ -117,7 +117,7 @@ Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - se
 Issue(client) #99 - https://github.com/sopra-fs24-group-43/client/issues/99 - set and automativcaly change the rounds setting 
 
 ### 5th week - 08.05
-Issue(client) #113 - https://github.com/sopra-fs24-group-43/client/issues/113 - show the players in the lobby
+Issue(client) #113 - https://github.com/sopra-fs24-group-43/client/issues/113 - show the players in the lobby  
 Issue(client) #114 - https://github.com/sopra-fs24-group-43/client/issues/114 - implement the websocket connection to the lobby  
 
 ### 6th week - 15.05
