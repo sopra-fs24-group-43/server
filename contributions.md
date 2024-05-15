@@ -154,6 +154,20 @@ Issue(server) #99 https://github.com/sopra-fs24-group-43/server/issues/99 - remo
 Issue(client) #32 - https://github.com/sopra-fs24-group-43/client/issues/32 - fixed bugs related to ws connection in Landingpage view and moved the joingame button to the Table element; users can now create and join games (with some bugs left) and get transported to the Lobby page  
 Issue(client) #31 - https://github.com/sopra-fs24-group-43/client/issues/31 - also part of #32  
 Issue(client) #30 - https://github.com/sopra-fs24-group-43/client/issues/30 - also part of #32  
+
+5th week - 08.05
+Issue(client) #118 - https://github.com/sopra-fs24-group-43/client/issues/118 - app-wide Context for (stompApi and vars)   
+Issue(client) #119 - https://github.com/sopra-fs24-group-43/client/issues/119 - Landingpage debugged     
+Issue(client) #116 - https://github.com/sopra-fs24-group-43/client/issues/116 - handle relaod Event listener    
+Issue(client) #117 - https://github.com/sopra-fs24-group-43/client/issues/117 - clean up subs and event listeners before navigation    
+- add getLobbyInfo ws method    
+Issue(server) #20 https://github.com/sopra-fs24-group-43/server/issues/20 - change timer based on #correct guesses  
+Issue(server) #160 https://github.com/sopra-fs24-group-43/server/issues/160 - implement TimerService and TimerRepo  
+Issue(server) #161 https://github.com/sopra-fs24-group-43/server/issues/161 - add ws tests (only 2)    
+Issue(server) #103 https://github.com/sopra-fs24-group-43/server/issues/103 - intigrate Guest in back-end logic  
+Issue(client) #43 - https://github.com/sopra-fs24-group-43/client/issues/43 - intigrate Guest in Landingpage and in RegandLogin  
+Issue(client) #39 - https://github.com/sopra-fs24-group-43/client/issues/39 - intigrate Guest in Landingpage and in RegandLogin
+
 ## Robin Stirnimann
 
 ### 1st week - 12.04
