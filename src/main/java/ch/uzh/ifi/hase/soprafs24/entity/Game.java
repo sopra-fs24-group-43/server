@@ -81,6 +81,7 @@ public class Game {
     private HashMap<String, Boolean> playerCorrectGuesses;
     private HashMap<String, Integer> playerIdByName;
     private Boolean roundIsActive;
+    private int playersOriginally;
 
     public Game(Player admin) {
         this.gameStarted = false;
@@ -233,10 +234,11 @@ public class Game {
             this.drawingOrder.add(id);
             this.playerCorrectGuesses.put(player.getUsername(), false);
         });
-        this.Drawer = 0;
+        this.Drawer = -1;
         this.currentWordIndex = 1;
         this.currentRound = 1;
-        this.currentTurn = 1;
+        this.currentTurn = 0;
+        this.playersOriginally = players.size();
     }
 
     public void chooseNewDrawer() {
@@ -261,6 +263,9 @@ public class Game {
         //gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
         gameStateDTO.setDrawer(this.Drawer);
         gameStateDTO.setDrawingOrder(this.drawingOrder);
+        gameStateDTO.setPlayersOriginally(this.playersOriginally);
+        gameStateDTO.setMaxRounds(this.maxRounds);
+        //setConnectedPlayers not done yet!
         return gameStateDTO;
     }
 

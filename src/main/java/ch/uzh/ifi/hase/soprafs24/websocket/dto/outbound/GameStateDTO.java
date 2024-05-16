@@ -12,11 +12,12 @@ public class GameStateDTO {
     private String type;
     private Boolean endGame;
     private ArrayList<Player> connectedPlayers;
+    private int playersOriginally; //how many players where originally in the Game when it started
     private int currentRound;
     private int currentTurn;
     //private int currentWordIndex;
     private ArrayList<String> threeWords;
     private int drawer;
     private ArrayList<Integer> drawingOrder; //<userId>
-
+    private int maxRounds;
 }

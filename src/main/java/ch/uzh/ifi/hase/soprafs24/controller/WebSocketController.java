@@ -183,7 +183,6 @@ public class WebSocketController {
         QuestionToSend questionToSend = new QuestionToSend("startgame"); //this is solely for the Table to take the game off the List of lobbies
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO); // 
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
-
     }
 
     @MessageMapping("/games/{gameId}/nextturn")
@@ -198,7 +197,11 @@ public class WebSocketController {
         } else {
             game.setCurrentTurn(game.getCurrentTurn()+1);
         }
+        int Drawer = (game.getDrawer()+1)%2;
+        game.setDrawer(Drawer);
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+        int currentWordIndex = game.getCurrentWordIndex() + 3;
+        game.setCurrentWordIndex(currentWordIndex);
 
         timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
 
