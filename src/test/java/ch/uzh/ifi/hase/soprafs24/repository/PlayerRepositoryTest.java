@@ -68,6 +68,6 @@ public class PlayerRepositoryTest {
             assertEquals(pl.getFriends(), player.getFriends());
             assertEquals(pl.getRole(), player.getRole());
         }
-*/
-    }
+
+    }*/
 }
