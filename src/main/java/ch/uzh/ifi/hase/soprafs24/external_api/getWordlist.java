@@ -18,7 +18,9 @@ import java.util.List;
 
 public class getWordlist {
     private getWordlist() {}
-    public static List<String> getWords(String genre) {
+
+    //scam XD
+    /*public static List<String> getWords(String genre) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://twinword-word-associations-v1.p.rapidapi.com/associations/?entry="+genre))
@@ -36,7 +38,7 @@ public class getWordlist {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "error occurred while fetching wordlist" + e.getMessage());
         }}
-    /*//old
+    */
     public static List<String> getWordlist(String genre) {
         try {
             final String uri = "https://api.datamuse.com/words?rel_jja="+genre;
@@ -62,7 +64,7 @@ public class getWordlist {
             }
         }
         return wordlist2;
-    }*/
+    }/*//old
     public static List<String> parser(HttpResponse response) {
         String list = response.toString();
         List<String> list3 = new ArrayList<>();
@@ -75,6 +77,6 @@ public class getWordlist {
             }
         }
         return list3;
-    }
+    }*/
 }
 

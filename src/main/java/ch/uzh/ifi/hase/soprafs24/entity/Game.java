@@ -1,19 +1,15 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-import java.util.Date;
+import java.util.*;
 
 import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
-import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Getter;
@@ -65,6 +61,7 @@ public class Game {
     private int currentTurn; //incremented on startturn
     private ArrayList<Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
     private Boolean endGame;
+    private HashMap<String,List<String>> wordlists;
 
     public Game(Player admin) {
         this.endGame = false;
@@ -90,6 +87,7 @@ public class Game {
         this.connectedPlayers = new ArrayList<>();
         this.connectedPlayers.add(admin);
         this.drawingOrder = new ArrayList<>();
+        this.wordlists = new HashMap<>();
     }
     public void addPlayer(Player player) {
         this.players.put(player.getUserId(), player);
@@ -113,13 +111,19 @@ public class Game {
         this.lobbyName = gameSettingsDTO.getLobbyName();
     }
 
-    public List<String> setWordList(String genre) {
+    public HashMap<String,List<String>> setWordList() {
         //ArrayList<String> wordlist = new ArrayList<>();
-        int nr = this.maxRounds*this.connectedPlayers.size();
-        List<String> wordlist1 = getWordlist.getWords(genre);
+        ArrayList<String> genres = new ArrayList<>();
+        genres.addAll(Arrays.asList("Science","Philosophy","Nature","Sport","Animal","Plant","life"));
+        for (int i = 0;i<genres.size();i++) {
+            this.wordlists.put(genres.get(i),getWordlist.getWordlist(genres.get(i)));
+        }
+
+        //int nr = this.maxRounds*this.connectedPlayers.size();
+        //List<String> wordlist1 = getWordlist.getWordlist(genre);
         //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
-        List<String> wordlist2 = wordlist1.subList(0,nr);
-        return wordlist2;
+        //List<String> wordlist2 = wordlist1.subList(0,nr);
+        return wordlists;
     }
     /*
     public List<String> shufflewordList() {
@@ -139,7 +143,7 @@ public class Game {
     }*/
     public void startGame() {
         this.genre = "Science";//input
-        this.wordList = setWordList(this.genre);
+        this.wordlists = setWordList();
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);
