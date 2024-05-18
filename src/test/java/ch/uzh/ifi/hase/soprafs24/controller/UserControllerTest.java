@@ -267,7 +267,7 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
     }
-    //TODO!
+    /*//TODO!
     @Test
     public void test_add_friends() throws Exception {
 
