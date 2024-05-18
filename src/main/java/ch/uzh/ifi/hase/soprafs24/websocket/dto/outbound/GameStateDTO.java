@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Getter
 @Setter
 public class GameStateDTO {
     private String type;
     private Boolean endGame;
-    private ArrayList<Player> connectedPlayers;
+    private HashMap<Integer,Player> connectedPlayers;
     private int playersOriginally; //how many players where originally in the Game when it started
     private int currentRound;
     private int currentTurn;
