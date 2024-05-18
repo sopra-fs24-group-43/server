@@ -11,6 +11,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -20,6 +21,11 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/topic"); //where you subscribe to, can have additional /things
         registry.setApplicationDestinationPrefixes("/app"); //not explicit (dont write"/app/games") in controller but explicit in stomp (do write "/app/games")
+    }
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setSendBufferSizeLimit(512 * 1024); //521K = 512 * 1024, 1024 = Kilo, 512K is the default
+        registration.setMessageSizeLimit(128 * 1024); //64K is the default
     }
 
     @Override
@@ -33,7 +39,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public TaskScheduler heartBeatScheduler() {
         return new ThreadPoolTaskScheduler();
     }
-
 }
 
 

@@ -6,12 +6,6 @@ import lombok.*;
 @Setter
 @ToString
 
-public class Coordinates {
-    private int x;
-    private int y;
-    private int newX;
-    private int newY;
-    private String selectedColor;
-    private int strokeSize;
+public class EraserCoordinates {
     private boolean eraserSelected;
 }
