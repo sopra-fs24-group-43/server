@@ -31,6 +31,7 @@ public class UserPostDTO {
     private UserStatus status;
 
     private Boolean isUser;
+    private List<String> openFriendRequests;
 /*
     public UserStatus getStatus() {
         return status;

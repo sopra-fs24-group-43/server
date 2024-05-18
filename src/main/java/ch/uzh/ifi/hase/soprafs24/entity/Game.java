@@ -1,20 +1,17 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-import java.util.Date;
+import java.util.*;
 
+import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorDrawer;
 import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorGuesser;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
-import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Getter;
@@ -82,6 +79,7 @@ public class Game {
     private HashMap<String, Integer> playerIdByName;
     private Boolean roundIsActive;
     private int playersOriginally;
+    private HashMap<String,List<String>> wordlists;
 
     public Game(Player admin) {
         this.gameStarted = false;
@@ -113,6 +111,7 @@ public class Game {
         this.playerCorrectGuesses = new HashMap<String, Boolean>();
         this.playerIdByName = new HashMap<String, Integer>();
         this.roundIsActive = false;
+        this.wordlists = new HashMap<>();
     }
     public Boolean getGameStarted() {
         return this.gameStarted;
@@ -194,18 +193,19 @@ public class Game {
         return gameSettingsDTO;
     }
 
-    public List<String> setWordList() {
-        ArrayList<String> wordlist = new ArrayList<>();
-        final String uri = "https://random-word-api.herokuapp.com/word";
-        for (int i = 0;i<(maxRounds*5);i++){
-            RestTemplate restTemplate = new RestTemplate();
-            String result = restTemplate.getForObject(uri, String.class);
-            result=result.substring(2,result.length()-2);
-            wordlist.add(result);
+    public HashMap<String,List<String>> setWordList() {
+        //ArrayList<String> wordlist = new ArrayList<>();
+        ArrayList<String> genres = new ArrayList<>();
+        genres.addAll(Arrays.asList("Science", "Philosophy", "Nature", "Sport", "Animal", "Plant", "life"));
+        for (int i = 0; i < genres.size(); i++) {
+            this.wordlists.put(genres.get(i), getWordlist.getWordlist(genres.get(i)));
         }
-        System.out.println(wordlist);
-        return wordlist;
 
+        //int nr = this.maxRounds*this.connectedPlayers.size();
+        //List<String> wordlist1 = getWordlist.getWordlist(genre);
+        //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
+        //List<String> wordlist2 = wordlist1.subList(0,nr);
+        return wordlists;
     }
 
     public List<String> shufflewordList() {
@@ -225,9 +225,10 @@ public class Game {
     }
 
     public void startGame() {
+        this.wordList=shufflewordList();
+        this.wordlists = setWordList();
+
         this.gameStarted = true;
-        this.genre = "Everything";
-        this.wordList = setWordList();
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);

@@ -159,6 +159,30 @@ public class UserService {
           user.setFriends(friends);
           return user;}
   }
+    public void sendFriendRequest(User user, String friend_username) {
+        User friend = userRepository.findByUsername(friend_username);
+        List<String> friendRequests = friend.getOpenFriendRequests();
+        friendRequests.add(user.getUsername());
+        friend.setOpenFriendRequests(friendRequests);
+    }
+
+    public List<String> getOpenFriendRequests(Long id) {
+        User userById = this.userRepository.findUserById(id);
+        return userById.getOpenFriendRequests();
+    }
+
+    public User accept_or_deny_Friend_Request (User user, String friend_username, Boolean b){
+        if (b) {
+            List<String> friends = user.getFriends();
+            System.out.println(friends);
+            friends.add(friend_username);
+            System.out.println(friends);
+            user.setFriends(friends);
+            return user;}
+
+        else {
+            return user;}
+    }
 /*
   public User deleteFriend(User user, String f_username) {
       User userByUsername = userRepository.findByUsername(f_username);

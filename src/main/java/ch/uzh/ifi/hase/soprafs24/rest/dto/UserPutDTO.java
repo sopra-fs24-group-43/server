@@ -29,6 +29,7 @@ public class UserPutDTO {
 
     private LocalDate creation_date;
     private UserStatus status;
+    private List<String> openFriendRequests;
 /*
     public UserStatus getStatus() {
         return status;
