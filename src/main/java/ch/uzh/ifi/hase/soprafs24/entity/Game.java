@@ -125,7 +125,7 @@ public class Game {
         //List<String> wordlist2 = wordlist1.subList(0,nr);
         return wordlists;
     }
-    /*
+
     public List<String> shufflewordList() {
         ArrayList<String> wordpool = new ArrayList<String>();
         List<String> wordpool2;
@@ -140,9 +140,10 @@ public class Game {
         wordpool2 = wordpool.subList(0,25);
 
         return wordpool2;
-    }*/
+    }
     public void startGame() {
         this.genre = "Science";//input
+        this.wordList=shufflewordList();
         this.wordlists = setWordList();
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
