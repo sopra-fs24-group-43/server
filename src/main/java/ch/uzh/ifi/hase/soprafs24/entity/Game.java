@@ -3,6 +3,8 @@ import java.util.*;
 
 import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorDrawer;
+import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorGuesser;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
@@ -14,8 +16,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.client.RestTemplate;
 
+import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
+import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
+import org.springframework.web.client.RestTemplate;
 
 /*
 public class Game {
@@ -34,6 +38,7 @@ public class Game {
 @Setter
 public class Game {
 
+    private boolean gameStarted;  //is set to true once get startgame was called
     private RandomGenerators random;
     private HashMap<Integer, Player> players; //
     private Player admin; //
@@ -54,16 +59,29 @@ public class Game {
     private LeaderBoardDTO leaderboardDTO;
     //variables used to keep track of the game state
     private ArrayList<Answer> answers;
+    private String actualCurrentWord;
     private int answersReceived;
     private int Drawer; //identified with index in drawingOrder
     private ArrayList<Integer> drawingOrder; //identified with userId
     private int currentRound; //incremented once currentturn = connectedPlayers and startturn is called
     private int currentTurn; //incremented on startturn
-    private ArrayList<Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
+    private HashMap<Integer, Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
     private Boolean endGame;
+
     private HashMap<String,List<String>> wordlists;
 
+    private Boolean isInGuessingPhase;
+    private int timeLeftInTurn;
+    private int currentCorrectGuesses;
+    private int remainingTime;
+    private HashMap<String, Boolean> playerCorrectGuesses;
+    private HashMap<String, Integer> playerIdByName;
+    private Boolean roundIsActive;
+    private int playersOriginally;
+
+
     public Game(Player admin) {
+        this.gameStarted = false;
         this.endGame = false;
         this.random = new RandomGenerators();
         this.admin = admin;
@@ -84,32 +102,99 @@ public class Game {
         this.answersReceived = 0;
         this.currentRound = 0;
         this.currentTurn = 0;
-        this.connectedPlayers = new ArrayList<>();
-        this.connectedPlayers.add(admin);
-        this.drawingOrder = new ArrayList<>();
+
         this.wordlists = new HashMap<>();
+
+        this.connectedPlayers = new HashMap<Integer, Player>();
+        this.connectedPlayers.put(admin.getUserId(), admin);
+        this.drawingOrder = new ArrayList<Integer>();
+        this.currentCorrectGuesses = 0;
+        this.remainingTime = 0;
+        this.playerCorrectGuesses = new HashMap<String, Boolean>();
+        this.playerIdByName = new HashMap<String, Integer>();
+        this.roundIsActive = false;
+    }
+    public Boolean getGameStarted() {
+        return this.gameStarted;
+    }
+    public void setGameStarted(Boolean gameStarted){
+        this.gameStarted = gameStarted;
+
     }
     public void addPlayer(Player player) {
         this.players.put(player.getUserId(), player);
+        this.playerIdByName.put(player.getUsername(), player.getUserId());
     }
     public void setGameId(int gameId) {this.gameId = gameId;}
-    public void addAnswer(Answer answer) {
+
+    public int addAnswer(Answer answer) {
         this.answers.add(answer);
         this.answersReceived++;
+        String name = answer.getUsername();
+
+        if(roundIsActive){
+         return 0;
+        }
+
+        if (this.playerCorrectGuesses.get(name)){
+            return 2;
+        }
+
+        if (compareAnswer(answer.getAnswerString()) == 1){
+            this.currentCorrectGuesses++;
+            Player player = players.get(playerIdByName.get(name));
+            this.pointsOfCurrentTurn.put(player, PointCalculatorGuesser.calculate(turnLength, remainingTime, currentCorrectGuesses));
+            this.pointsOfCurrentTurn.put(players.get(drawingOrder.get(Drawer)), PointCalculatorDrawer.calculate(turnLength, remainingTime, currentCorrectGuesses) + pointsOfCurrentTurn.get(players.get(drawingOrder.get(Drawer))));
+            this.playerCorrectGuesses.put(name, true);
+
+        }
+
+        return 0;
+    }
+
+    public int compareAnswer(String answer) {
+        if(answer.equalsIgnoreCase(this.getCurrentWord())){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     public void removePlayer(int userId){
+        this.playerIdByName.remove(players.get(userId).getUsername());
         this.players.remove(userId);
         this.connectedPlayers.remove(userId);
     }
 
     public void updateGameSettings(GameSettingsDTO gameSettingsDTO) {
-        this.maxPlayers = gameSettingsDTO.getMaxPlayers();
-        this.maxRounds = gameSettingsDTO.getMaxRounds();
-        this.turnLength = gameSettingsDTO.getTurnLength();
-        this.gamePassword = gameSettingsDTO.getGamePassword();
-        this.lobbyName = gameSettingsDTO.getLobbyName();
+        if (gameSettingsDTO.getMaxPlayers() != null) {
+            this.maxPlayers = gameSettingsDTO.getMaxPlayers();
+        }
+        if (gameSettingsDTO.getMaxRounds() != null) {
+            this.maxRounds = gameSettingsDTO.getMaxRounds();
+        }
+        if (gameSettingsDTO.getTurnLength() != null) {
+            this.turnLength = gameSettingsDTO.getTurnLength();
+        }
+        if (gameSettingsDTO.getGamePassword() != null) {
+            this.gamePassword = gameSettingsDTO.getGamePassword();
+        }
+        if (gameSettingsDTO.getLobbyName() != null) {
+            this.lobbyName = gameSettingsDTO.getLobbyName();
+        }
     }
+
+    public GameSettingsDTO getGameSettingsDTO() {
+        GameSettingsDTO gameSettingsDTO = new GameSettingsDTO();
+        gameSettingsDTO.setType("GameSettingsDTO");
+        gameSettingsDTO.setMaxPlayers(this.maxPlayers);
+        gameSettingsDTO.setMaxRounds(this.maxRounds);
+        gameSettingsDTO.setTurnLength(this.turnLength);
+        gameSettingsDTO.setGamePassword(this.gamePassword);
+        gameSettingsDTO.setLobbyName(this.lobbyName);
+        return gameSettingsDTO;
+    }
+
 
     public HashMap<String,List<String>> setWordList() {
         //ArrayList<String> wordlist = new ArrayList<>();
@@ -124,6 +209,7 @@ public class Game {
         //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
         //List<String> wordlist2 = wordlist1.subList(0,nr);
         return wordlists;
+
     }
 
     public List<String> shufflewordList() {
@@ -141,58 +227,54 @@ public class Game {
 
         return wordpool2;
     }
+
     public void startGame() {
-        this.genre = "Science";//input
+
+        
         this.wordList=shufflewordList();
         this.wordlists = setWordList();
+        this.gameStarted = true;
+
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);
             this.drawingOrder.add(id);
+            this.playerCorrectGuesses.put(player.getUsername(), false);
         });
-        this.Drawer = 0;
-        this.currentWordIndex = 0;
-        this.currentRound = 0;
+        this.Drawer = -1;
+        this.currentWordIndex = 1;
+        this.currentRound = 1;
         this.currentTurn = 0;
+        this.playersOriginally = players.size();
     }
 
     public void chooseNewDrawer() {
         this.Drawer = this.Drawer+1;
         this.Drawer = this.Drawer % this.players.size();
     }
+
     public String getCurrentWord(){
         return this.wordList.get(this.currentWordIndex);
     }
 
-    public GameStateDTO gameStateDTO() {
+    public GameStateDTO receiveGameStateDTO() {
         GameStateDTO gameStateDTO = new GameStateDTO();
+        gameStateDTO.setType("GameStateDTO");
         gameStateDTO.setCurrentRound(this.currentRound);
         gameStateDTO.setCurrentTurn(this.currentTurn);
-        gameStateDTO.setCurrentWordIndex(this.currentWordIndex);
+        ArrayList<String> threeWords = new ArrayList<>();
+        threeWords.add(wordList.get(this.currentWordIndex-1));
+        threeWords.add(wordList.get(this.currentWordIndex));
+        threeWords.add(wordList.get(this.currentWordIndex+1));
+        gameStateDTO.setThreeWords(threeWords);
+        //gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
         gameStateDTO.setDrawer(this.Drawer);
+        gameStateDTO.setDrawingOrder(this.drawingOrder);
+        gameStateDTO.setPlayersOriginally(this.playersOriginally);
+        gameStateDTO.setMaxRounds(this.maxRounds);
+        //setConnectedPlayers not done yet!
         return gameStateDTO;
     }
-
-
-/*//old
-    public LeaderBoardDTO calculateLeaderboard() {
-        if (endgame){
-            for (Player player : players) {
-                this.points.put(player, this.points.get(player));
-            }
-            LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-            leaderboardDTO.setPlayers(this.players);
-            leaderboardDTO.setTotalPoints(this.points);
-
-            return leaderboardDTO;
-         } else {
-            for (Player player : players) {
-                this.points.put(player, this.points.get(player) + this.pointsOfCurrentTurn.get(player));
-            }
-            LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-            leaderboardDTO.setPlayers(this.players);
-            leaderboardDTO.setTotalPoints(this.points);
-*/
 
     public LeaderBoardDTO calculateLeaderboard() {
         LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
@@ -235,34 +317,5 @@ public class Game {
         });
         return map;
     }
-
-
-
-/*
-    private Boolean endgame;
-
-     public LeaderBoardDTO calculateLeaderboard() {
-         if (endgame){
-             for (Player player : players) {
-                 this.points.put(player, this.points.get(player));
-             }
-             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-             leaderboardDTO.setPlayers(this.players);
-             leaderboardDTO.setTotalPoints(this.points);
-
-             return leaderboardDTO;
-         } else {
-             for (Player player : players) {
-                 this.points.put(player, this.points.get(player) + this.pointsOfCurrentTurn.get(player));
-             }
-             LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-             leaderboardDTO.setPlayers(this.players);
-             leaderboardDTO.setTotalPoints(this.points);
-
-             return leaderboardDTO;
-         }
-*/
-
-
 
 }
