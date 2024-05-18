@@ -23,9 +23,6 @@ public class GameRepository {
 
     public static Game findByGameId(int gameId) {
         Game game = gameRepo.get(gameId);
-        if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game does not exist!");
-        }
         return game;
     }
 

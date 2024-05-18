@@ -19,7 +19,8 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic"); //where you subscribe to, can have additional /things
+        registry.enableSimpleBroker("/topic") //where you subscribe to, can have additional /things
+                .setTaskScheduler(heartBeatScheduler());;
         registry.setApplicationDestinationPrefixes("/app"); //not explicit (dont write"/app/games") in controller but explicit in stomp (do write "/app/games")
     }
     @Override
@@ -35,10 +36,13 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                 .withSockJS();
     }
 
+
     @Bean
     public TaskScheduler heartBeatScheduler() {
         return new ThreadPoolTaskScheduler();
     }
+
+
 }
 
 

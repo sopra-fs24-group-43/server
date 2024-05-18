@@ -24,9 +24,9 @@ public class RandomGenerators {
     }
 
     public int GuestIdGenerator() {
-        int guestId = this.random.nextInt(10000) - 10000;
+        int guestId = this.random.nextInt(10000) - 10010;
         while(PlayerRepository.guestIdtaken(guestId)) {
-            guestId = this.random.nextInt(10000) - 10000;
+            guestId = this.random.nextInt(10000) - 10010;
         }
         return guestId;
     }
