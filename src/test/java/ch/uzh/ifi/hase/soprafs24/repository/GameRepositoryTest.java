@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/*
+
 public class GameRepositoryTest {
 
     private Game game;
@@ -26,7 +26,7 @@ public class GameRepositoryTest {
     void setup() {
         ArrayList<Integer> n = new ArrayList<>();
         n.add(2);
-        player = new Player("1",1,1,n,"Drawer");
+        player = new Player("1", 1, false, 1, n, "Drawer");
         game = new Game(player);
         GameRepository.addGame(1,game);
     }
@@ -42,4 +42,3 @@ public class GameRepositoryTest {
         assertThrows(ResponseStatusException.class, () -> GameRepository.findByGameId(1));
     }
 }
-*/

@@ -21,7 +21,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GameTest {/*
+public class GameTest {
 
     @Mock
     private Player player;
@@ -40,10 +40,10 @@ public class GameTest {/*
     void setup() {
         ArrayList<Integer> n = new ArrayList<>();
         n.add(2);
-        player = new Player("1",1,1,n,"Drawer");
+        player = new Player("1", 1, false, 1, n, "Drawer");
         ArrayList<Integer> n2 = new ArrayList<>();
         n.add(1);
-        player2 = new Player("2",2,1,n2,"Guesser");
+        player2 = new Player("2",2,false,1,n2,"Guesser");
         game = new Game(player);
         ArrayList<Player> players = new ArrayList<>();
         HashMap<Integer,Player> plHM = new HashMap<>();
@@ -54,12 +54,17 @@ public class GameTest {/*
         players.add(player2);
         PlayerRepository.addPlayer(1,1,player);
         PlayerRepository.addPlayer(2,1,player2);
-        game.setConnectedPlayers(players);
+        HashMap<Integer,Player> playershm = new HashMap<>();
+        playershm.put(1,player);
+        playershm.put(2,player2);
+        game.setConnectedPlayers(playershm);
         GameRepository.addGame(1,game);
     }
     @AfterEach
     void teardown() {
         GameRepository.removeGame(1);
+        PlayerRepository.removePlayer(1,1);
+        PlayerRepository.removePlayer(2,1);
     }
     @Test
     void updateGameSettingsTest() {
@@ -79,7 +84,7 @@ public class GameTest {/*
         assertEquals(gameSettingsDTO.getMaxRounds(), game.getMaxRounds());
         assertEquals(gameSettingsDTO.getLobbyName(), game.getLobbyName());
     }
-
+/*
     @Test
     void setWordListTest() {
         game.startGame();
@@ -93,14 +98,14 @@ public class GameTest {/*
         GameStateDTO gameStateDTO = new GameStateDTO();
         gameStateDTO.setCurrentRound(0);
         gameStateDTO.setCurrentTurn(0);
-        gameStateDTO.setCurrentWordIndex(0);
+        //gameStateDTO.setCurrentWordIndex(0);
         gameStateDTO.setDrawer(0);
 
-        GameStateDTO actual = game.gameStateDTO();
+        GameStateDTO actual = game.receiveGameStateDTO();
 
         assertEquals(actual.getCurrentRound(),gameStateDTO.getCurrentRound());
     }
-
+*/
     @Test
     void calculateLeaderboardTest() {
         LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
@@ -134,5 +139,5 @@ public class GameTest {/*
         assertEquals(actual.getTotalPoints(),leaderboardDTO.getTotalPoints());
         assertEquals(actual.getUserIdToPlayer(),leaderboardDTO.getUserIdToPlayer());
         assertEquals(actual.getPodium(),leaderboardDTO.getPodium());
-    }*/
+    }
 }

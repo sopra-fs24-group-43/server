@@ -51,7 +51,7 @@ public class Game {
     private int maxRounds; //
     private int turnLength; //in seconds
     private String gamePassword; //not done yet, can be left for changesettings
-    private List<String> selected_genres; //
+    private List<String> genres; //
     private ArrayList<Integer> wordLength; //not sure if necessary
     private String lobbyName; //
 
@@ -113,7 +113,7 @@ public class Game {
         this.playerIdByName = new HashMap<String, Integer>();
         this.roundIsActive = false;
         this.wordlists = new HashMap<>();
-        this.selected_genres = new ArrayList<>();
+        this.genres = new ArrayList<>();
         //this.nr_genres = 0;
     }
     public Boolean getGameStarted() {
@@ -183,6 +183,9 @@ public class Game {
         if (gameSettingsDTO.getLobbyName() != null) {
             this.lobbyName = gameSettingsDTO.getLobbyName();
         }
+        if (gameSettingsDTO.getGenres() != null) {
+            this.genres = gameSettingsDTO.getGenres();
+        }
     }
 
     public GameSettingsDTO getGameSettingsDTO() {
@@ -193,31 +196,32 @@ public class Game {
         gameSettingsDTO.setTurnLength(this.turnLength);
         gameSettingsDTO.setGamePassword(this.gamePassword);
         gameSettingsDTO.setLobbyName(this.lobbyName);
+        gameSettingsDTO.setGenres(this.genres);
         return gameSettingsDTO;
     }
 
-    public HashMap<String,List<String>> setWordList(List<String> selected_genres) {
+    public List<String> setWordList(List<String> genres) {//genres: "Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"
         //ArrayList<Integer> listlengths = new ArrayList<>();
         //ArrayList<String> genres = new ArrayList<>();
         //genres.addAll(selected_genres);
         //genres.addAll(Arrays.asList("Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"));
-        for (int i = 0; i < selected_genres.size(); i++) {
-            this.wordlists.put(selected_genres.get(i), getWordlist.getWordlist(selected_genres.get(i)));
-            this.wordList.addAll(getWordlist.getWordlist(selected_genres.get(i)));
+        for (int i = 0; i < genres.size(); i++) {
+            //this.wordlists.put(genres.get(i), getWordlist.getWordlist(genres.get(i)));
+            this.wordList.addAll(getWordlist.getWordlist(genres.get(i)));
             //listlengths.add(getWordlist.getWordlist(genres.get(i)).size());
         }
         Collections.shuffle(wordList);
-        //System.out.println(listlengths);
-        int nr_words = this.maxRounds*this.playersOriginally*3;
+        //System.out.println(wordList);
+        //int nr_words = this.maxRounds*this.playersOriginally*3;
         //this.nr_genres = nr_words/40;
 
         //List<String> wordlist1 = getWordlist.getWordlist(genre);
         //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
         //List<String> wordlist2 = wordlist1.subList(0,nr);
-        List<String> wordlist2 = wordList.subList(0,nr_words);
-        return wordlists;
+        //List<String> wordlist2 = wordList.subList(0,nr_words);
+        return wordList;
     }
-
+/*
     public List<String> shufflewordList() {
         ArrayList<String> wordpool = new ArrayList<String>();
         List<String> wordpool2;
@@ -233,10 +237,10 @@ public class Game {
 
         return wordpool2;
     }
-
+*/
     public void startGame() {
-        this.wordList=shufflewordList();
-        this.wordlists = setWordList(this.selected_genres);
+        //this.wordList=shufflewordList();
+        this.wordList = setWordList(this.genres);
 
         this.gameStarted = true;
         this.players.forEach((id, player) -> {
