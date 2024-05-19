@@ -51,7 +51,7 @@ public class Game {
     private int maxRounds; //
     private int turnLength; //in seconds
     private String gamePassword; //not done yet, can be left for changesettings
-    private String genre; //
+    private List<String> selected_genres; //
     private ArrayList<Integer> wordLength; //not sure if necessary
     private String lobbyName; //
 
@@ -80,6 +80,7 @@ public class Game {
     private Boolean roundIsActive;
     private int playersOriginally;
     private HashMap<String,List<String>> wordlists;
+    //private int nr_genres;
 
     public Game(Player admin) {
         this.gameStarted = false;
@@ -112,6 +113,8 @@ public class Game {
         this.playerIdByName = new HashMap<String, Integer>();
         this.roundIsActive = false;
         this.wordlists = new HashMap<>();
+        this.selected_genres = new ArrayList<>();
+        //this.nr_genres = 0;
     }
     public Boolean getGameStarted() {
         return this.gameStarted;
@@ -193,18 +196,25 @@ public class Game {
         return gameSettingsDTO;
     }
 
-    public HashMap<String,List<String>> setWordList() {
-        //ArrayList<String> wordlist = new ArrayList<>();
-        ArrayList<String> genres = new ArrayList<>();
-        genres.addAll(Arrays.asList("Science", "Philosophy", "Nature", "Sport", "Animal", "Plant", "life"));
-        for (int i = 0; i < genres.size(); i++) {
-            this.wordlists.put(genres.get(i), getWordlist.getWordlist(genres.get(i)));
+    public HashMap<String,List<String>> setWordList(List<String> selected_genres) {
+        //ArrayList<Integer> listlengths = new ArrayList<>();
+        //ArrayList<String> genres = new ArrayList<>();
+        //genres.addAll(selected_genres);
+        //genres.addAll(Arrays.asList("Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"));
+        for (int i = 0; i < selected_genres.size(); i++) {
+            this.wordlists.put(selected_genres.get(i), getWordlist.getWordlist(selected_genres.get(i)));
+            this.wordList.addAll(getWordlist.getWordlist(selected_genres.get(i)));
+            //listlengths.add(getWordlist.getWordlist(genres.get(i)).size());
         }
+        Collections.shuffle(wordList);
+        //System.out.println(listlengths);
+        int nr_words = this.maxRounds*this.playersOriginally*3;
+        //this.nr_genres = nr_words/40;
 
-        //int nr = this.maxRounds*this.connectedPlayers.size();
         //List<String> wordlist1 = getWordlist.getWordlist(genre);
         //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
         //List<String> wordlist2 = wordlist1.subList(0,nr);
+        List<String> wordlist2 = wordList.subList(0,nr_words);
         return wordlists;
     }
 
@@ -226,7 +236,7 @@ public class Game {
 
     public void startGame() {
         this.wordList=shufflewordList();
-        this.wordlists = setWordList();
+        this.wordlists = setWordList(this.selected_genres);
 
         this.gameStarted = true;
         this.players.forEach((id, player) -> {
@@ -278,6 +288,45 @@ public class Game {
 
         HashMap<Integer, Integer> map = new HashMap<>();
         HashMap<Integer, Integer> map2 = new HashMap<>();
+        LinkedHashMap<Integer, Player> map3 = new LinkedHashMap<>();
+
+        this.points.forEach((key, value) -> {map.put(key.getUserId(), value);});
+        leaderboardDTO.setTotalPoints(map);
+        this.points.forEach((key, value) -> {key.setTotalPoints(value);});
+
+        this.pointsOfCurrentTurn.forEach((key, value) -> {map2.put(key.getUserId(), value);});
+        leaderboardDTO.setNewlyEarnedPoints(map2);
+        this.pointsOfCurrentTurn.forEach((key, value) -> {key.setNewlyEarnedPoints(value);});
+
+
+        leaderboardDTO.setPodium(assignPodiumPosition());
+        this.assignPodiumPosition().forEach((key, value) -> {
+            PlayerRepository.findByUserId(key).setPodiumPosition(value);
+        });
+
+        int i = 1;
+        while (i<leaderboardDTO.getPodium().size()+1) {
+            Integer finalI = i;
+            leaderboardDTO.getPodium().forEach((key, value) -> {
+                if (finalI.equals(value)) {
+                    map3.put(key,PlayerRepository.findByUserId(key));
+                }
+            });
+            i=i+1;}
+        leaderboardDTO.setUserIdToPlayerSorted(map3);
+
+        return leaderboardDTO;
+
+    }
+    /*//old
+    public LeaderBoardDTO calculateLeaderboard() {
+        LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+        this.pointsOfCurrentTurn.forEach((key, value) -> {this.points.put(key, this.points.get(key)+value);});
+
+        leaderboardDTO.setUserIdToPlayer(this.players);
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> map2 = new HashMap<>();
 
         this.points.forEach((key, value) -> {map.put(key.getUserId(), value);});
         leaderboardDTO.setTotalPoints(map);
@@ -296,7 +345,7 @@ public class Game {
         return leaderboardDTO;
 
     }
-
+*/
     public HashMap<Integer, Integer> assignPodiumPosition() {
         HashMap<Integer, Integer> map = new HashMap<>();
         this.points.forEach((key, value) -> {
