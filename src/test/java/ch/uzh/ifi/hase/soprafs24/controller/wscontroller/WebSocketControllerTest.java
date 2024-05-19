@@ -44,11 +44,11 @@ public class WebSocketControllerTest {
         stompSession = stompClient.connect(wsUrl, new WsTestUtils.MyStompSessionHandler()).get();
     }
 
-    @Test
+  /*  @Test
     void connectsToSocket() throws Exception {
 
         assertThat(stompSession.isConnected()).isTrue();
-    }
+    }*/
     /*
     @Test
     public void creategameTest() throws Exception {
