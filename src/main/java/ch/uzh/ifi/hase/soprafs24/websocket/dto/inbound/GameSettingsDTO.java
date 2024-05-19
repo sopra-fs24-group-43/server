@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameSettingsDTO { //maxRounds, max Players, turnLength
     private String type;
@@ -10,6 +11,13 @@ public class GameSettingsDTO { //maxRounds, max Players, turnLength
     private Integer turnLength;
     private String gamePassword;
     private String lobbyName;
+    private List<String> genres;
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+    public List<String> getGenres() {
+        return this.genres;
+    }
     public void setType(String type) {
         this.type = type;
     }
