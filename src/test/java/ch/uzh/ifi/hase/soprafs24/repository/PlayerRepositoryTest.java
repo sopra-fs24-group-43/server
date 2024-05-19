@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 public class PlayerRepositoryTest {
-/*
+
     @MockBean
     private PlayerRepository playerRepository;
 
@@ -37,7 +37,7 @@ public class PlayerRepositoryTest {
     void setup() {
         ArrayList<Integer> n = new ArrayList<>();
         n.add(2);
-        player = new Player("1", 1, 1, n, "Drawer");
+        player = new Player("1", 1, false, 1, n, "Drawer");
         PlayerRepository.addPlayer(1,1,player);
     }
 
@@ -69,5 +69,5 @@ public class PlayerRepositoryTest {
             assertEquals(pl.getRole(), player.getRole());
         }
 
-    }*/
+    }
 }
