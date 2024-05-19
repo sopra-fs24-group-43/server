@@ -142,7 +142,7 @@ public class UserService {
       User userById = this.userRepository.findUserById(id);
       return userById.getFriends();
     }
-  public User add_or_delete_Friend(User user, String f_username, Boolean b) {
+  public User add_or_delete_Friend(User user, String f_username, Boolean b) {//should only delete
       if (b) {
           User userByUsername = userRepository.findByUsername(f_username);
           if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
@@ -183,16 +183,7 @@ public class UserService {
         else {
             return user;}
     }
-/*
-  public User deleteFriend(User user, String f_username) {
-      User userByUsername = userRepository.findByUsername(f_username);
-      if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
-      ArrayList<String> friends = user.getFriends();
-      friends.remove(f_username);
-      user.setFriends(friends);
-      return user;
-  }
-*/
+
 
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
