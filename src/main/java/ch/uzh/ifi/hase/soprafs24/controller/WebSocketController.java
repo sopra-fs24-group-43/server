@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.TimerService;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs24.utils.ReconnectionHelper;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.*;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,11 +29,13 @@ public class WebSocketController {
     WebSocketService webSocketService;
     RandomGenerators randomGenerators;
     TimerService timerService;
+    ReconnectionHelper reconnectionHelper;
 
     public WebSocketController( WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
         this.randomGenerators = new RandomGenerators();
         this.timerService = new TimerService(webSocketService);
+        this.reconnectionHelper = new ReconnectionHelper(webSocketService);
     }
 
     @MessageMapping("/landing/createguestplayer")
@@ -187,73 +190,18 @@ public class WebSocketController {
         headerAccessor.getSessionAttributes().put("reload", false);
         if (task != null) {
             if (!task.get(2).isDone()) {
-                System.out.println("task existed and wasnt done yet");
-                return;
+                System.out.println("task existed and wasnt done yet"); //add call for canvas here with if gameId
+                this.reconnectionHelper.reconnectionhelp(userId, true);
             }
             else {
                 System.out.println("task existed and was done");
-                if (PlayerRepository.findByUserId(userId) == null) {
-                    System.out.println("alertrecon: was not a player before reconnecting");
-                }
-                else  {  //what if gameId = -1
-                    Player player = PlayerRepository.findByUserId(userId);
-                    int gameId = player.getGameId();
-                    System.out.println("alertrecon: userId and gameId: " + userId + ", " + gameId);
-                    if (gameId == -1) {
-                        System.out.println("alertrecon: was a guest player with gameId = -1");
-                        return;  //halts
-                    }
-                    Game game = GameRepository.findByGameId(gameId);
-                    if (game == null) {
-                        System.out.println("alertrecon: real player had a gameId that cant be tracked to a game"); //this should never happen
-                        return; //halts
-                    }
-                    if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
-                        System.out.println("alertrecon: was a player before reconnecting and game is still running");
-                        ReconnectionDTO reconnectionDTO = new ReconnectionDTO();
-                        reconnectionDTO.setType("ReconnectionDTO");
-                        reconnectionDTO.setGameId(player.getGameId());
-                        reconnectionDTO.setRole(player.getRole());
-                        this.webSocketService.sendMessageToClients("/topic/landing/alertreconnect/" + userId, reconnectionDTO);  //add gameStarted variable?
-                    }
-                    else {
-                        System.out.println("alertrecon: was a player before reconnecting but his game is not started or ended");
+                this.reconnectionHelper.reconnectionhelp(userId, false);
 
-                    }
-                }
             }
         }
         else {
             System.out.println("task did not exist");
-            if (PlayerRepository.findByUserId(userId) == null) {
-                System.out.println("alertrecon: was not a player before reconnecting");
-            }
-            if (PlayerRepository.findByUserId(userId) != null) {  //what if gameId = -1
-                Player player = PlayerRepository.findByUserId(userId);
-                int gameId = player.getGameId();
-                System.out.println("alertrecon: userId and gameId: " + userId + ", " + gameId);
-                if (gameId == -1) {
-                    System.out.println("alertrecon: was a guest player with gameId = -1");
-                    return;
-                }
-                Game game = GameRepository.findByGameId(gameId);
-                if (game == null) {
-                    System.out.println("alertrecon: real player had a gameId that cant be tracked to a game"); //this should never happen
-                    return; //halts
-                }
-                if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
-                    System.out.println("alertrecon: was a player before reconnecting and game is still running");
-                    ReconnectionDTO reconnectionDTO = new ReconnectionDTO();
-                    reconnectionDTO.setType("ReconnectionDTO");
-                    reconnectionDTO.setGameId(player.getGameId());
-                    reconnectionDTO.setRole(player.getRole());
-                    this.webSocketService.sendMessageToClients("/topic/landing/alertreconnect/" + userId, reconnectionDTO);
-                }
-                else {
-                    System.out.println("alertrecon: was a player before reconnecting but his game is not started or ended");
-
-                }
-            }
+            this.reconnectionHelper.reconnectionhelp(userId, false);
         }
     }
     @MessageMapping("/landing/reconnect/{userId}")
@@ -273,12 +221,20 @@ public class WebSocketController {
             System.out.println(game.getGameStarted());
             if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
                 game.intigrateIntoGame(userId, gameId);
+                QuestionToSend questionToSend = new QuestionToSend("sendcanvasforrecon");
+                questionToSend.setUserId(userId);
+                this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
             }
         }
         System.out.println("from reconnect end: " +userId);
-
-
     }
+
+    @MessageMapping("/games/{gameId}/sendcanvasforrecon/{userId}")
+    public void sendcanvasforrecon(@DestinationVariable int gameId, @DestinationVariable int userId, FillCoordinates fillCoordinates) {
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/fill/" + userId, fillCoordinates);  //has userId in mapping!
+    }
+
+
     @MessageMapping("/games/{gameId}/nextturn")
     public void nextturn(@DestinationVariable int gameId){
         //System.out.println("nextturn in ws started");
@@ -346,13 +302,6 @@ public class WebSocketController {
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
     }
 
-/*
-        @MessageMapping("/games/{gameId}/endgame")//needed?
-        public void endgame(@DestinationVariable int gameId){
-            GameRepository.removeGame(gameId);
-            //send players back to homepage in frontend?
-        }
-*/
     /*//old
     @MessageMapping("game/{gameId}/postgame")
     @SendTo("game/{gameId}/general")
