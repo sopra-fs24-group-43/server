@@ -1,7 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-import java.util.Date;
+import java.util.*;
+
 
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+
+import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
+
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.TimerService;
@@ -10,14 +14,10 @@ import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorGuesser;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
-import java.util.HashMap;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LobbyInfo;
@@ -58,7 +58,7 @@ public class Game {
     private int maxRounds; //
     private int turnLength; //in seconds
     private String gamePassword; //not done yet, can be left for changesettings
-    private String genre; //
+    private List<String> genres; //
     private ArrayList<Integer> wordLength; //not sure if necessary
     private String lobbyName; //
 
@@ -87,10 +87,15 @@ public class Game {
     private HashMap<String, Integer> playerIdByName;
     private Boolean roundIsActive;
     private int playersOriginally;
+
     private String gamePhase; // "inLobby" = after creategame, "started" = after startgame,"choosing" = after nextturn, "drawing" = after sendchosenword, "leaderbaord" = after endturn (sendguess condition and timerService condition)
     private WebSocketService webSocketService;
     private TimerService timerService;
-    public Game(Player admin, WebSocketService webSocketService, TimerService timerService) {
+    private HashMap<String,List<String>> wordlists;
+    //private int nr_genres;
+
+     public Game(Player admin, WebSocketService webSocketService, TimerService timerService) {
+
         this.gameStarted = false;
         this.endGame = false;
         this.random = new RandomGenerators();
@@ -121,6 +126,10 @@ public class Game {
         this.setGamePhase("inLobby");
         this.webSocketService = webSocketService;
         this.timerService = timerService;
+
+        this.wordlists = new HashMap<>();
+        this.genres = new ArrayList<>();
+
     }
     public Boolean getGameStarted() {
         return this.gameStarted;
@@ -189,6 +198,9 @@ public class Game {
         if (gameSettingsDTO.getLobbyName() != null) {
             this.lobbyName = gameSettingsDTO.getLobbyName();
         }
+        if (gameSettingsDTO.getGenres() != null) {
+            this.genres = gameSettingsDTO.getGenres();
+        }
     }
 
     public GameSettingsDTO getGameSettingsDTO() {
@@ -199,23 +211,32 @@ public class Game {
         gameSettingsDTO.setTurnLength(this.turnLength);
         gameSettingsDTO.setGamePassword(this.gamePassword);
         gameSettingsDTO.setLobbyName(this.lobbyName);
+        gameSettingsDTO.setGenres(this.genres);
         return gameSettingsDTO;
     }
 
-    public List<String> setWordList() {
-        ArrayList<String> wordlist = new ArrayList<>();
-        final String uri = "https://random-word-api.herokuapp.com/word";
-        for (int i = 0;i<(maxRounds*5);i++){
-            RestTemplate restTemplate = new RestTemplate();
-            String result = restTemplate.getForObject(uri, String.class);
-            result=result.substring(2,result.length()-2);
-            wordlist.add(result);
+    public List<String> setWordList(List<String> genres) {//genres: "Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"
+        //ArrayList<Integer> listlengths = new ArrayList<>();
+        //ArrayList<String> genres = new ArrayList<>();
+        //genres.addAll(selected_genres);
+        //genres.addAll(Arrays.asList("Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"));
+        for (int i = 0; i < genres.size(); i++) {
+            //this.wordlists.put(genres.get(i), getWordlist.getWordlist(genres.get(i)));
+            this.wordList.addAll(getWordlist.getWordlist(genres.get(i)));
+            //listlengths.add(getWordlist.getWordlist(genres.get(i)).size());
         }
-        System.out.println(wordlist);
-        return wordlist;
+        Collections.shuffle(wordList);
+        //System.out.println(wordList);
+        //int nr_words = this.maxRounds*this.playersOriginally*3;
+        //this.nr_genres = nr_words/40;
 
+        //List<String> wordlist1 = getWordlist.getWordlist(genre);
+        //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
+        //List<String> wordlist2 = wordlist1.subList(0,nr);
+        //List<String> wordlist2 = wordList.subList(0,nr_words);
+        return wordList;
     }
-
+/*
     public List<String> shufflewordList() {
         ArrayList<String> wordpool = new ArrayList<String>();
         List<String> wordpool2;
@@ -231,12 +252,16 @@ public class Game {
 
         return wordpool2;
     }
-
+*/
     public void startGame() {
+        //this.wordList=shufflewordList();
+        ArrayList<String> list = new ArrayList<>();
+        list.add("Science");
+        list.add("Animal");
+        this.genres = list;
+        this.wordList = setWordList(this.genres);
         this.gameStarted = true;
         this.gamePhase = "started";
-        this.genre = "Everything";
-        this.wordList = setWordList();
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);
@@ -440,6 +465,45 @@ public class Game {
 
         HashMap<Integer, Integer> map = new HashMap<>();
         HashMap<Integer, Integer> map2 = new HashMap<>();
+        LinkedHashMap<Integer, Player> map3 = new LinkedHashMap<>();
+
+        this.points.forEach((key, value) -> {map.put(key.getUserId(), value);});
+        leaderboardDTO.setTotalPoints(map);
+        this.points.forEach((key, value) -> {key.setTotalPoints(value);});
+
+        this.pointsOfCurrentTurn.forEach((key, value) -> {map2.put(key.getUserId(), value);});
+        leaderboardDTO.setNewlyEarnedPoints(map2);
+        this.pointsOfCurrentTurn.forEach((key, value) -> {key.setNewlyEarnedPoints(value);});
+
+
+        leaderboardDTO.setPodium(assignPodiumPosition());
+        this.assignPodiumPosition().forEach((key, value) -> {
+            PlayerRepository.findByUserId(key).setPodiumPosition(value);
+        });
+
+        int i = 1;
+        while (i<leaderboardDTO.getPodium().size()+1) {
+            Integer finalI = i;
+            leaderboardDTO.getPodium().forEach((key, value) -> {
+                if (finalI.equals(value)) {
+                    map3.put(key,PlayerRepository.findByUserId(key));
+                }
+            });
+            i=i+1;}
+        leaderboardDTO.setUserIdToPlayerSorted(map3);
+
+        return leaderboardDTO;
+
+    }
+    /*//old
+    public LeaderBoardDTO calculateLeaderboard() {
+        LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+        this.pointsOfCurrentTurn.forEach((key, value) -> {this.points.put(key, this.points.get(key)+value);});
+
+        leaderboardDTO.setUserIdToPlayer(this.players);
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> map2 = new HashMap<>();
 
         this.points.forEach((key, value) -> {map.put(key.getUserId(), value);});
         leaderboardDTO.setTotalPoints(map);
@@ -458,7 +522,7 @@ public class Game {
         return leaderboardDTO;
 
     }
-
+*/
     public HashMap<Integer, Integer> assignPodiumPosition() {
         HashMap<Integer, Integer> map = new HashMap<>();
         this.points.forEach((key, value) -> {

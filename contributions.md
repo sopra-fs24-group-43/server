@@ -78,26 +78,33 @@ issue(client) #129 - https://github.com/sopra-fs24-group-43/client/issues/129 - 
 
 issue(client) #130 - https://github.com/sopra-fs24-group-43/client/issues/130 - Implementing hotkey for "Erase All" tool.
 
+issue(client) #137 - https://github.com/sopra-fs24-group-43/client/issues/137 - Implement a Settings pop-up window (view) which can be accessed from each view / from the header
+
+issue(client) #138 - https://github.com/sopra-fs24-group-43/client/issues/138 - Create a "Dark Mode" checkbox inside the settings view
+
+issue(client) #140 - https://github.com/sopra-fs24-group-43/client/issues/140 - Implement / Create an independent chat component for easier reuse later
+
+issue(client) #141 - https://github.com/sopra-fs24-group-43/client/issues/141 - Implementing chat component into lobby view
+
+issue(client) #143 - https://github.com/sopra-fs24-group-43/client/issues/143 - Implementing specific styles file(.scss) for chat component
+
+issue(client) #144 - https://github.com/sopra-fs24-group-43/client/issues/144 - Implement websocket compatibility for the chat functionality
+
+issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
+
+
 ## Markiian Dobosh
 
 ### 1st week - 12.04
-Issue(client) #56 - https://github.com/sopra-fs24-group-43/client/issues/56 - create "Login or Register" button on the landing page
-
-Issue(client) #57 - https://github.com/sopra-fs24-group-43/client/issues/57 - implement navigation of "Login or Register button" (front)
-
-Issue(client) #62 - https://github.com/sopra-fs24-group-43/client/issues/62 - add rules to the landing page
-
-Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon to the landing page
-
+Issue(client) #56 - https://github.com/sopra-fs24-group-43/client/issues/56 - create "Login or Register" button on the landing page  
+Issue(client) #57 - https://github.com/sopra-fs24-group-43/client/issues/57 - implement navigation of "Login or Register button" (front)  
+Issue(client) #62 - https://github.com/sopra-fs24-group-43/client/issues/62 - add rules to the landing page  
+Issue(client) #61 - https://github.com/sopra-fs24-group-43/client/issues/61 - add rules icon to the landing page  
 ### 2nd week - 17.04
-Issue(client) #65 - https://github.com/sopra-fs24-group-43/client/issues/65 - add navigation icon to the landing page
-
-Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/66 - add settings icon to the landing page
-
-Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/67 - add friends icon to the landing page
-
-Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/68 - add all-time leaderboard icon to the landing page
-
+Issue(client) #65 - https://github.com/sopra-fs24-group-43/client/issues/65 - add navigation icon to the landing page  
+Issue(client) #66 - https://github.com/sopra-fs24-group-43/client/issues/66 - add settings icon to the landing page  
+Issue(client) #67 - https://github.com/sopra-fs24-group-43/client/issues/67 - add friends icon to the landing page  
+Issue(client) #68 - https://github.com/sopra-fs24-group-43/client/issues/68 - add all-time leaderboard icon to the landing page  
 Issue(client) #70 - https://github.com/sopra-fs24-group-43/client/issues/70 - create table of lobbies to the landing page
 
 ### 3rd week - 24.04
@@ -107,8 +114,25 @@ Issue(client) #88 - https://github.com/sopra-fs24-group-43/client/issues/88 - im
 ### 4th week - 03.05
 Issue(client) #97 - https://github.com/sopra-fs24-group-43/client/issues/97 - set and automativcaly change the max players setting  
 Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - set and automativcaly change the drawtime setting  
-Issue(client) #99 - https://github.com/sopra-fs24-group-43/client/issues/99 - set and automativcaly change the rounds setting  
+Issue(client) #99 - https://github.com/sopra-fs24-group-43/client/issues/99 - set and automativcaly change the rounds setting 
 
+### 5th week - 08.05
+Issue(client) #113 - https://github.com/sopra-fs24-group-43/client/issues/113 - show the players in the lobby  
+Issue(client) #114 - https://github.com/sopra-fs24-group-43/client/issues/114 - implement the websocket connection to the lobby  
+
+### 6th week - 15.05
+Issue(client) #33 - https://github.com/sopra-fs24-group-43/client/issues/33 - display the changes the creator makes, to the others  
+Issue(client) #34 - https://github.com/sopra-fs24-group-43/client/issues/34 - connect the lobby view to the game view once the game starts  
+Issue(client) #35 - https://github.com/sopra-fs24-group-43/client/issues/35 - send the necessary info about the lobby state to the back-end  
+Issue(client) #25 - https://github.com/sopra-fs24-group-43/client/issues/25 - only the creator can change the settings of the game  
+Issue(client) #26 - https://github.com/sopra-fs24-group-43/client/issues/26 - the setting are saved to the server in real time  
+Issue(client) #27 - https://github.com/sopra-fs24-group-43/client/issues/27 - implement the websocket connection to the lobby  
+Issue(client) #28 - https://github.com/sopra-fs24-group-43/client/issues/28 - the changes are visible to the other players but for them the settings are disabled  
+Issue(client) #97 - https://github.com/sopra-fs24-group-43/client/issues/97 - set and automativcaly change the max players setting  
+Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - set and automativcaly change the drawtime setting  
+Issue(client) #133 - https://github.com/sopra-fs24-group-43/client/issues/133 - implement the button for quiting the lobby  
+Issue(client) #134 - https://github.com/sopra-fs24-group-43/client/issues/134 - implement the button for deleting the lobby  
+ 
 ## Florian Mattmüller
 
 ### 1st week - 12.04
@@ -124,12 +148,26 @@ Issue(client) #78 - https://github.com/sopra-fs24-group-43/client/issues/78 - co
 Issue(server) #100 https://github.com/sopra-fs24-group-43/server/issues/100 - create the game object in back-end
 Issue(server) #101 https://github.com/sopra-fs24-group-43/server/issues/101 - create methods for game object
 
-4th week - 03.05
+4th week - 03.05    
 Issue(server) #113 https://github.com/sopra-fs24-group-43/server/issues/113 - removed collosions between gameId and userId in playerrepo  
 Issue(server) #99 https://github.com/sopra-fs24-group-43/server/issues/99 - removed collosions between gameId and userId in playerrepo  
 Issue(client) #32 - https://github.com/sopra-fs24-group-43/client/issues/32 - fixed bugs related to ws connection in Landingpage view and moved the joingame button to the Table element; users can now create and join games (with some bugs left) and get transported to the Lobby page  
 Issue(client) #31 - https://github.com/sopra-fs24-group-43/client/issues/31 - also part of #32  
 Issue(client) #30 - https://github.com/sopra-fs24-group-43/client/issues/30 - also part of #32  
+
+5th week - 08.05    
+Issue(client) #118 - https://github.com/sopra-fs24-group-43/client/issues/118 - app-wide Context for (stompApi and vars)   
+Issue(client) #119 - https://github.com/sopra-fs24-group-43/client/issues/119 - Landingpage debugged     
+Issue(client) #116 - https://github.com/sopra-fs24-group-43/client/issues/116 - handle relaod Event listener    
+Issue(client) #117 - https://github.com/sopra-fs24-group-43/client/issues/117 - clean up subs and event listeners before navigation    
+Issue(client) #32 - https://github.com/sopra-fs24-group-43/client/issues/32 - add getLobbyInfo ws method      
+Issue(server) #20 https://github.com/sopra-fs24-group-43/server/issues/20 - change timer based on #correct guesses  
+Issue(server) #160 https://github.com/sopra-fs24-group-43/server/issues/160 - implement TimerService and TimerRepo  
+Issue(server) #161 https://github.com/sopra-fs24-group-43/server/issues/161 - add ws tests (only 2)    
+Issue(server) #103 https://github.com/sopra-fs24-group-43/server/issues/103 - intigrate Guest in back-end logic  
+Issue(client) #43 - https://github.com/sopra-fs24-group-43/client/issues/43 - intigrate Guest in Landingpage and in RegandLogin  
+Issue(client) #39 - https://github.com/sopra-fs24-group-43/client/issues/39 - intigrate Guest in Landingpage and in RegandLogin
+
 ## Robin Stirnimann
 
 ### 1st week - 12.04
@@ -151,3 +189,18 @@ Issue(server) #124 - https://github.com/sopra-fs24-group-43/server/issues/124 - 
 ### 3nd week - 24.04
 Issue(server) #140 - https://github.com/sopra-fs24-group-43/server/issues/140 - implementing lobby framework (backend)
 Issue(server) #141 - https://github.com/sopra-fs24-group-43/server/issues/141 - implementing lobby creation (backend)
+
+### 4th week - 03.05
+Issue(server) #143 - https://github.com/sopra-fs24-group-43/server/issues/143 - implement end turn in websocketcontroller, which calculates and updates leaderboard
+Issue(server) #144 - https://github.com/sopra-fs24-group-43/server/issues/144 - implement postgame (websockets)
+Issue(server) #145 - https://github.com/sopra-fs24-group-43/server/issues/145 - implement endgame (websockets)
+
+### 5th week - 08.05
+Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added rest endpoint tests (part of 161)
+Issue(server) #121 - https://github.com/sopra-fs24-group-43/server/issues/121 - fixing friend request implementation
+Issue(server) #122 - https://github.com/sopra-fs24-group-43/server/issues/122 - fixes for displaying friends
+Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - fixes for adding to friend list
+
+### 6th week - 15.05
+Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for entity, repository (part of 161)
+Issue(server) #155 - https://github.com/sopra-fs24-group-43/server/issues/155 - added implementation for external api call (getting the words based on category)

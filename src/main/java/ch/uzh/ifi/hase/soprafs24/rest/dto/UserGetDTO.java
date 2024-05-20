@@ -32,6 +32,8 @@ public class UserGetDTO {
   private String birth_date;
 
   private List<String> friends;
+
+  private List<String> openFriendRequests;
 /*
   public Boolean getIsUser() {
         return isUser;
