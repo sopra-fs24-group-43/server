@@ -53,10 +53,23 @@ public class UserService {
       if (userInput.getBirth_date() != null ) {
           user.setBirth_date(userInput.getBirth_date());
       }
-
       if (userInput.getName()!=null){
           user.setName(userInput.getName());
       }
+
+      if (userInput.getHotkeyInputDraw()!=null){
+          user.setHotkeyInputDraw(userInput.getHotkeyInputDraw());
+      }
+      if (userInput.getHotkeyInputFill()!=null){
+          user.setHotkeyInputFill(userInput.getHotkeyInputFill());
+      }
+      if (userInput.getHotkeyInputEraser()!=null){
+          user.setHotkeyInputEraser(userInput.getHotkeyInputEraser());
+      }
+      if (userInput.getHotkeyInputClear()!=null){
+          user.setHotkeyInputClear(userInput.getHotkeyInputClear());
+      }
+
 
       userRepository.save(user);
       userRepository.flush();
