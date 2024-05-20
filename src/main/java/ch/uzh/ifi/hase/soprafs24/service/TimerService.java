@@ -1,16 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
-import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
-import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.TimerOut;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.sendback;
-import org.aspectj.weaver.ast.Call;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,11 +34,15 @@ public class TimerService {
         }
         public void run() {
             Game game = GameRepository.findByGameId(timerOut.getGameId());
-            if (timerOut.getGamePhase() == "drawing") { //only if timer has gamePhase drawing then he should update TimeLeftInTurn
+            if (timerOut.getGamePhase().equals("drawing")) { //only if timer has gamePhase drawing then he should update TimeLeftInTurn
                 game.setTimeLeftInTurn(timerOut.getTime());
             }
+            if (timerOut.getGamePhase().equals("leaderboard")  && timerOut.getTime() == 0) {
+                doShutDownTimer(timerOut.getGameId());
+            }
             this.webSocketService.sendMessageToClients(destination, timerOut);
-            if (game.getCurrentCorrectGuesses() < game.getPlayers().size() && timerOut.getTime() == 0 && timerOut.getGamePhase() == "drawing"){
+            if (game.getCurrentCorrectGuesses() < game.getPlayers().size() && timerOut.getTime() == 0 && timerOut.getGamePhase().equals("drawing")){
+                System.out.println("endturn");
                 if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getPlayersOriginally()) {
                     game.setEndGame(true);
                 }
@@ -54,10 +52,10 @@ public class TimerService {
                     leaderboardDTO.setReason("normal");
                 }
                 this.webSocketService.sendMessageToClients("/topic/games/" + timerOut.getGameId() + "/general", leaderboardDTO); //endturn
-
+                doShutDownTimer(timerOut.getGameId());
                 doTimer(5,1, timerOut.getGameId(), "/topic/games/" + timerOut.getGameId() + "/general", "leaderboard"); //timer to look at leaderboard
-
             }
+
         }
     }
     class Command2 implements Runnable {
@@ -72,28 +70,35 @@ public class TimerService {
             this.action = action;
         }
         public void run() {
-            System.out.println("Runnable for ReloadDisc executed with action: "+action);
-
-            if (action == "inLobbyAdmin") {
-                System.out.println("Runnable for ReloadDisc executed with action: "+"inLobbyAdmin");
+            if (action.equals("inLobbyAdmin")) {
+                System.out.println("Runnable for ReloadDisc executed with action: "+"inLobbyAdmin" + " = "+action);
                 Game game = GameRepository.findByGameId(gameId);
-                game.deletegame(gameId);
+                if (game != null) {
+                    game.deletegame(gameId);  //should the lines below also be in the if statement?
+                }
                 QuestionToSend questionToSend = new QuestionToSend("deletegame");
                 this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);  //for the players in the Lobby
                 this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
 
             }
-            if (action == "inLobbyPlayer") {
-                System.out.println("Runnable for ReloadDisc executed with action: "+"inLobbyPlayer");
+            if (action.equals("inLobbyPlayer")) {
+                System.out.println("Runnable for ReloadDisc executed with action: "+"inLobbyPlayer"+ " = "+action);
                 Game game = GameRepository.findByGameId(gameId);
-                game.leavegame(userId, gameId, webSocketService);
+                if (game != null) {
+                    game.leavegame(userId, gameId);
+                }
+
             }
-            if (action == "inGame") {
-                System.out.println("Runnable for ReloadDisc executed with action: "+"inGame");
+            if (action.equals("inGame")) {
+                System.out.println("Runnable for ReloadDisc executed with action: "+"inGame"+ " = "+action);
 
                 Game game = GameRepository.findByGameId(gameId);
-                game.lostConnectionToPlayer(userId, gameId, this.webSocketService);
+                if (game != null) {
+                    game.lostConnectionToPlayer(userId, gameId);
+
+                }
             }
+            stopDiscTimer(userId);
         }
     }
     public void doTimerForReloadDisc(int gameId, int userId, String action){
@@ -118,7 +123,6 @@ public class TimerService {
     }
     public void doTimer(int Length, int Interval, int gameId, String destination, String gamePhase) {
         System.out.println("doTimer with gamePhase: "+ gamePhase);
-        //doShutDownTimer(gameId);
         ScheduledThreadPoolExecutor threadPool
                 = new ScheduledThreadPoolExecutor(2);
 
@@ -131,7 +135,7 @@ public class TimerService {
         timerOut.setTime(Length);
         timerOut.setInterval(Interval);
         timerOut.setLength(Length);
-        if (gamePhase == "drawing") { //only if timer has gamePhase drawing then he should update TimeLeftInTurn
+        if (gamePhase.equals("drawing")) { //only if timer has gamePhase drawing then he should update TimeLeftInTurn
             Game game = GameRepository.findByGameId(timerOut.getGameId());
             game.setTimeLeftInTurn(timerOut.getTime());
         }
@@ -159,7 +163,7 @@ public class TimerService {
         ScheduledThreadPoolExecutor threadPool =  TimerRepository.findTimerByGameId(gameId);
         HashMap<Integer, ScheduledFuture> tasks = TimerRepository.findTasksByGameId(gameId);
 
-        if (tasks.get(Length).isDone() == true) {
+        if (tasks.get(Length).isDone()) {
             //do nothing because the new Timer would be higher than the one of the currently running Timer
         }
         else {

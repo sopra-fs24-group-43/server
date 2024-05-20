@@ -29,7 +29,7 @@ public class PlayerRepository {
         String role = "guest";
         Player player = new Player(guestusername, guestId, isGuest, gameId, friends, role);
         playerRepoguest.put(guestId, player);
-
+        playerRepouserId.put(guestId, player);
         InboundPlayer inboundPlayer = new InboundPlayer();
         inboundPlayer.setType("createPlayerFromGuest");
         inboundPlayer.setUsername(guestusername);
@@ -132,5 +132,14 @@ public class PlayerRepository {
         else {
             return true;
         }
+    }
+    public static void printAllPlayers() {
+        System.out.println("playerRepouserId: "+playerRepouserId);
+        System.out.println("playerRepogameId: "+playerRepogameId);
+        System.out.println("playerRepoguest: "+playerRepoguest);
+
+
+
+
     }
 }

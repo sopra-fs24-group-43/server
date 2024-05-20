@@ -68,4 +68,10 @@ public class TimerRepository {
     public static HashMap<Integer, ScheduledFuture> findDiscTasksByUserId(int userId) {
         return timerTasksRepoDisconnected.get(userId);
     }
+    public static void printAllTimers() {
+        System.out.println("timerRepo: "+timerRepo);
+        System.out.println("timerTasksRepo: "+timerTasksRepo);
+        System.out.println("timerRepoDisconnected: "+timerRepoDisconnected);
+        System.out.println("timerTasksRepoDisconnected: "+timerTasksRepoDisconnected);
+    }
 }

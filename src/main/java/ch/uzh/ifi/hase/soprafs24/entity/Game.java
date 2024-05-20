@@ -88,8 +88,9 @@ public class Game {
     private Boolean roundIsActive;
     private int playersOriginally;
     private String gamePhase; // "inLobby" = after creategame, "started" = after startgame,"choosing" = after nextturn, "drawing" = after sendchosenword, "leaderbaord" = after endturn (sendguess condition and timerService condition)
-
-    public Game(Player admin) {
+    private WebSocketService webSocketService;
+    private TimerService timerService;
+    public Game(Player admin, WebSocketService webSocketService, TimerService timerService) {
         this.gameStarted = false;
         this.endGame = false;
         this.random = new RandomGenerators();
@@ -118,6 +119,8 @@ public class Game {
         this.playerIdByName = new HashMap<String, Integer>();
         this.roundIsActive = false;
         this.setGamePhase("inLobby");
+        this.webSocketService = webSocketService;
+        this.timerService = timerService;
     }
     public Boolean getGameStarted() {
         return this.gameStarted;
@@ -164,7 +167,7 @@ public class Game {
         }
     }
 
-    public void removePlayer(int userId){
+    public void removePlayer(int userId){  //only use for leave game!
         this.playerIdByName.remove(players.get(userId).getUsername());
         this.players.remove(userId);
         this.connectedPlayers.remove(userId);
@@ -248,7 +251,7 @@ public class Game {
         this.currentTurn = 0;
         this.playersOriginally = players.size();
     }
-    public void terminategame(int gameId, WebSocketService webSocketService, String reason) { //used if a player leaves the game and there are too little players or the admin left
+    public void terminategame(int gameId, String reason) { //used if a player leaves the game and there are too little players or the admin left
         //allowed reasons: "admin left", "too few players", "normal"
         System.out.println("terminategame");
         Game game = GameRepository.findByGameId(gameId);
@@ -258,16 +261,21 @@ public class Game {
         game.setGamePhase("leaderboard");
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
         leaderboardDTO.setReason(reason);
-        webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO); //endturn
-        //dont know what to send
+
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         TimerRepository.haltTimer(gameId);
         game.deletegame(gameId);
-        webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+        GameRepository.printAllAll();
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO); //endturn
     }
-    public void intigrateIntoGame(int userId, int gameId) {  //when players disconnect fromm running game and then reconnect to it
-        System.out.println("intigrateIntoGame, gameId, userId: "+ gameId + ", " + ", " + userId);
+    public void intigrateIntoGame(int userId, int gameId) {  //when players disconnect from running game and then reconnect to it
+        System.out.println("intigrateIntoGame, gameId, userId: "+ gameId + ", "  + userId);
         Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            System.out.println("game was null when intigrating");
+            return;
+        }
         Player player = PlayerRepository.findByUserId(userId);
         HashMap<Integer, Player> connectedPlayers = game.getConnectedPlayers();
         connectedPlayers.put(userId, player);
@@ -277,39 +285,60 @@ public class Game {
                 ArrayList<Integer> DrawingOrderLeavers = game.getDrawingOrderLeavers();
                 DrawingOrderLeavers.set(i, userId);
                 game.setDrawingOrderLeavers(DrawingOrderLeavers);
+                GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+                this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+                System.out.println("changed back all the settings");
                 break;
             }
         }
 
     }
-    public void lostConnectionToPlayer(int userId, int gameId, WebSocketService webSocketService) {
+    public void lostConnectionToPlayer(int userId, int gameId) {
         Game game = GameRepository.findByGameId(gameId);
         System.out.println("executing lostConnectionToPlayer: "+ userId);
         Player player = game.getPlayers().get(userId);
         game.getConnectedPlayers().remove(userId);
         if (game.getAdmin().getUserId() == player.getUserId()) { //if leaver was admin
-            this.terminategame(gameId, webSocketService, "admin left");
+            this.terminategame(gameId, "admin left");
         }
-        if (game.getConnectedPlayers().size() == 1) { //if only 1 connectedplayer left
-            this.terminategame(gameId, webSocketService, "too few players");
+        if (game.getConnectedPlayers().size() <= 1) { //if only 1 connectedplayer left
+            this.terminategame(gameId, "too few players");
         }
         for (int id : game.getDrawingOrderLeavers() ) //setting leaver's index to 0 in DrawingOrderLeavers
             if (id == userId) {
-                if (game.getDrawingOrderLeavers().indexOf(id) == game.getDrawer()) {  //leaver was Drawer
-                    ArrayList<Integer> DrawingOrderLeavers = game.getDrawingOrderLeavers();
-                    DrawingOrderLeavers.set(DrawingOrderLeavers.indexOf(id), 0);
-                    game.setDrawingOrderLeavers(DrawingOrderLeavers);
-                    this.nextturn(player.getGameId());
+                ArrayList<Integer> DrawingOrderLeavers = game.getDrawingOrderLeavers();
+                System.out.println("DrawingOrderLeavers before change: "+DrawingOrderLeavers);
+                int indexOfDrawer = DrawingOrderLeavers.indexOf(id);
+                DrawingOrderLeavers.set(indexOfDrawer, 0);
+                game.setDrawingOrderLeavers(DrawingOrderLeavers);
+                System.out.println("connectedPlayers: "+game.getConnectedPlayers());
+                System.out.println("DrawingOrderLeavers: "+game.getDrawingOrderLeavers());
+                System.out.println("DrawingOrder: "+game.getDrawingOrderLeavers());
+                System.out.println("his index in it: "+ indexOfDrawer);
+                System.out.println("is he drawer: "+(indexOfDrawer == game.getDrawer()));
+                System.out.println("GamePhase: "+ game.getGamePhase());
+                GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+                this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+                if (indexOfDrawer == game.getDrawer() && (game.getGamePhase().equals("choosing") || game.getGamePhase().equals("drawing"))) {
+                    //if this, then endturn
+                    TimerRepository.haltTimer(gameId);   //halt timer
+                    System.out.println("endturn by lostConnectionToPlayer");
+                    if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getPlayersOriginally()) {  //endturn, gamePhase = leaderboard
+                        game.setEndGame(true);
+                    }
+                    LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+                    game.setGamePhase("leaderboard");
+                    if (game.getEndGame()){
+                        leaderboardDTO.setReason("normal");
+                    }
+                    this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
+                    timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
                 }
-                else {
-                    ArrayList<Integer> DrawingOrderLeavers = game.getDrawingOrderLeavers();
-                    DrawingOrderLeavers.set(DrawingOrderLeavers.indexOf(id), 0);
-                    game.setDrawingOrderLeavers(DrawingOrderLeavers);
-                }
+
             }
     }
 
-    public void leavegame(int playerId, int gameId, WebSocketService webSocketService) {
+    public void leavegame(int playerId, int gameId) {
         System.out.println("leavegame, playerId, gameId: "+playerId + ", "+ gameId);
         Game game = GameRepository.findByGameId(gameId);
         game.removePlayer(playerId);
@@ -326,12 +355,12 @@ public class Game {
         lobbyInfo.setGameId(gameId);
         lobbyInfo.setPlayers(game.getPlayers());
         lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
-        webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
-        webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
-        webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
-        System.out.println(9);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
-    public void deletegame(int gameId) {
+    public void deletegame(int gameId) {  //does nothing if game doesnt exist
+        System.out.println("deletegame gameId: "+gameId);
         GameRepository.removeGame(gameId);
         HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId); //<gameId, Player>
         players.forEach((key, value) -> {
@@ -342,22 +371,23 @@ public class Game {
     }
     public void nextturn(int  gameId) {
         Game game = GameRepository.findByGameId(gameId);
-
-        if (game.getCurrentTurn()==game.getPlayersOriginally()) {
-            System.out.println("a round ended");
+        String turnOrRound;
+        if (game.getCurrentTurn()==game.getConnectedPlayers().size()) {
+            turnOrRound = "Round";
             game.setCurrentTurn(1);
             game.setCurrentRound(game.getCurrentRound()+1);
             choosenextdrawer(gameId);
             int currentWordIndex = game.getCurrentWordIndex() + 3;
             game.setCurrentWordIndex(currentWordIndex);
         } else {
+            turnOrRound = "Turn";
             game.setCurrentTurn(game.getCurrentTurn() + 1);
             choosenextdrawer(gameId);
             int currentWordIndex = game.getCurrentWordIndex() + 3;
             game.setCurrentWordIndex(currentWordIndex);
         }
         game.setGamePhase("choosing");
-        System.out.println("nextturn");
+        System.out.println("NEXTTURN (T,R, action): " + game.getCurrentTurn() + ", "+ game.getCurrentRound() + ", " +turnOrRound);
 
 
     }
@@ -365,10 +395,13 @@ public class Game {
         Game game = GameRepository.findByGameId(gameId);
         int Drawer = (game.getDrawer()+1);
         Drawer = Drawer % game.getDrawingOrder().size();
-        while (game.getDrawingOrderLeavers().get(Drawer) == 0) {
-            Drawer = (game.getDrawer()+1);
+        System.out.println("DrawingOrderLeavers: "+game.getDrawingOrderLeavers());
+        while (game.getDrawingOrderLeavers().get(Drawer) == 0) { //runs forever
+            System.out.println("changed Drawer from " + (Drawer-1) + "to " + Drawer + "but" + Drawer + "was not connected");
+            Drawer = Drawer+1; //should be Drawer
             Drawer = Drawer % game.getDrawingOrder().size();
         }
+        System.out.println("changed Drawer from " + (Drawer-1) + "to " + Drawer);
         game.setDrawer(Drawer);
     }
 

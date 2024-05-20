@@ -39,4 +39,12 @@ public class GameRepository {
             return true;
         }
     }
+    public static void printAllGames() {
+        System.out.println("gameRepo: "+gameRepo);
+    }
+    public static void printAllAll() {
+        printAllGames();
+        PlayerRepository.printAllPlayers();
+        TimerRepository.printAllTimers();
+    }
 }

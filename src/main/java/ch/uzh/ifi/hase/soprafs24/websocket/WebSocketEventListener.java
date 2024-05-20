@@ -30,12 +30,12 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         System.out.println(headerAccessor);
         Integer userId = (Integer) headerAccessor.getSessionAttributes().get("userId");
-
+        //GameRepository.printAllAll();
         if (userId == null) {
             System.out.println("User had connection without userId in SessAttr");
         }
         else {
-            System.out.println(userId);
+            System.out.println("userId: "+userId);
             Player player = PlayerRepository.findByUserId(userId);
             if (player == null) { //is he a player already?
                 System.out.println("User is not a player");
@@ -49,7 +49,7 @@ public class WebSocketEventListener {
                     System.out.println("User is a guest with gameId = -1");
                 }
                 else {
-                    Game game = GameRepository.findByGameId(player.getGameId());
+                    Game game = GameRepository.findByGameId(gameId);  //can be null!!!
                     System.out.println("gameStarted: "+game.getGameStarted());
                     Boolean reload = (Boolean) headerAccessor.getSessionAttributes().get("reload");
                     System.out.println("reload: "+reload);
@@ -65,7 +65,7 @@ public class WebSocketEventListener {
 
                             }
                             else {
-                                game.leavegame(userId, gameId, webSocketService);
+                                game.leavegame(userId, gameId);
                             }
                         }
                         else {  //was it a reload -> give time to reconnect
@@ -80,7 +80,7 @@ public class WebSocketEventListener {
                     }
                     else {
                         if (reload == null || !reload) {  //was it a reload or a disconnect?
-                            game.lostConnectionToPlayer(userId, gameId, this.webSocketService);
+                            game.lostConnectionToPlayer(userId, gameId);
                         }
                         else {
                             timerService.doTimerForReloadDisc(gameId, userId, "inGame"); //needs a action field
