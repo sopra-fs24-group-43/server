@@ -9,7 +9,8 @@ import lombok.Setter;
 @Getter
 public class LeaderBoardDTO {
     private String type; //leaderboard
-    //maybe indicate next turn
+    private String reason; //reason why the game ended (only used when endGame = true), "admin left", "too few players", "normal"
+    private Boolean endGame;
     private HashMap<Integer, Player> userIdToPlayer;  //<userId, Player>
     private HashMap<Integer, Integer> totalPoints;  //<userId, totalPoints>
     private HashMap<Integer, Integer> newlyEarnedPoints;  //<userId, newlyEarnedPoints>

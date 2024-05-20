@@ -23,9 +23,6 @@ public class GameRepository {
 
     public static Game findByGameId(int gameId) {
         Game game = gameRepo.get(gameId);
-        if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game does not exist!");
-        }
         return game;
     }
 
@@ -41,5 +38,13 @@ public class GameRepository {
         else {
             return true;
         }
+    }
+    public static void printAllGames() {
+        System.out.println("gameRepo: "+gameRepo);
+    }
+    public static void printAllAll() {
+        printAllGames();
+        PlayerRepository.printAllPlayers();
+        TimerRepository.printAllTimers();
     }
 }

@@ -29,7 +29,7 @@ public class PlayerRepository {
         String role = "guest";
         Player player = new Player(guestusername, guestId, isGuest, gameId, friends, role);
         playerRepoguest.put(guestId, player);
-
+        playerRepouserId.put(guestId, player);
         InboundPlayer inboundPlayer = new InboundPlayer();
         inboundPlayer.setType("createPlayerFromGuest");
         inboundPlayer.setUsername(guestusername);
@@ -113,11 +113,7 @@ public class PlayerRepository {
     }
 
     public static Player findByUserId(int userId) { //works for guests and players
-        Player player = playerRepouserId.get(userId);
-        if (player == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This player does not exist!");
-        }
-        return player;
+        return playerRepouserId.get(userId); //returns null if not exist
     }
     public static HashMap<Integer, Player> findUsersByGameId(int gameId) { //works for guests and players
         HashMap<Integer, Player> players = new HashMap<>();
@@ -136,5 +132,14 @@ public class PlayerRepository {
         else {
             return true;
         }
+    }
+    public static void printAllPlayers() {
+        System.out.println("playerRepouserId: "+playerRepouserId);
+        System.out.println("playerRepogameId: "+playerRepogameId);
+        System.out.println("playerRepoguest: "+playerRepoguest);
+
+
+
+
     }
 }

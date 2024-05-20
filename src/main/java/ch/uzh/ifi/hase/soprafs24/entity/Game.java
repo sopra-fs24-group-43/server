@@ -1,8 +1,14 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 import java.util.*;
 
+
+import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+
 import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
+
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
+import ch.uzh.ifi.hase.soprafs24.service.TimerService;
 import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorDrawer;
 import ch.uzh.ifi.hase.soprafs24.utils.PointCalculatorGuesser;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
@@ -14,6 +20,8 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LobbyInfo;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +45,6 @@ public class Game {
 @Getter
 @Setter
 public class Game {
-
     private boolean gameStarted;  //is set to true once get startgame was called
     private RandomGenerators random;
     private HashMap<Integer, Player> players; //
@@ -67,6 +74,7 @@ public class Game {
     private int answersReceived;
     private int Drawer; //identified with index in drawingOrder
     private ArrayList<Integer> drawingOrder; //identified with userId
+    private ArrayList<Integer> drawingOrderLeavers; // at the index of the leaver will be a 0
     private int currentRound; //incremented once currentturn = connectedPlayers and startturn is called
     private int currentTurn; //incremented on startturn
     private HashMap<Integer, Player> connectedPlayers; //someone might disconnect and then we have to skip his turn (not needed for M3 so just = players)
@@ -79,25 +87,27 @@ public class Game {
     private HashMap<String, Integer> playerIdByName;
     private Boolean roundIsActive;
     private int playersOriginally;
+
+    private String gamePhase; // "inLobby" = after creategame, "started" = after startgame,"choosing" = after nextturn, "drawing" = after sendchosenword, "leaderbaord" = after endturn (sendguess condition and timerService condition)
+    private WebSocketService webSocketService;
+    private TimerService timerService;
     private HashMap<String,List<String>> wordlists;
     //private int nr_genres;
 
-    public Game(Player admin) {
+     public Game(Player admin, WebSocketService webSocketService, TimerService timerService) {
+
         this.gameStarted = false;
         this.endGame = false;
         this.random = new RandomGenerators();
         this.admin = admin;
         this.players = new HashMap<Integer, Player>();
         this.players.put(admin.getUserId(), admin);
-        //this.gameId = this.random.random.nextInt(1000); // needs to be unqiue (check with gamerepository)
-
         this.creationDate = new Date();
         this.wordList = new ArrayList<>();
         this.maxPlayers = 5;
         this.maxRounds = 5;
         this.turnLength = 60;
         this.gamePassword = this.random.PasswordGenerator();
-        //this.lobbyName = Integer.toString(this.gameId);
         this.lobbyName = this.admin.getUsername() + "'s lobby";
         this.points = new HashMap<Player, Integer>();
         this.pointsOfCurrentTurn = new HashMap<Player, Integer>();
@@ -107,14 +117,19 @@ public class Game {
         this.connectedPlayers = new HashMap<Integer, Player>();
         this.connectedPlayers.put(admin.getUserId(), admin);
         this.drawingOrder = new ArrayList<Integer>();
+        this.drawingOrderLeavers = new ArrayList<Integer>();
         this.currentCorrectGuesses = 0;
         this.remainingTime = 0;
         this.playerCorrectGuesses = new HashMap<String, Boolean>();
         this.playerIdByName = new HashMap<String, Integer>();
         this.roundIsActive = false;
+        this.setGamePhase("inLobby");
+        this.webSocketService = webSocketService;
+        this.timerService = timerService;
+
         this.wordlists = new HashMap<>();
         this.genres = new ArrayList<>();
-        //this.nr_genres = 0;
+
     }
     public Boolean getGameStarted() {
         return this.gameStarted;
@@ -161,7 +176,7 @@ public class Game {
         }
     }
 
-    public void removePlayer(int userId){
+    public void removePlayer(int userId){  //only use for leave game!
         this.playerIdByName.remove(players.get(userId).getUsername());
         this.players.remove(userId);
         this.connectedPlayers.remove(userId);
@@ -245,13 +260,15 @@ public class Game {
         list.add("Animal");
         this.genres = list;
         this.wordList = setWordList(this.genres);
-
         this.gameStarted = true;
+        this.gamePhase = "started";
         this.players.forEach((id, player) -> {
             this.points.put(player, 0);
             this.pointsOfCurrentTurn.put(player, 0);
             this.drawingOrder.add(id);
+            this.drawingOrderLeavers.add(id);
             this.playerCorrectGuesses.put(player.getUsername(), false);
+            this.connectedPlayers.put(id, player);
         });
         this.Drawer = -1;
         this.currentWordIndex = 1;
@@ -259,10 +276,158 @@ public class Game {
         this.currentTurn = 0;
         this.playersOriginally = players.size();
     }
+    public void terminategame(int gameId, String reason) { //used if a player leaves the game and there are too little players or the admin left
+        //allowed reasons: "admin left", "too few players", "normal"
+        System.out.println("terminategame");
+        Game game = GameRepository.findByGameId(gameId);
+        game.setEndGame(true);
+        game.setCurrentRound(game.getMaxRounds());
+        game.setCurrentTurn(game.getPlayersOriginally());
+        game.setGamePhase("leaderboard");
+        LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+        leaderboardDTO.setReason(reason);
 
-    public void chooseNewDrawer() {
-        this.Drawer = this.Drawer+1;
-        this.Drawer = this.Drawer % this.players.size();
+        GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+        TimerRepository.haltTimer(gameId);
+        game.deletegame(gameId);
+        GameRepository.printAllAll();
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO); //endturn
+    }
+    public void intigrateIntoGame(int userId, int gameId) {  //when players disconnect from running game and then reconnect to it
+        System.out.println("intigrateIntoGame, gameId, userId: "+ gameId + ", "  + userId);
+        Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            System.out.println("game was null when intigrating");
+            return;
+        }
+        Player player = PlayerRepository.findByUserId(userId);
+        HashMap<Integer, Player> connectedPlayers = game.getConnectedPlayers();
+        connectedPlayers.put(userId, player);
+        game.setConnectedPlayers(connectedPlayers);
+        for (int i = 0; i < game.getDrawingOrderLeavers().size(); i++){  //setting the 0 in DrawingOrderLeavers back to userId
+            if (game.getDrawingOrderLeavers().get(i) == 0){
+                ArrayList<Integer> DrawingOrderLeavers = game.getDrawingOrderLeavers();
+                DrawingOrderLeavers.set(i, userId);
+                game.setDrawingOrderLeavers(DrawingOrderLeavers);
+                GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+                this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+                System.out.println("changed back all the settings");
+                break;
+            }
+        }
+
+    }
+    public void lostConnectionToPlayer(int userId, int gameId) {
+        Game game = GameRepository.findByGameId(gameId);
+        System.out.println("executing lostConnectionToPlayer: "+ userId);
+        Player player = game.getPlayers().get(userId);
+        game.getConnectedPlayers().remove(userId);
+        if (game.getAdmin().getUserId() == player.getUserId()) { //if leaver was admin
+            this.terminategame(gameId, "admin left");
+        }
+        if (game.getConnectedPlayers().size() <= 1) { //if only 1 connectedplayer left
+            this.terminategame(gameId, "too few players");
+        }
+        for (int id : game.getDrawingOrderLeavers() ) //setting leaver's index to 0 in DrawingOrderLeavers
+            if (id == userId) {
+                ArrayList<Integer> DrawingOrderLeavers = game.getDrawingOrderLeavers();
+                System.out.println("DrawingOrderLeavers before change: "+DrawingOrderLeavers);
+                int indexOfDrawer = DrawingOrderLeavers.indexOf(id);
+                DrawingOrderLeavers.set(indexOfDrawer, 0);
+                game.setDrawingOrderLeavers(DrawingOrderLeavers);
+                System.out.println("connectedPlayers: "+game.getConnectedPlayers());
+                System.out.println("DrawingOrderLeavers: "+game.getDrawingOrderLeavers());
+                System.out.println("DrawingOrder: "+game.getDrawingOrderLeavers());
+                System.out.println("his index in it: "+ indexOfDrawer);
+                System.out.println("is he drawer: "+(indexOfDrawer == game.getDrawer()));
+                System.out.println("GamePhase: "+ game.getGamePhase());
+                GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+                this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+                if (indexOfDrawer == game.getDrawer() && (game.getGamePhase().equals("choosing") || game.getGamePhase().equals("drawing"))) {
+                    //if this, then endturn
+                    TimerRepository.haltTimer(gameId);   //halt timer
+                    System.out.println("endturn by lostConnectionToPlayer");
+                    if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getPlayersOriginally()) {  //endturn, gamePhase = leaderboard
+                        game.setEndGame(true);
+                    }
+                    LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
+                    game.setGamePhase("leaderboard");
+                    if (game.getEndGame()){
+                        leaderboardDTO.setReason("normal");
+                    }
+                    this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
+                    timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+                }
+
+            }
+    }
+
+    public void leavegame(int playerId, int gameId) {
+        System.out.println("leavegame, playerId, gameId: "+playerId + ", "+ gameId);
+        Game game = GameRepository.findByGameId(gameId);
+        game.removePlayer(playerId);
+        Player player = PlayerRepository.findByUserId(playerId);
+        boolean wasAdmin = (player.getRole() == "admin");
+        int currentPlayerCount = game.getPlayers().size();
+        PlayerRepository.removePlayer(player.getUserId(), gameId);
+        QuestionToSend questionToSend = new QuestionToSend("leavegame");
+        questionToSend.setLeaver(player);
+        questionToSend.setWasAdmin(wasAdmin); //what should happen if player was the admin? (delete game or give admin to other player?)
+        questionToSend.setCurrentPlayerCount(currentPlayerCount);
+        LobbyInfo lobbyInfo = new LobbyInfo();
+        lobbyInfo.setType("getlobbyinfo");
+        lobbyInfo.setGameId(gameId);
+        lobbyInfo.setPlayers(game.getPlayers());
+        lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
+    }
+    public void deletegame(int gameId) {  //does nothing if game doesnt exist
+        System.out.println("deletegame gameId: "+gameId);
+        GameRepository.removeGame(gameId);
+        HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId); //<gameId, Player>
+        players.forEach((key, value) -> {
+            PlayerRepository.removePlayer(value.getUserId(), key);
+        });
+        PlayerRepository.removeGameId(gameId);
+
+    }
+    public void nextturn(int  gameId) {
+        Game game = GameRepository.findByGameId(gameId);
+        String turnOrRound;
+        if (game.getCurrentTurn()==game.getConnectedPlayers().size()) {
+            turnOrRound = "Round";
+            game.setCurrentTurn(1);
+            game.setCurrentRound(game.getCurrentRound()+1);
+            choosenextdrawer(gameId);
+            int currentWordIndex = game.getCurrentWordIndex() + 3;
+            game.setCurrentWordIndex(currentWordIndex);
+        } else {
+            turnOrRound = "Turn";
+            game.setCurrentTurn(game.getCurrentTurn() + 1);
+            choosenextdrawer(gameId);
+            int currentWordIndex = game.getCurrentWordIndex() + 3;
+            game.setCurrentWordIndex(currentWordIndex);
+        }
+        game.setGamePhase("choosing");
+        System.out.println("NEXTTURN (T,R, action): " + game.getCurrentTurn() + ", "+ game.getCurrentRound() + ", " +turnOrRound);
+
+
+    }
+    public void choosenextdrawer(int gameId) {
+        Game game = GameRepository.findByGameId(gameId);
+        int Drawer = (game.getDrawer()+1);
+        Drawer = Drawer % game.getDrawingOrder().size();
+        System.out.println("DrawingOrderLeavers: "+game.getDrawingOrderLeavers());
+        while (game.getDrawingOrderLeavers().get(Drawer) == 0) { //runs forever
+            System.out.println("changed Drawer from " + (Drawer-1) + "to " + Drawer + "but" + Drawer + "was not connected");
+            Drawer = Drawer+1; //should be Drawer
+            Drawer = Drawer % game.getDrawingOrder().size();
+        }
+        System.out.println("changed Drawer from " + (Drawer-1) + "to " + Drawer);
+        game.setDrawer(Drawer);
     }
 
     public String getCurrentWord(){
@@ -272,6 +437,9 @@ public class Game {
     public GameStateDTO receiveGameStateDTO() {
         GameStateDTO gameStateDTO = new GameStateDTO();
         gameStateDTO.setType("GameStateDTO");
+        gameStateDTO.setEndGame(this.endGame);
+        gameStateDTO.setConnectedPlayers(this.connectedPlayers);
+        gameStateDTO.setPlayersOriginally(this.playersOriginally);
         gameStateDTO.setCurrentRound(this.currentRound);
         gameStateDTO.setCurrentTurn(this.currentTurn);
         ArrayList<String> threeWords = new ArrayList<>();
@@ -279,17 +447,18 @@ public class Game {
         threeWords.add(wordList.get(this.currentWordIndex));
         threeWords.add(wordList.get(this.currentWordIndex+1));
         gameStateDTO.setThreeWords(threeWords);
-        //gameStateDTO.setCurrentWordIndex(this.currentWordIndex); //not index (from the list of words) but the actual word
         gameStateDTO.setDrawer(this.Drawer);
-        gameStateDTO.setDrawingOrder(this.drawingOrder);
-        gameStateDTO.setPlayersOriginally(this.playersOriginally);
+        gameStateDTO.setDrawingOrder(this.drawingOrderLeavers);  //changed to drawingOrderLeavers
         gameStateDTO.setMaxRounds(this.maxRounds);
-        //setConnectedPlayers not done yet!
+        gameStateDTO.setGamePhase(this.gamePhase);
+        gameStateDTO.setActualCurrentWord(this.actualCurrentWord);
         return gameStateDTO;
     }
 
     public LeaderBoardDTO calculateLeaderboard() {
         LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
+        leaderboardDTO.setType("leaderboard");
+        leaderboardDTO.setEndGame(this.endGame);
         this.pointsOfCurrentTurn.forEach((key, value) -> {this.points.put(key, this.points.get(key)+value);});
 
         leaderboardDTO.setUserIdToPlayer(this.players);

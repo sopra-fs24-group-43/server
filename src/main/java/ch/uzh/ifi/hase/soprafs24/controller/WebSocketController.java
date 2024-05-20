@@ -2,29 +2,25 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.TimerService;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.*;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Coordinates;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.EraseAllCoordinates;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillCoordinates;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.EraserCoordinates;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.DrawCoordinates;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillToolCoordinates;
 
 
 @Controller
@@ -32,6 +28,7 @@ public class WebSocketController {
     WebSocketService webSocketService;
     RandomGenerators randomGenerators;
     TimerService timerService;
+
     public WebSocketController( WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
         this.randomGenerators = new RandomGenerators();
@@ -49,7 +46,7 @@ public class WebSocketController {
         Player player = new Player(inboundPlayer.getUsername(),
                 inboundPlayer.getUserId(), inboundPlayer.getIsGuest(),inboundPlayer.getGameId(),
                 inboundPlayer.getFriends(), inboundPlayer.getRole());
-        Game game = new Game(player);
+        Game game = new Game(player, webSocketService, timerService);
         int gameId = randomGenerators.GameIdGenerator();
         while (GameRepository.gameIdtaken(gameId)) {
             gameId = randomGenerators.GameIdGenerator();
@@ -62,18 +59,14 @@ public class WebSocketController {
         QuestionToSend questionToSend = new QuestionToSend("creategame");
         questionToSend.setGameId(gameId);
         questionToSend.setUserId(player.getUserId());
+        //new below
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the creator of the game
         //and for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
     @MessageMapping("/games/{gameId}/deletegame")
     public void deletegame(@DestinationVariable int gameId){
-        GameRepository.removeGame(gameId);
-        HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId); //<gameId, Player>
-        players.forEach((key, value) -> {
-            PlayerRepository.removePlayer(value.getUserId(), key);
-        });
-        PlayerRepository.removeGameId(gameId);
-
+        Game game = GameRepository.findByGameId(gameId);
+        game.deletegame(gameId);
         QuestionToSend questionToSend = new QuestionToSend("deletegame");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);  //for the players in the Lobby
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
@@ -112,7 +105,7 @@ public class WebSocketController {
     }
 
     @MessageMapping("/games/{gameId}/joingame")
-    public void joingame(@DestinationVariable int gameId, InboundPlayer inboundPlayer){
+    public void joingame(@DestinationVariable int gameId, InboundPlayer inboundPlayer  ){
 
         Player player = new Player(inboundPlayer.getUsername(),
                 inboundPlayer.getUserId(), inboundPlayer.getIsGuest(),
@@ -124,6 +117,8 @@ public class WebSocketController {
         int playerId = inboundPlayer.getUserId();
         PlayerRepository.addPlayer(playerId, gameId, player);
         QuestionToSend questionToSend = new QuestionToSend("joingame");
+        //new beloew
+
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", inboundPlayer); //should return something joiner doesnt need to receive it
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
@@ -131,31 +126,12 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/leavegame/{playerId}")
     public void leavegame(@DestinationVariable int gameId, @DestinationVariable int playerId){ //needs change = can admin leavegame or only deletegame?
         Game game = GameRepository.findByGameId(gameId);
-        game.removePlayer(playerId);
-        Player player = PlayerRepository.findByUserId(playerId);
-        boolean wasAdmin = (player.getRole() == "admin");
-        int currentPlayerCount = game.getPlayers().size();
-        PlayerRepository.removePlayer(player.getUserId(), gameId);
-
-        QuestionToSend questionToSend = new QuestionToSend("leavegame");
-        questionToSend.setLeaver(player);
-        questionToSend.setWasAdmin(wasAdmin); //what should happen if player was the admin? (delete game or give admin to other player?)
-        questionToSend.setCurrentPlayerCount(currentPlayerCount);
-        LobbyInfo lobbyInfo = new LobbyInfo();
-        lobbyInfo.setType("getlobbyinfo");
-        lobbyInfo.setGameId(gameId);
-        lobbyInfo.setPlayers(game.getPlayers());
-        lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
-        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
-
+        game.leavegame(playerId, gameId);
 /*
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         PlayerRepository.removePlayer(inboundPlayer.getUserId(),gameId);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
 */
-
     }
     @MessageMapping("/games/{gameId}/updategamesettings")
     public void updategamesettings(@DestinationVariable int gameId, GameSettingsDTO gameSettingsDTO){
@@ -181,39 +157,150 @@ public class WebSocketController {
         game.startGame();
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         QuestionToSend questionToSend = new QuestionToSend("startgame"); //this is solely for the Table to take the game off the List of lobbies
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO); // 
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
 
+    @MessageMapping("/games/{gameId}/getgamestate/{userId}")
+    public void getgamestate(@DestinationVariable int gameId, @DestinationVariable int userId){
+        Game game = GameRepository.findByGameId(gameId);
+        GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general/" + userId, gameStateDTO);
+    }
+    @MessageMapping("/games/sendreload")
+    public void sendreloadAttr(SessionAttributeDTO sessionAttributeDTO, SimpMessageHeaderAccessor headerAccessor){
+        System.out.println("from sendreload: "+sessionAttributeDTO.getReload());
+        headerAccessor.getSessionAttributes().put("reload", sessionAttributeDTO.getReload());
+    }
+    @MessageMapping("/games/senduserId")
+    public void senduserIdAttr(SessionAttributeDTO sessionAttributeDTO, SimpMessageHeaderAccessor headerAccessor){
+        System.out.println("from senduserId: "+sessionAttributeDTO.getUserId());
+        headerAccessor.getSessionAttributes().put("userId", sessionAttributeDTO.getUserId());
+    }
+    @MessageMapping("/landing/alertreconnect/{userId}")
+    public void alertreconnect(@DestinationVariable int userId, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("from alertreconnect: "+userId);
+        HashMap<Integer, ScheduledFuture> task = TimerRepository.findDiscTasksByUserId(userId);
+        TimerRepository.printDiscTimers();
+        timerService.stopDiscTimer(userId);                 //place this correctly
+        headerAccessor.getSessionAttributes().put("userId", userId);
+        headerAccessor.getSessionAttributes().put("reload", false);
+        if (task != null) {
+            if (!task.get(2).isDone()) {
+                System.out.println("task existed and wasnt done yet");
+                return;
+            }
+            else {
+                System.out.println("task existed and was done");
+                if (PlayerRepository.findByUserId(userId) == null) {
+                    System.out.println("alertrecon: was not a player before reconnecting");
+                }
+                else  {  //what if gameId = -1
+                    Player player = PlayerRepository.findByUserId(userId);
+                    int gameId = player.getGameId();
+                    System.out.println("alertrecon: userId and gameId: " + userId + ", " + gameId);
+                    if (gameId == -1) {
+                        System.out.println("alertrecon: was a guest player with gameId = -1");
+                        return;  //halts
+                    }
+                    Game game = GameRepository.findByGameId(gameId);
+                    if (game == null) {
+                        System.out.println("alertrecon: real player had a gameId that cant be tracked to a game"); //this should never happen
+                        return; //halts
+                    }
+                    if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
+                        System.out.println("alertrecon: was a player before reconnecting and game is still running");
+                        ReconnectionDTO reconnectionDTO = new ReconnectionDTO();
+                        reconnectionDTO.setType("ReconnectionDTO");
+                        reconnectionDTO.setGameId(player.getGameId());
+                        reconnectionDTO.setRole(player.getRole());
+                        this.webSocketService.sendMessageToClients("/topic/landing/alertreconnect/" + userId, reconnectionDTO);  //add gameStarted variable?
+                    }
+                    else {
+                        System.out.println("alertrecon: was a player before reconnecting but his game is not started or ended");
+
+                    }
+                }
+            }
+        }
+        else {
+            System.out.println("task did not exist");
+            if (PlayerRepository.findByUserId(userId) == null) {
+                System.out.println("alertrecon: was not a player before reconnecting");
+            }
+            if (PlayerRepository.findByUserId(userId) != null) {  //what if gameId = -1
+                Player player = PlayerRepository.findByUserId(userId);
+                int gameId = player.getGameId();
+                System.out.println("alertrecon: userId and gameId: " + userId + ", " + gameId);
+                if (gameId == -1) {
+                    System.out.println("alertrecon: was a guest player with gameId = -1");
+                    return;
+                }
+                Game game = GameRepository.findByGameId(gameId);
+                if (game == null) {
+                    System.out.println("alertrecon: real player had a gameId that cant be tracked to a game"); //this should never happen
+                    return; //halts
+                }
+                if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
+                    System.out.println("alertrecon: was a player before reconnecting and game is still running");
+                    ReconnectionDTO reconnectionDTO = new ReconnectionDTO();
+                    reconnectionDTO.setType("ReconnectionDTO");
+                    reconnectionDTO.setGameId(player.getGameId());
+                    reconnectionDTO.setRole(player.getRole());
+                    this.webSocketService.sendMessageToClients("/topic/landing/alertreconnect/" + userId, reconnectionDTO);
+                }
+                else {
+                    System.out.println("alertrecon: was a player before reconnecting but his game is not started or ended");
+
+                }
+            }
+        }
+    }
+    @MessageMapping("/landing/reconnect/{userId}")
+    public void reconnect(@DestinationVariable int userId) {
+        System.out.println("from reconnect: "+userId);
+        System.out.println(PlayerRepository.findByUserId(userId));
+
+        if (PlayerRepository.findByUserId(userId) != null) {
+            Player player = PlayerRepository.findByUserId(userId);
+            int gameId = player.getGameId();
+            Game game = GameRepository.findByGameId(gameId);
+            System.out.println(game);
+            if (game == null) {
+                return;
+            }
+            System.out.println(game.getPlayers().containsKey(userId));
+            System.out.println(game.getGameStarted());
+            if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
+                game.intigrateIntoGame(userId, gameId);
+            }
+        }
+        System.out.println("from reconnect end: " +userId);
+
+
+    }
     @MessageMapping("/games/{gameId}/nextturn")
     public void nextturn(@DestinationVariable int gameId){
+        //System.out.println("nextturn in ws started");
         Game game = GameRepository.findByGameId(gameId);
-        if (game.getCurrentRound()==game.getMaxRounds()&&game.getCurrentTurn()==5) {
-            game.setEndGame(true);
-        }
-        else if (game.getCurrentTurn()==5) { //shouldnt be == 5 but == game.getconnectedPlayers.size()?
-            game.setCurrentRound(game.getCurrentRound()+1);
-            game.setCurrentTurn(1);
-        } else {
-            game.setCurrentTurn(game.getCurrentTurn()+1);
-        }
-        int Drawer = (game.getDrawer()+1)%2;
-        game.setDrawer(Drawer);
-        GameStateDTO gameStateDTO = game.receiveGameStateDTO();
-        int currentWordIndex = game.getCurrentWordIndex() + 3;
-        game.setCurrentWordIndex(currentWordIndex);
-
+        game.nextturn(gameId);
         timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
-
+        GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+        //System.out.println("nextturn in ws ended");
+
     }
 
     @MessageMapping("/games/{gameId}/sendchosenword")
     public void sendchosenword(@DestinationVariable int gameId, ChooseWordDTO chooseWordDTO) {
+        timerService.doShutDownTimer(gameId); //shutsdown timer from nextturn "choosing"
         Game game = GameRepository.findByGameId(gameId);
         game.setActualCurrentWord(chooseWordDTO.getWord());
+        game.setGamePhase("drawing");
         chooseWordDTO.setType("startdrawing");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", chooseWordDTO);
+        System.out.println("sendchosenwordtimer");
+
         timerService.doTimer(game.getTurnLength(),1, gameId, "/topic/games/" + gameId + "/general", "drawing"); //Timer to play turn (drawing & guessing)
     }
     @MessageMapping("/games/{gameId}/sendguess")
@@ -233,10 +320,19 @@ public class WebSocketController {
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
 
         if (game.getCurrentCorrectGuesses() >= game.getPlayers().size() && game.getTimeLeftInTurn() >= 1){
-            timerService.doShutDownTimer(game.getGameId());
+            timerService.doShutDownTimer(game.getGameId());  //shutsdown timer from sendchosenword "drawing"
+            System.out.println("endturn");
+            if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getPlayersOriginally()) {
+                game.setEndGame(true);
+            }
             LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
-            leaderboardDTO.setType("leaderboard");
+            game.setGamePhase("leaderboard");
+            if (game.getEndGame()){
+                leaderboardDTO.setReason("normal");
+            }
             this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
+            timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+
         }
     }
 
