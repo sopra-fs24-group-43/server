@@ -142,7 +142,7 @@ public class UserService {
       User userById = this.userRepository.findUserById(id);
       return userById.getFriends();
     }
-  public User add_or_delete_Friend(User user, String f_username, Boolean b) {
+  public User add_or_delete_Friend(User user, String f_username, Boolean b) {//should only delete
       if (b) {
           User userByUsername = userRepository.findByUsername(f_username);
           if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
@@ -159,16 +159,31 @@ public class UserService {
           user.setFriends(friends);
           return user;}
   }
-/*
-  public User deleteFriend(User user, String f_username) {
-      User userByUsername = userRepository.findByUsername(f_username);
-      if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
-      ArrayList<String> friends = user.getFriends();
-      friends.remove(f_username);
-      user.setFriends(friends);
-      return user;
-  }
-*/
+    public void sendFriendRequest(User user, String friend_username) {
+        User friend = userRepository.findByUsername(friend_username);
+        List<String> friendRequests = friend.getOpenFriendRequests();
+        friendRequests.add(user.getUsername());
+        friend.setOpenFriendRequests(friendRequests);
+    }
+
+    public List<String> getOpenFriendRequests(Long id) {
+        User userById = this.userRepository.findUserById(id);
+        return userById.getOpenFriendRequests();
+    }
+
+    public User accept_or_deny_Friend_Request (User user, String friend_username, Boolean b){
+        if (b) {
+            List<String> friends = user.getFriends();
+            System.out.println(friends);
+            friends.add(friend_username);
+            System.out.println(friends);
+            user.setFriends(friends);
+            return user;}
+
+        else {
+            return user;}
+    }
+
 
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());

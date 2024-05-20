@@ -43,5 +43,6 @@ public interface DTOMapper {
   @Mapping(source = "birth_date", target = "birth_date")
   @Mapping(source = "level", target = "level")
   @Mapping(source = "friends", target = "friends")
+  @Mapping(source = "openFriendRequests", target = "openFriendRequests")
   UserGetDTO convertEntityToUserGetDTO(User user);
 }

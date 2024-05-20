@@ -60,6 +60,13 @@ public class User implements Serializable {
   @Column
   private List<String> friends;
 
+  @ElementCollection
+  @Column
+  private List<String> openFriendRequests;
+
+  public List<String> getOpenFriendRequests() {return openFriendRequests;}
+  public void setOpenFriendRequests(List<String> openFriendRequests) {this.openFriendRequests = openFriendRequests; }
+
   public Boolean getIsUser() {
         return isUser;
     }
