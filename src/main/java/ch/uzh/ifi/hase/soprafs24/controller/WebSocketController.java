@@ -181,18 +181,17 @@ public class WebSocketController {
     public void alertreconnect(@DestinationVariable int userId, SimpMessageHeaderAccessor headerAccessor) {
         System.out.println("from alertreconnect: "+userId);
         HashMap<Integer, ScheduledFuture> task = TimerRepository.findDiscTasksByUserId(userId);
-        System.out.println("task: "+task);
+        TimerRepository.printDiscTimers();
         timerService.stopDiscTimer(userId);                 //place this correctly
         headerAccessor.getSessionAttributes().put("userId", userId);
         headerAccessor.getSessionAttributes().put("reload", false);
-        System.out.println("task: "+task);
-
-        if (task != null) {  //if i delete timer before this if is useless
-            System.out.println("task existed");
+        if (task != null) {
             if (!task.get(2).isDone()) {
+                System.out.println("task existed and wasnt done yet");
                 return;
             }
             else {
+                System.out.println("task existed and was done");
                 if (PlayerRepository.findByUserId(userId) == null) {
                     System.out.println("alertrecon: was not a player before reconnecting");
                 }

@@ -17,7 +17,7 @@ public class TimerRepository {
     public static void addTimerDisconnected(int userId, ScheduledThreadPoolExecutor threadPool) {
         timerRepoDisconnected.put(userId, threadPool);
         HashMap<Integer, ScheduledFuture> Tasks = new HashMap<>();
-        timerTasksRepo.put(userId, Tasks);
+        timerTasksRepoDisconnected.put(userId, Tasks);
     }
     public static void addAllTasksDisconnected(int userId, HashMap<Integer, ScheduledFuture> tasks) {
         timerTasksRepoDisconnected.forEach((key, value) -> {
@@ -73,5 +73,10 @@ public class TimerRepository {
         System.out.println("timerTasksRepo: "+timerTasksRepo);
         System.out.println("timerRepoDisconnected: "+timerRepoDisconnected);
         System.out.println("timerTasksRepoDisconnected: "+timerTasksRepoDisconnected);
+    }
+    public static void printDiscTimers() {
+        System.out.println("timerRepoDisconnected: "+timerRepoDisconnected);
+        System.out.println("timerTasksRepoDisconnected: "+timerTasksRepoDisconnected);
+
     }
 }
