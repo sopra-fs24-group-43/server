@@ -9,8 +9,13 @@ import java.util.List;
 @Getter
 @Setter
 public class UserPostDTO {
+    private String hotkeyInputDraw;
+    private String hotkeyInputFill;
+    private String hotkeyInputEraser;
+    private String hotkeyInputClear;
 
-  private String name;
+
+    private String name;
 
   private String username;
 

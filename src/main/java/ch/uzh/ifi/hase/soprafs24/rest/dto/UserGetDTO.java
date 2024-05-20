@@ -12,6 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 public class UserGetDTO {
+  private String hotkeyInputDraw;
+  private String hotkeyInputFill;
+  private String hotkeyInputEraser;
+  private String hotkeyInputClear;
 
 
   private Long id;
