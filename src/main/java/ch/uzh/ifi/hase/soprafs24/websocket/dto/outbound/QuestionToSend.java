@@ -14,7 +14,6 @@ public class QuestionToSend {
     private int gameId;
     private int userId;
     //additional fields for leavegame type below: (other types that don't need additional fields can just leave them at null
-
     private Player leaver;
     private boolean wasAdmin;
     private int currentPlayerCount;
