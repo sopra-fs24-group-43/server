@@ -87,8 +87,8 @@ public class User implements Serializable {
     public List<String> getOpenFriendRequests() {return openFriendRequests;}
   public void setOpenFriendRequests(List<String> openFriendRequests) {this.openFriendRequests = openFriendRequests; }
 
-    public List<String> getSentFriendRequests() {return openFriendRequests;}
-    public void setSentFriendRequests(List<String> openFriendRequests) {this.openFriendRequests = openFriendRequests; }
+    public List<String> getSentFriendRequests() {return sentFriendRequests;}
+    public void setSentFriendRequests(List<String> sentFriendRequests) {this.sentFriendRequests = sentFriendRequests; }
 
   public Boolean getIsUser() {
         return isUser;
