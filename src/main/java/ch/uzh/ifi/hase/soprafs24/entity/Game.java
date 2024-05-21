@@ -92,6 +92,7 @@ public class Game {
     private WebSocketService webSocketService;
     private TimerService timerService;
     private HashMap<String,List<String>> wordlists;
+    private String reason;
     //private int nr_genres;
 
      public Game(Player admin, WebSocketService webSocketService, TimerService timerService) {
@@ -281,6 +282,7 @@ public class Game {
         System.out.println("terminategame");
         Game game = GameRepository.findByGameId(gameId);
         game.setEndGame(true);
+        game.setReason(reason);
         game.setCurrentRound(game.getMaxRounds());
         game.setCurrentTurn(game.getPlayersOriginally());
         game.setGamePhase("leaderboard");
@@ -289,10 +291,10 @@ public class Game {
 
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         TimerRepository.haltTimer(gameId);
-        game.deletegame(gameId);
         GameRepository.printAllAll();
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO); //endturn
+        timerService.doTimer(20,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
     }
     public void intigrateIntoGame(int userId, int gameId) {  //when players disconnect from running game and then reconnect to it
         System.out.println("intigrateIntoGame, gameId, userId: "+ gameId + ", "  + userId);
@@ -316,7 +318,6 @@ public class Game {
                 break;
             }
         }
-
     }
     public void lostConnectionToPlayer(int userId, int gameId) {
         Game game = GameRepository.findByGameId(gameId);
@@ -357,7 +358,12 @@ public class Game {
                         leaderboardDTO.setReason("normal");
                     }
                     this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
-                    timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+                    if (game.getEndGame()) { //more time to look at Podium (endGame)
+                        timerService.doTimer(20,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+                    }
+                    else {
+                        timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+                    }
                 }
 
             }

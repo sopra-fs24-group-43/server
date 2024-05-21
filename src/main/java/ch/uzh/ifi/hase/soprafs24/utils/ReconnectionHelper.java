@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.ReconnectionDTO;
 
@@ -37,7 +38,6 @@ public class ReconnectionHelper {
                     QuestionToSend questionToSend = new QuestionToSend("sendcanvasforrecon");
                     questionToSend.setUserId(userId);
                     this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
-
                 }
                 else {
                     System.out.println("alertrecon: was a player before reconnecting and game is still running");
