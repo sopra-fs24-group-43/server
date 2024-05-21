@@ -3,11 +3,3 @@
 
 runtime: java17
 env: flex
-version: v2
-
-automatic_scaling:
-  max_num_instances: 1
-
-runtime_config:
-  operating_system: "ubuntu22"
-  runtime_version: "17"
