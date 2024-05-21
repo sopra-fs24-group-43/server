@@ -38,6 +38,7 @@ public class UserGetDTO {
   private List<String> friends;
 
   private List<String> openFriendRequests;
+  private List<String> sentFriendRequests;
 /*
   public Boolean getIsUser() {
         return isUser;

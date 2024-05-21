@@ -115,9 +115,9 @@ public class UserController {
     @PutMapping("/users/{id}/friends")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserGetDTO addOrDeleteFriendOfUserByID (@PathVariable Long id, @RequestParam String f_username, @RequestParam Boolean false_for_delete_true_for_add) {
+    public UserGetDTO DeleteFriendOfUserByID (@PathVariable Long id, @RequestParam String friend_username) {
         User user = userService.getUserById(id);
-        User editedUser = userService.add_or_delete_Friend(user, f_username, false_for_delete_true_for_add);
+        User editedUser = userService.delete_Friend(user, friend_username);
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
     }
 
@@ -145,9 +145,10 @@ public class UserController {
     @PutMapping("/users/{id}/openfriendrequests")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserGetDTO acceptOrDenyFriendRequest (@PathVariable Long id, @RequestParam String f_username, @RequestParam Boolean false_for_deny_true_for_accept) {
+    public UserGetDTO acceptOrDenyFriendRequest (@PathVariable Long id, @RequestParam String friend_username, @RequestParam Boolean false_for_deny_true_for_accept) {
         User user = userService.getUserById(id);
-        User editedUser = userService.accept_or_deny_Friend_Request(user, f_username, false_for_deny_true_for_accept);
+        User editedUser = userService.accept_or_deny_Friend_Request_receiver(user, friend_username, false_for_deny_true_for_accept);
+        userService.accept_or_deny_Friend_Request_sender(user,friend_username, false_for_deny_true_for_accept);
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
     }
 }
