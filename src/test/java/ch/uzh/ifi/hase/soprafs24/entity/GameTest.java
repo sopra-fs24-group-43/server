@@ -3,6 +3,8 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.service.TimerService;
+import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
@@ -14,15 +16,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class GameTest {/*
+public class GameTest {
 
+    @MockBean
+    private WebSocketService webSocketService;
+    @MockBean
+    private TimerService timerService;
     @Mock
     private Player player;
     @Mock
@@ -44,7 +50,7 @@ public class GameTest {/*
         ArrayList<Integer> n2 = new ArrayList<>();
         n.add(1);
         player2 = new Player("2",2,false,1,n2,"Guesser");
-        game = new Game(player);
+        game = new Game(player,webSocketService,timerService);
         ArrayList<Player> players = new ArrayList<>();
         HashMap<Integer,Player> plHM = new HashMap<>();
         plHM.put(1,player);
@@ -83,29 +89,88 @@ public class GameTest {/*
         assertEquals(gameSettingsDTO.getMaxPlayers(), game.getMaxPlayers());
         assertEquals(gameSettingsDTO.getMaxRounds(), game.getMaxRounds());
         assertEquals(gameSettingsDTO.getLobbyName(), game.getLobbyName());
+
+
+        GameSettingsDTO GSDTO = game.getGameSettingsDTO();
+        assertEquals(gameSettingsDTO.getLobbyName(), GSDTO.getLobbyName());
+        assertEquals(gameSettingsDTO.getGamePassword(), GSDTO.getGamePassword());
+        assertEquals(gameSettingsDTO.getTurnLength(), GSDTO.getTurnLength());
+        assertEquals(gameSettingsDTO.getMaxPlayers(), GSDTO.getMaxPlayers());
+        assertEquals(gameSettingsDTO.getMaxRounds(), GSDTO.getMaxRounds());
     }
-/*
+
     @Test
     void setWordListTest() {
         game.startGame();
-        assertEquals(10, game.getWordList().size());
-        for (int i = 0;i<game.getWordList().size();i++) {
-            assertTrue(getWordlist.getWordlist(game.getGenre()).contains(game.getWordList().get(i)));}
-    }
+
+        for (int j = 0;j<game.getGenres().size();j++){
+            List<String> l1 = new ArrayList<>();
+            l1.addAll(getWordlist.getWordlist(game.getGenres().get(j)));
+            List<String> l2 = getWordlist.getWordlist(game.getGenres().get(j));
+            for (int i = 0;i<game.getWordList().size();i++) {
+                if (l1.contains(game.getWordList().get(i))) {
+
+                    assertTrue(l2.contains(game.getWordList().get(i)));
+                    l1.remove(game.getWordList().get(i));
+                }}
+    }}
 
     @Test
-    void gameStateDTOTest() {//test after some turns...
-        GameStateDTO gameStateDTO = new GameStateDTO();
-        gameStateDTO.setCurrentRound(0);
-        gameStateDTO.setCurrentTurn(0);
-        //gameStateDTO.setCurrentWordIndex(0);
-        gameStateDTO.setDrawer(0);
+    void startGameTest() {
+        game.startGame();
+        HashMap<Integer,Player> playershm = new HashMap<>();
+        playershm.put(1,player);
+        playershm.put(2,player2);
+
+
+        assertEquals(game.getPlayersOriginally(),2);
+        assertEquals(game.getPlayers(),playershm);
+        assertEquals(game.getConnectedPlayers(),playershm);
+
+    }
+
+/*//error this.websocketService is null
+    @Test
+    void terminateGameTest() {
+        game.startGame();
+        game.terminategame(1,"admin left");
+        assertEquals(null, GameRepository.findByGameId(1));
+    }
+
+ */
+
+    @Test
+    void nextturnTest() {
+        game.startGame();
+        game.nextturn(1);
+        game.nextturn(1);
+        //game.setCurrentTurn(2);
+        //game.setCurrentRound(1);
+        int i = game.getCurrentWordIndex();
+        int j = game.getDrawer();
+        game.nextturn(1);
+
+        assertEquals("choosing",game.getGamePhase());
+        assertEquals(1,game.getCurrentTurn());
+        assertEquals(2,game.getCurrentRound());
+        assertEquals(0,game.getDrawer());
+        assertEquals(10,game.getCurrentWordIndex());
 
         GameStateDTO actual = game.receiveGameStateDTO();
 
-        assertEquals(actual.getCurrentRound(),gameStateDTO.getCurrentRound());
+        assertEquals(actual.getCurrentRound(),2);
+        assertEquals(actual.getCurrentTurn(),1);
+        assertEquals(actual.getDrawer(),0);
+        //assertEquals(actual.getActualCurrentWord(),game.getCurrentWord());
+        List<String> three_words = new ArrayList<>();
+        three_words.add(game.getWordList().get(game.getCurrentWordIndex()-1));
+        three_words.add(game.getWordList().get(game.getCurrentWordIndex()));
+        three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
+        assertEquals(actual.getThreeWords(),three_words);
+
     }
-*//*
+
+
     @Test
     void calculateLeaderboardTest() {
         LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
@@ -115,6 +180,7 @@ public class GameTest {/*
         HashMap<Integer,Integer> hm2 = new HashMap<>();
         HashMap<Integer,Integer> hm3 = new HashMap<>();
         HashMap<Integer,Integer> hm1 = new HashMap<>();
+        LinkedHashMap<Integer,Player> hm4 = new LinkedHashMap<>();
         hm3.put(2,1);
         hm3.put(1,2);
         hm.put(player,10);
@@ -125,6 +191,8 @@ public class GameTest {/*
         hm1.put(2,30);
         hm2.put(1,10);
         hm2.put(2,30);
+        hm4.put(2,player2);
+        hm4.put(1,player);
 
         game.setPoints(hm0);
         game.setPointsOfCurrentTurn(hm);
@@ -132,6 +200,7 @@ public class GameTest {/*
         leaderboardDTO.setTotalPoints(hm1);
         leaderboardDTO.setNewlyEarnedPoints(hm2);
         leaderboardDTO.setPodium(hm3);
+        leaderboardDTO.setUserIdToPlayerSorted(hm4);
 
         LeaderBoardDTO actual = game.calculateLeaderboard();
 
@@ -139,5 +208,7 @@ public class GameTest {/*
         assertEquals(actual.getTotalPoints(),leaderboardDTO.getTotalPoints());
         assertEquals(actual.getUserIdToPlayer(),leaderboardDTO.getUserIdToPlayer());
         assertEquals(actual.getPodium(),leaderboardDTO.getPodium());
-    }*/
+
+        assertEquals(actual.getUserIdToPlayerSorted(),leaderboardDTO.getUserIdToPlayerSorted());
+    }
 }

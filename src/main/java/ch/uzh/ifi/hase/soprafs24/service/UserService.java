@@ -172,13 +172,16 @@ public class UserService {
   }
     public void sendFriendRequest(User user, String friend_username) {
         User friend = userRepository.findByUsername(friend_username);
-        List<String> friendRequests = friend.getOpenFriendRequests();
-        friendRequests.add(user.getUsername());
-        friend.setOpenFriendRequests(friendRequests);
+        List<String> requests = user.getSentFriendRequests();
+        if (!requests.contains(friend_username)) {
+            List<String> friendRequests = friend.getOpenFriendRequests();
+            friendRequests.add(user.getUsername());
+            friend.setOpenFriendRequests(friendRequests);
 
-        List<String> sentFriendRequests = user.getSentFriendRequests();
-        sentFriendRequests.add(friend_username);
-        user.setSentFriendRequests(sentFriendRequests);
+            List<String> sentFriendRequests = user.getSentFriendRequests();
+            sentFriendRequests.add(friend_username);
+            user.setSentFriendRequests(sentFriendRequests);
+        }
     }
 
     public List<String> getOpenFriendRequests(Long id) {
