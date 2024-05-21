@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 public class Answer {
+    private String type; //Answer
     private String username;
     private String answerString;
 

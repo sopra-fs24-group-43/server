@@ -39,21 +39,32 @@ public class TimerService {
             }
             if (timerOut.getGamePhase().equals("leaderboard")  && timerOut.getTime() == 0) {
                 doShutDownTimer(timerOut.getGameId());
+                if (game.getEndGame()) {
+                    game.deletegame(timerOut.getGameId());
+                }
             }
-            this.webSocketService.sendMessageToClients(destination, timerOut);
-            if (game.getCurrentCorrectGuesses() < game.getPlayers().size() && timerOut.getTime() == 0 && timerOut.getGamePhase().equals("drawing")){
+            this.webSocketService.sendMessageToClients(destination, timerOut); //is also the leaderboard phase sometimes
+
+            if (game.getCurrentCorrectGuesses() < game.getConnectedPlayers().size() && timerOut.getTime() == 0 && timerOut.getGamePhase().equals("drawing")){
+                //endturn
                 System.out.println("endturn");
-                if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getPlayersOriginally()) {
+                if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getConnectedPlayers().size()) {
                     game.setEndGame(true);
                 }
                 LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
                 game.setGamePhase("leaderboard");
                 if (game.getEndGame()){
+                    game.setReason("normal");
                     leaderboardDTO.setReason("normal");
                 }
                 this.webSocketService.sendMessageToClients("/topic/games/" + timerOut.getGameId() + "/general", leaderboardDTO); //endturn
                 doShutDownTimer(timerOut.getGameId());
-                doTimer(5,1, timerOut.getGameId(), "/topic/games/" + timerOut.getGameId() + "/general", "leaderboard"); //timer to look at leaderboard
+                if (game.getEndGame()) { //more time to look at Podium (endGame)
+                    doTimer(20,1, timerOut.getGameId(), "/topic/games/" + timerOut.getGameId() + "/general", "leaderboard"); //timer to look at leaderboard
+                }
+                else {
+                    doTimer(5,1, timerOut.getGameId(), "/topic/games/" + timerOut.getGameId() + "/general", "leaderboard"); //timer to look at leaderboard
+                }
             }
 
         }

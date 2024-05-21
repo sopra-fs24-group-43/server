@@ -19,11 +19,8 @@ public class WebSocketEventListener {
     TimerService timerService;
 
     public WebSocketEventListener(WebSocketService webSocketService, TimerService timerService) {
-
         this.webSocketService = webSocketService;
         this.timerService = timerService;
-
-
     }
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {

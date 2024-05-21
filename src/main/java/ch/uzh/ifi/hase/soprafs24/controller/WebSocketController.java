@@ -273,33 +273,43 @@ public class WebSocketController {
             answer.setPlayerHasGuessedCorrectly(false);
             answer.setIsCorrect(false);
         }
+        answer.setType("Answer");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
 
-        if (game.getCurrentCorrectGuesses() >= game.getPlayers().size() && game.getTimeLeftInTurn() >= 1){
+        if (game.getCurrentCorrectGuesses() >= game.getConnectedPlayers().size() && game.getTimeLeftInTurn() >= 0){
             timerService.doShutDownTimer(game.getGameId());  //shutsdown timer from sendchosenword "drawing"
-            System.out.println("endturn");
-            if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getPlayersOriginally()) {
+            if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getConnectedPlayers().size()) {
                 game.setEndGame(true);
             }
             LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
             game.setGamePhase("leaderboard");
             if (game.getEndGame()){
+                game.setReason("normal");
                 leaderboardDTO.setReason("normal");
             }
             this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
-            timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+            if (game.getEndGame()) { //more time to look at Podium (endGame)
+                System.out.println("endgame");
+                timerService.doTimer(20,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+            }
+            else {
+                System.out.println("endturn");
+                timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
+            }
 
         }
     }
 
-    @MessageMapping("/games/{gameId}/endturn")//how to connect endturn and nextturn...
+    @MessageMapping("/games/{gameId}/getleaderboard")
     public void endturn(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
-        HashMap<Integer, Player> players = PlayerRepository.findUsersByGameId(gameId);
-
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
-        leaderboardDTO.setType("leaderboard");
+        if (game.getEndGame()){
+            leaderboardDTO.setReason(game.getReason());
+        }
+        leaderboardDTO.setType("leaderboard2");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO);
+
     }
 
     /*//old
