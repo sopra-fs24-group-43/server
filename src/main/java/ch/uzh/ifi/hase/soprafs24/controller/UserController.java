@@ -125,9 +125,9 @@ public class UserController {
     @PostMapping("/users/{id}/openfriendrequests")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void sendFriendRequest (@PathVariable Long id, @RequestParam String friend_username) {
+    public void sendFriendRequest (@PathVariable Long id, @RequestParam String friend_username, @RequestParam Boolean delete) {
         User user = userService.getUserById(id);
-        userService.sendFriendRequest(user, friend_username);
+        userService.sendFriendRequest(user, friend_username, delete);
     }
     @GetMapping("/users/{id}/openfriendrequests")
     @ResponseStatus(HttpStatus.OK)
@@ -150,5 +150,19 @@ public class UserController {
         User editedUser = userService.accept_or_deny_Friend_Request_receiver(user, friend_username, false_for_deny_true_for_accept);
         userService.accept_or_deny_Friend_Request_sender(user,friend_username, false_for_deny_true_for_accept);
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
+    }
+
+    @GetMapping("/users/{id}/sentfriendrequests")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<UserGetDTO> getAllSentFriendRequestsOfUserByID(@PathVariable Long id) {
+        List<String> friendRequests = userService.getSentFriendRequests(id);
+        List<UserGetDTO> userGetDTOs = new ArrayList<>();
+
+        for (String friend : friendRequests) {
+            User friendByUsername = userService.getUserByUsername(friend);
+            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(friendByUsername));
+        }
+        return userGetDTOs;
     }
 }

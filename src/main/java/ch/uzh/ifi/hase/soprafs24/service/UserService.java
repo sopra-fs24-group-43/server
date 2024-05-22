@@ -170,7 +170,8 @@ public class UserService {
 
           return user;
   }
-    public void sendFriendRequest(User user, String friend_username) {
+    public void sendFriendRequest(User user, String friend_username, Boolean d) {
+      if (!d){
         User friend = userRepository.findByUsername(friend_username);
         List<String> requests = user.getSentFriendRequests();
         if (!requests.contains(friend_username)) {
@@ -180,13 +181,27 @@ public class UserService {
 
             List<String> sentFriendRequests = user.getSentFriendRequests();
             sentFriendRequests.add(friend_username);
-            user.setSentFriendRequests(sentFriendRequests);
-        }
+            user.setSentFriendRequests(sentFriendRequests);}
+      } else {
+          User friend = userRepository.findByUsername(friend_username);
+          List<String> friendRequests = friend.getOpenFriendRequests();
+          friendRequests.remove(user.getUsername());
+          friend.setOpenFriendRequests(friendRequests);
+
+          List<String> sentFriendRequests = user.getSentFriendRequests();
+          sentFriendRequests.remove(friend_username);
+          user.setSentFriendRequests(sentFriendRequests);}
+
     }
 
     public List<String> getOpenFriendRequests(Long id) {
         User userById = this.userRepository.findUserById(id);
         return userById.getOpenFriendRequests();
+    }
+
+    public List<String> getSentFriendRequests(Long id) {
+      User userById = this.userRepository.findUserById(id);
+        return userById.getSentFriendRequests();
     }
 
     public User accept_or_deny_Friend_Request_receiver (User user, String friend_username, Boolean b){
