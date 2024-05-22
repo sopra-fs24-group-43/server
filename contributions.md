@@ -10,118 +10,69 @@ Issue(server) #37 - https://github.com/sopra-fs24-group-43/server/issues/37 Crea
 
 ### 1st week - 12.04
 issue(client) #58 - https://github.com/sopra-fs24-group-43/client/issues/58 Create the "LoginOrRegister" view page
-
 issue(client) #59 - https://github.com/sopra-fs24-group-43/client/issues/59 Create the "Login" input fields and "Login" button
-
 issue(client) #60 - https://github.com/sopra-fs24-group-43/client/issues/60 Create the "Register" input fields and "Register" button
 
 ### 2nd week - 17.04
 issue(client) #63 - https://github.com/sopra-fs24-group-43/client/issues/63 Implement Login functionality
-
 issue(client) #64 - https://github.com/sopra-fs24-group-43/client/issues/64 Implement Register functionality
-
 issue(client) #74 - https://github.com/sopra-fs24-group-43/client/issues/74 Design and format LoginOrRegister Page
-
 issue(client) #75 - https://github.com/sopra-fs24-group-43/client/issues/75 Create a canvas in the game page
-
 issue(client) #76 - https://github.com/sopra-fs24-group-43/client/issues/76 Implement functionality to draw on canvas on game page	
-
 issue(client) #77 - https://github.com/sopra-fs24-group-43/client/issues/77 Implement eraser button to erase drawings on canvas on game page	
 
 ### 3rd week - 24.04
 issue(client) #79 - https://github.com/sopra-fs24-group-43/client/issues/79 - Create a color palette to choose from while drawing	
-
 issue(client) #80 - https://github.com/sopra-fs24-group-43/client/issues/80 - Create buttons to change the thickness of the pen while drawing	
-
 issue(client) #81 - https://github.com/sopra-fs24-group-43/client/issues/81 - Create a "fill out" option to fill out a bordered space while drawing	
-
 issue(client) #82 - https://github.com/sopra-fs24-group-43/client/issues/82 - Create an "Erase All" button which erases the entire canvas.
-
 issue(client) #83 - https://github.com/sopra-fs24-group-43/client/issues/83 - Modify the "Draw", "Eraser", "Fill" buttons so that they have an outline which indicates which button is selected.	
-
 issue(client) #84 - https://github.com/sopra-fs24-group-43/client/issues/84 - Create a "signifier button" which shows which color is selected at the moment.	
-
 issue(client) #89 - https://github.com/sopra-fs24-group-43/client/issues/89 - Implementing button signifiers which show which draw thickness is selected.	
 
 ### 4th week - 03.05
 issue(client) #90 - https://github.com/sopra-fs24-group-43/client/issues/90 - Implementing a chat input field.
-
 issue(client) #91 - https://github.com/sopra-fs24-group-43/client/issues/91 - Implementing a chat where guesses of all users will be shown with the respective usernames.
-
 issue(client) #92 - https://github.com/sopra-fs24-group-43/client/issues/92 - Implement a "send" button for the chat which also works with the key press "enter".
-
 issue(client) #102 - https://github.com/sopra-fs24-group-43/client/issues/102 - Implementing a "ButtonComponent" for all the color buttons.
-
 issue(client) #89 - https://github.com/sopra-fs24-group-43/client/issues/106 - Create a "Guessing Chat" title for the chat indicating its functionality.
 
 ### 5th week - 08.05
 issue(client) #88 - https://github.com/sopra-fs24-group-43/client/issues/88 - implement sending the canvas data to the server and rendering it on all clients.
-
 issue(client) #100 - https://github.com/sopra-fs24-group-43/client/issues/100 - Implementing websocket compatibility for the "fill out" functionality.
-
 issue(client) #101 - https://github.com/sopra-fs24-group-43/client/issues/101 - Implementing websocket compatibility for the pen thickness changes.
-
 issue(client) #104 - https://github.com/sopra-fs24-group-43/client/issues/104 - Implementing websocket compatibility for the eraser.
-
 issue(client) #105 - https://github.com/sopra-fs24-group-43/client/issues/105 - Implementing websocket compatibility for the "erase all" functionality.
-
 issue(client) #107 - https://github.com/sopra-fs24-group-43/client/issues/107 - Implementing websocket compatibility for the "color change buttons" functionality.
 
 ### 6th week - 15.05
 issue(client) #124 - https://github.com/sopra-fs24-group-43/client/issues/124 - Change the design of the whole website to make it easier on the eyes and look better.
-
 issue(client) #127 - https://github.com/sopra-fs24-group-43/client/issues/127 - Implementing hotkey for "Draw" tool.
-
 issue(client) #128 - https://github.com/sopra-fs24-group-43/client/issues/128 - Implementing hotkey for "Fill" tool.
-
 issue(client) #129 - https://github.com/sopra-fs24-group-43/client/issues/129 - Implementing hotkey for "Eraser" tool.
-
 issue(client) #130 - https://github.com/sopra-fs24-group-43/client/issues/130 - Implementing hotkey for "Erase All" tool.
-
 issue(client) #137 - https://github.com/sopra-fs24-group-43/client/issues/137 - Implement a Settings pop-up window (view) which can be accessed from each view / from the header
-
 issue(client) #138 - https://github.com/sopra-fs24-group-43/client/issues/138 - Create a "Dark Mode" checkbox inside the settings view
-
 issue(client) #140 - https://github.com/sopra-fs24-group-43/client/issues/140 - Implement / Create an independent chat component for easier reuse later
-
 issue(client) #141 - https://github.com/sopra-fs24-group-43/client/issues/141 - Implementing chat component into lobby view
-
 issue(client) #143 - https://github.com/sopra-fs24-group-43/client/issues/143 - Implementing specific styles file(.scss) for chat component
-
 issue(client) #144 - https://github.com/sopra-fs24-group-43/client/issues/144 - Implement websocket compatibility for the chat functionality
-
 issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
-
 issue(client) #108 - https://github.com/sopra-fs24-group-43/client/issues/108 - Implementing websocket compatibility for hiding the tool menu from all clients (except from drawer) 
-
 issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
-
 issue(client) #109 - https://github.com/sopra-fs24-group-43/client/issues/109 - implementing websocket compatibility hiding "selected color button" from all clients (except drawer)
-
 issue(client) #110 - https://github.com/sopra-fs24-group-43/client/issues/110 - implementing websocket compatibility hiding "color buttons" from all clients (except drawer)
-
 issue(client) #111 - https://github.com/sopra-fs24-group-43/client/issues/111 - implementing websocket compatibility hiding "thickness change buttons" from all clients (except drawer)
-
 issue(client) #112 - https://github.com/sopra-fs24-group-43/client/issues/112 - implementing websocket compatibility hiding "draw, fill, eraser, erase all" buttons from all clients (except drawer)
-
 issue(client) #159 - https://github.com/sopra-fs24-group-43/client/issues/159 - Making hotkey (canvas tools) calls only functioning for the drawer.
-
 issue(client) #160 - https://github.com/sopra-fs24-group-43/client/issues/160 - Making hotkey (canvas tools) calls non-functioning when the chat input field is selected.
-
 issue(client) #171 - https://github.com/sopra-fs24-group-43/client/issues/171 - Implementing (global) hotkey changes in the settings for the canvas tools and fixing bug for the word selection
-
 issue(client) #173 - https://github.com/sopra-fs24-group-43/client/issues/173 - 
-
 issue(client) #175 - https://github.com/sopra-fs24-group-43/client/issues/175 - Implementing error message / handling when trying to set a hotkey to a letter which already is set for another hotkey
-
 issue(client) #178 - https://github.com/sopra-fs24-group-43/client/issues/178 - Implementing canvas hotkeys and function to change canvas hotkeys for guests
-
 issue(client) #50 - https://github.com/sopra-fs24-group-43/client/issues/50 - From the home screen, a user can click on a “profile” button, bringing them to their user profile. (front)
-
 issue(client) #180 - https://github.com/sopra-fs24-group-43/client/issues/180 - Displaying account information on profile page
-
 issue(client) #182 - https://github.com/sopra-fs24-group-43/client/issues/182 - 
-
 issue(client) #184 - https://github.com/sopra-fs24-group-43/client/issues/184 - Creating and implementing a "Freitagsmaler" logo 
 
 
