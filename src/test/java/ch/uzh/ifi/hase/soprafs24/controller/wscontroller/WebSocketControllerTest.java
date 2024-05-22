@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.controller.wscontroller;
 
 import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
+import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,13 +26,15 @@ import static org.assertj.core.api.Assertions.in;
 import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(SpringExtension.class)
-public class WebSocketControllerTest {
+public class WebSocketControllerTest {/*
     //@Value("${local.server.port}")
     private int port;
-
+    @MockBean
     private WebSocketController webSocketController;
     @MockBean
     private PlayerRepository playerRepository;
+    @MockBean
+    private Game game;
     private WebSocketStompClient stompClient;
     private StompSession stompSession;
     private final WsTestUtils wsTestUtils = new WsTestUtils();
@@ -44,12 +48,12 @@ public class WebSocketControllerTest {
         stompSession = stompClient.connect(wsUrl, new WsTestUtils.MyStompSessionHandler()).get();
     }
 
-  /*  @Test
+    @Test
     void connectsToSocket() throws Exception {
 
         assertThat(stompSession.isConnected()).isTrue();
-    }*/
-    /*
+    }
+
     @Test
     public void creategameTest() throws Exception {
         CompletableFuture<String> resultKeeper = new CompletableFuture<>();
@@ -71,7 +75,13 @@ public class WebSocketControllerTest {
         inboundPlayer.setFriends(friends);
         inboundPlayer.setRole("admin");
 
-        doNothing().when(gameService).updateGameSettings(GameSettingsDTO, lobbyId);
+        GameSettingsDTO gameSettingsDTO = new GameSettingsDTO();
+        gameSettingsDTO.setLobbyName("1");
+        gameSettingsDTO.setMaxPlayers(2);
+        gameSettingsDTO.setTurnLength(5);
+        gameSettingsDTO.setMaxRounds(1);
+
+        doNothing().when(game).updateGameSettings(gameSettingsDTO);
 
         Thread.sleep(1000);
         // when
@@ -82,6 +92,6 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualTo(questionToSend.toString());
     }
+*/
 
-     */
 }
