@@ -44,5 +44,10 @@ public interface DTOMapper {
   @Mapping(source = "level", target = "level")
   @Mapping(source = "friends", target = "friends")
   @Mapping(source = "openFriendRequests", target = "openFriendRequests")
+  @Mapping(source = "sentFriendRequests", target = "sentFriendRequests")
+  @Mapping(source = "hotkeyInputDraw", target = "hotkeyInputDraw")
+  @Mapping(source = "hotkeyInputFill", target = "hotkeyInputFill")
+  @Mapping(source = "hotkeyInputEraser", target = "hotkeyInputEraser")
+  @Mapping(source = "hotkeyInputClear", target = "hotkeyInputClear")
   UserGetDTO convertEntityToUserGetDTO(User user);
 }

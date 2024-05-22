@@ -557,6 +557,9 @@ public class Game {
                     i.getAndIncrement();
                 }
             });
+            while (map.containsValue(i.get())) {
+                i.getAndIncrement();
+            }
             map.put(key.getUserId(), i.get());
         });
         return map;

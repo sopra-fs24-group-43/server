@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -64,8 +66,29 @@ public class User implements Serializable {
   @Column
   private List<String> openFriendRequests;
 
-  public List<String> getOpenFriendRequests() {return openFriendRequests;}
+    @ElementCollection
+    @Column
+    private List<String> sentFriendRequests;
+
+    @Getter
+    @Setter
+    private String hotkeyInputDraw = "D";
+    @Getter
+    @Setter
+    private String hotkeyInputFill = "F";
+    @Getter
+    @Setter
+    private String hotkeyInputEraser = "E";
+    @Getter
+    @Setter
+    private String hotkeyInputClear = "C";
+
+
+    public List<String> getOpenFriendRequests() {return openFriendRequests;}
   public void setOpenFriendRequests(List<String> openFriendRequests) {this.openFriendRequests = openFriendRequests; }
+
+    public List<String> getSentFriendRequests() {return sentFriendRequests;}
+    public void setSentFriendRequests(List<String> sentFriendRequests) {this.sentFriendRequests = sentFriendRequests; }
 
   public Boolean getIsUser() {
         return isUser;

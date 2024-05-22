@@ -12,6 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 public class UserGetDTO {
+  private String hotkeyInputDraw;
+  private String hotkeyInputFill;
+  private String hotkeyInputEraser;
+  private String hotkeyInputClear;
 
 
   private Long id;
@@ -34,6 +38,7 @@ public class UserGetDTO {
   private List<String> friends;
 
   private List<String> openFriendRequests;
+  private List<String> sentFriendRequests;
 /*
   public Boolean getIsUser() {
         return isUser;

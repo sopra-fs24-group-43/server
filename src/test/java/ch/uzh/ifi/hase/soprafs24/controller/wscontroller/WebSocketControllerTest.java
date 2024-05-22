@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.controller.wscontroller;
 
 import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
+
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.external_api.GetWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
@@ -9,6 +10,9 @@ import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.TimerService;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
+
+import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
@@ -57,6 +61,7 @@ public class WebSocketControllerTest {
     private RandomGenerators randomGenerators;
     @MockBean
     private GetWordlist getWordlist;
+
     private WebSocketStompClient stompClient;
     private StompSession stompSession;
     private final WsTestUtils wsTestUtils = new WsTestUtils();
@@ -69,6 +74,7 @@ public class WebSocketControllerTest {
         stompClient = wsTestUtils.createWebSocketClient();
         stompSession = stompClient.connect(wsUrl, new WsTestUtils.MyStompSessionHandler()).get();
     }
+
     @AfterEach
     public void teardown() throws Exception {
         Game game = GameRepository.findByGameId(1);
@@ -103,6 +109,7 @@ public class WebSocketControllerTest {
         inboundPlayer.setRole("admin");
 
         when(randomGenerators.GameIdGenerator()).thenReturn(1);
+
 
         Thread.sleep(1000);
         webSocketController.creategame(inboundPlayer);
@@ -633,5 +640,6 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
     }
+*/
 
 }

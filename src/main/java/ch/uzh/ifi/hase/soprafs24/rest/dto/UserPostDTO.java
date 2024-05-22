@@ -9,8 +9,13 @@ import java.util.List;
 @Getter
 @Setter
 public class UserPostDTO {
+    private String hotkeyInputDraw;
+    private String hotkeyInputFill;
+    private String hotkeyInputEraser;
+    private String hotkeyInputClear;
 
-  private String name;
+
+    private String name;
 
   private String username;
 
@@ -32,6 +37,7 @@ public class UserPostDTO {
 
     private Boolean isUser;
     private List<String> openFriendRequests;
+    private List<String> sentFriendRequests;
 /*
     public UserStatus getStatus() {
         return status;
