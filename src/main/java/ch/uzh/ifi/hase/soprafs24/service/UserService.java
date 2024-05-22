@@ -163,10 +163,10 @@ public class UserService {
           friends.remove(f_username);
           user.setFriends(friends);
 
-          User friend = userRepository.findByUsername(f_username);
-          List<String> friends2 = friend.getFriends();
+          //User friend = userRepository.findByUsername(f_username);
+          List<String> friends2 = userByUsername.getFriends();
           friends2.remove(user.getUsername());
-          friend.setFriends(friends);
+          userByUsername.setFriends(friends2);
 
   }
     public void sendFriendRequest(User user, String friend_username, Boolean d) {
