@@ -127,6 +127,7 @@ public class Game {
         this.setGamePhase("inLobby");
         this.webSocketService = webSocketService;
         this.timerService = timerService;
+        this.answers = new ArrayList<Answer>();
 
         this.wordlists = new HashMap<>();
         this.genres = new ArrayList<>();
@@ -148,24 +149,21 @@ public class Game {
         this.answers.add(answer);
         this.answersReceived++;
         String name = answer.getUsername();
+        Player player = players.get(playerIdByName.get(name));
+        Player drawer = players.get(drawingOrder.get(Drawer));
 
-        if(roundIsActive){
+        if(this.gamePhase != "drawing" || name == drawer.getUsername()){
          return 0;
         }
-
         if (this.playerCorrectGuesses.get(name)){
             return 2;
         }
-
         if (compareAnswer(answer.getAnswerString()) == 1){
             this.currentCorrectGuesses++;
-            Player player = players.get(playerIdByName.get(name));
             this.pointsOfCurrentTurn.put(player, PointCalculatorGuesser.calculate(turnLength, remainingTime, currentCorrectGuesses));
-            this.pointsOfCurrentTurn.put(players.get(drawingOrder.get(Drawer)), PointCalculatorDrawer.calculate(turnLength, remainingTime, currentCorrectGuesses) + pointsOfCurrentTurn.get(players.get(drawingOrder.get(Drawer))));
+            this.pointsOfCurrentTurn.put(drawer, PointCalculatorDrawer.calculate(turnLength, remainingTime, currentCorrectGuesses) + pointsOfCurrentTurn.get(drawer));
             this.playerCorrectGuesses.put(name, true);
-
         }
-
         return 0;
     }
 
