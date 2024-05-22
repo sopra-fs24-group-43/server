@@ -130,7 +130,7 @@ public class Game {
         this.answersReceived++;
         String name = answer.getUsername();
 
-        if(roundIsActive){
+        if(!roundIsActive){
          return 0;
         }
 
