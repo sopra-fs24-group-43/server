@@ -1,25 +1,19 @@
 package ch.uzh.ifi.hase.soprafs24.external_api;
 
 
-import org.apache.tomcat.util.json.ParseException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 
+@Service
+public class GetWordlist {
+    private GetWordlist() {}
 
-public class getWordlist {
-    private getWordlist() {}
-
-    //scam XD
+    //scam XDgetw
     /*public static List<String> getWords(String genre) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -39,7 +33,7 @@ public class getWordlist {
                     "error occurred while fetching wordlist" + e.getMessage());
         }}
     */
-    public static List<String> getWordlist(String genre) {
+    public  List<String> getWordlist2(String genre) { //removed the static
         try {
             final String uri = "https://api.datamuse.com/words?rel_jja="+genre;
             RestTemplate restTemplate = new RestTemplate();

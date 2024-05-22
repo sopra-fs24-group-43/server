@@ -267,6 +267,25 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
     }
+
+    @Test
+    public void getFriendsTest() throws Exception{
+
+        given(userService.getFriends(eq(1L))).willReturn(user.getFriends());
+
+        MockHttpServletRequestBuilder getRequest = get("/users/" + 1L + "/friends")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(1L));
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void DeleteFriendOfUserByIDTest() throws Exception{
+
+
+    }
+
     /*//TODO!
     @Test
     public void test_add_friends() throws Exception {

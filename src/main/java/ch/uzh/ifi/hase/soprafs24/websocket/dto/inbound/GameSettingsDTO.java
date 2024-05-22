@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameSettingsDTO { //maxRounds, max Players, turnLength
-    private String type;
+    private String type; //gameSettings
 
     private Integer maxPlayers;
     private Integer maxRounds;

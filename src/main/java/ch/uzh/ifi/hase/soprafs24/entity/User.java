@@ -66,6 +66,10 @@ public class User implements Serializable {
   @Column
   private List<String> openFriendRequests;
 
+    @ElementCollection
+    @Column
+    private List<String> sentFriendRequests;
+
     @Getter
     @Setter
     private String hotkeyInputDraw = "D";
@@ -82,6 +86,9 @@ public class User implements Serializable {
 
     public List<String> getOpenFriendRequests() {return openFriendRequests;}
   public void setOpenFriendRequests(List<String> openFriendRequests) {this.openFriendRequests = openFriendRequests; }
+
+    public List<String> getSentFriendRequests() {return sentFriendRequests;}
+    public void setSentFriendRequests(List<String> sentFriendRequests) {this.sentFriendRequests = sentFriendRequests; }
 
   public Boolean getIsUser() {
         return isUser;

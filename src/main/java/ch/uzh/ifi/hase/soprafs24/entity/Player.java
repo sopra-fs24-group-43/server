@@ -1,9 +1,13 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class Player {
     private String username;
     private int userId; //can be a userId or a guestId
@@ -11,14 +15,11 @@ public class Player {
     private int gameId;
     private ArrayList<Integer> friends; //the userId's of their friends
     private String role; // "admin" or "player"
-    @Getter
-    @Setter
+
     private  int totalPoints;
-    @Getter
-    @Setter
+
     private  int  newlyEarnedPoints;
-    @Getter
-    @Setter
+
     private int podiumPosition;
 
     public  Player (String username, int userId, boolean isguest, int gameId, ArrayList<Integer> friends,String role) {

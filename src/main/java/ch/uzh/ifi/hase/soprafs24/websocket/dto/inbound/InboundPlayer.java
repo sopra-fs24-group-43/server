@@ -1,7 +1,13 @@
 package ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound;
 
-import java.util.ArrayList;
+import lombok.*;
 
+import java.util.ArrayList;
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class InboundPlayer {
 
     //type is normally InboundPlayer but when returning for createguestplayer then its createPlayerFromGuest
