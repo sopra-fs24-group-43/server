@@ -25,11 +25,11 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        System.out.println(headerAccessor);
+        //System.out.println(headerAccessor);
         Integer userId = (Integer) headerAccessor.getSessionAttributes().get("userId");
         //GameRepository.printAllAll();
         if (userId == null) {
-            System.out.println("User had connection without userId in SessAttr");
+            //System.out.println("User had connection without userId in SessAttr");
         }
         else {
             System.out.println("userId: "+userId);

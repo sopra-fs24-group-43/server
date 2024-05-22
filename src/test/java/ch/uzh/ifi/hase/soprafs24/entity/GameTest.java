@@ -15,17 +15,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import static org.mockito.Mockito.when;
+@ExtendWith(SpringExtension.class)
+@SpringBootTest()
 public class GameTest {
 
     @MockBean
@@ -62,7 +67,7 @@ public class GameTest {
         player2 = new Player("2",2,false,1,n2,"Guesser");
         WebSocketService webSocketService = new WebSocketService();
         TimerService timerService = new TimerService(webSocketService);
-        game = new Game(player, webSocketService, timerService, randomGenerators, getWordlist);
+        game = new Game(player, webSocketService, timerService, randomGenerators ,getWordlist);
         ArrayList<Player> players = new ArrayList<>();
         HashMap<Integer,Player> plHM = new HashMap<>();
         plHM.put(1,player);
@@ -153,6 +158,33 @@ public class GameTest {
 
     @Test
     void nextturnTest() {
+        ArrayList<String> words = new ArrayList<>();
+        words.add("firstword");
+        words.add("secondword");
+        words.add("thirdword");
+        words.add("forthword");
+        words.add("fifthword");
+        ArrayList<String> words2 = new ArrayList<>();
+        words2.add("sixthword");
+        words2.add("seventhword");
+        words2.add("eightword");
+        words2.add("ninthword");
+        words2.add("tenthword");
+        ArrayList<String> words3 = new ArrayList<>();
+        words3.add("firstword");
+        words3.add("secondword");
+        words3.add("thirdword");
+        words3.add("forthword");
+        words3.add("fifthword");
+        words3.add("sixthword");
+        words3.add("seventhword");
+        words3.add("eightword");
+        words3.add("ninthword");
+        words3.add("tenthword");
+        when(getWordlist.getWordlist2("Science")).thenReturn(words);
+        when(getWordlist.getWordlist2("Animal")).thenReturn(words2);
+        when(randomGenerators.DoShuffle(words3)).thenReturn(words3);
+        //added the above so startgame doesnt use getWordlist to get from API and then shuffles them (random)
         game.startGame();
         game.nextturn(1);
         game.nextturn(1);
@@ -166,7 +198,7 @@ public class GameTest {
         assertEquals(1,game.getCurrentTurn());
         assertEquals(2,game.getCurrentRound());
         assertEquals(0,game.getDrawer());
-        assertEquals(10,game.getCurrentWordIndex());
+        assertEquals(7,game.getCurrentWordIndex());  //changed to 7 (from 10) because the first nextturn doesnt add +3 (gamePhase == "started", after its "choosing")
 
         GameStateDTO actual = game.receiveGameStateDTO();
 
@@ -175,9 +207,13 @@ public class GameTest {
         assertEquals(actual.getDrawer(),0);
         //assertEquals(actual.getActualCurrentWord(),game.getCurrentWord());
         List<String> three_words = new ArrayList<>();
-        three_words.add(game.getWordList().get(game.getCurrentWordIndex()-1));
-        three_words.add(game.getWordList().get(game.getCurrentWordIndex()));
-        three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
+        //the threewords:
+        three_words.add("seventhword");
+        three_words.add("eightword");
+        three_words.add("ninthword");
+        //three_words.add(game.getWordList().get(game.getCurrentWordIndex()-1));  not need now cause it uses the Mock
+        //three_words.add(game.getWordList().get(game.getCurrentWordIndex()));
+        //three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
         assertEquals(actual.getThreeWords(),three_words);
 
     }
