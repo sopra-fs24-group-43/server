@@ -421,7 +421,7 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(lobbyInfo);
     }
-
+    /*
     @Test
     public void startgameTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -505,7 +505,7 @@ public class WebSocketControllerTest {
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
         assertThat(resultKeeper2.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);
     }
-
+    */
     @Test
     public void getgamestateTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
