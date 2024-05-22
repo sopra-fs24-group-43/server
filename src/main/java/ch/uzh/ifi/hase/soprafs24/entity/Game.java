@@ -123,6 +123,7 @@ public class Game {
         this.remainingTime = 0;
         this.playerCorrectGuesses = new HashMap<String, Boolean>();
         this.playerIdByName = new HashMap<String, Integer>();
+        this.playerIdByName.put(admin.getUsername(), admin.getUserId());
         this.roundIsActive = false;
         this.setGamePhase("inLobby");
         this.webSocketService = webSocketService;
@@ -151,24 +152,47 @@ public class Game {
         String name = answer.getUsername();
         Player player = players.get(playerIdByName.get(name));
         Player drawer = players.get(drawingOrder.get(Drawer));
+        System.out.println("********************************************************************************");
+        System.out.println("Answer: " + answer.getAnswerString() + " Solution: " + this.actualCurrentWord);
+        System.out.println("Current Game phase: " + this.getGamePhase());
+        System.out.println("List of Players: " + this.players);
+        System.out.println("Current Drawer: " + drawer.getUsername());
+        System.out.println("Guesser: " + player.getUsername());
+        System.out.println("Guesser has guessed correctly: " + this.playerCorrectGuesses.get(name));
+        System.out.println("********************************************************************************");
 
-        if(this.gamePhase != "drawing" || name == drawer.getUsername()){
-         return 0;
+        System.out.println("checking gamephase not equal to drawing: " + !this.getGamePhase().equals("drawing"));
+        System.out.println("checking name of sender is equal to drawer: " + name.equals(drawer.getUsername()));
+        if(!this.getGamePhase().equals("drawing") || name.equals(drawer.getUsername())){
+            System.out.println("Returning 0");
+            return 0;
         }
+        System.out.println("********************************************************************************");
+        System.out.println("Checking if guesser has already guessed correctly: " + this.playerCorrectGuesses.get(name));
         if (this.playerCorrectGuesses.get(name)){
+            System.out.println("Returning 2");
             return 2;
         }
+        System.out.println("********************************************************************************");
+        System.out.println("Checking if answer is correct: " + compareAnswer(answer.getAnswerString()));
         if (compareAnswer(answer.getAnswerString()) == 1){
+            System.out.println("Returning 1");
             this.currentCorrectGuesses++;
-            this.pointsOfCurrentTurn.put(player, PointCalculatorGuesser.calculate(turnLength, remainingTime, currentCorrectGuesses));
-            this.pointsOfCurrentTurn.put(drawer, PointCalculatorDrawer.calculate(turnLength, remainingTime, currentCorrectGuesses) + pointsOfCurrentTurn.get(drawer));
+            this.pointsOfCurrentTurn.put(player, PointCalculatorGuesser.calculate(turnLength, timeLeftInTurn, currentCorrectGuesses));
+            this.pointsOfCurrentTurn.put(drawer, PointCalculatorDrawer.calculate(turnLength, timeLeftInTurn, currentCorrectGuesses) + pointsOfCurrentTurn.get(drawer));
+            System.out.println("Points added to the guesser: " + pointsOfCurrentTurn.get(player));
+            System.out.println("Points added to the drawer: " + pointsOfCurrentTurn.get(drawer));
             this.playerCorrectGuesses.put(name, true);
+            return 1;
         }
+        System.out.println("********************************************************************************");
+        System.out.println("No check succeeded: returning 0");
         return 0;
     }
 
     public int compareAnswer(String answer) {
-        if(answer.equalsIgnoreCase(this.getCurrentWord())){
+        System.out.println("comparing words " + answer + " and " + this.actualCurrentWord + ": " + answer.equalsIgnoreCase(this.actualCurrentWord.replaceAll("\"","")));
+        if(answer.equalsIgnoreCase(this.actualCurrentWord.replaceAll("\"",""))){
             return 1;
         } else {
             return 0;
@@ -415,6 +439,9 @@ public class Game {
             int currentWordIndex = game.getCurrentWordIndex() + 3;
             game.setCurrentWordIndex(currentWordIndex);
         }
+        pointsOfCurrentTurn.replaceAll((p, v) -> 0);
+        playerCorrectGuesses.replaceAll((p, v) -> false);
+        currentCorrectGuesses = 0;
         game.setGamePhase("choosing");
         System.out.println("NEXTTURN (T,R, action): " + game.getCurrentTurn() + ", "+ game.getCurrentRound() + ", " +turnOrRound);
 
