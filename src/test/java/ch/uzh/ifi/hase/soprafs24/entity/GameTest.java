@@ -117,8 +117,8 @@ public class GameTest {
 
         for (int j = 0;j<game.getGenres().size();j++){
             List<String> l1 = new ArrayList<>();
-            l1.addAll(getWordlist.getWordlist(game.getGenres().get(j)));
-            List<String> l2 = getWordlist.getWordlist(game.getGenres().get(j));
+            l1.addAll(getWordlist.getWordlist2(game.getGenres().get(j)));
+            List<String> l2 = getWordlist.getWordlist2(game.getGenres().get(j));
             for (int i = 0;i<game.getWordList().size();i++) {
                 if (l1.contains(game.getWordList().get(i))) {
 
