@@ -258,10 +258,10 @@ public class Game {
 */
     public void startGame() {
         //this.wordList=shufflewordList();
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Science");
-        list.add("Animal");
-        this.genres = list;
+        //ArrayList<String> list = new ArrayList<>();
+        //list.add("Science");
+        //list.add("Animal");
+        //this.genres = list;
         this.wordList = setWordList(this.genres);
         this.gameStarted = true;
         this.gamePhase = "started";
