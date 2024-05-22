@@ -155,7 +155,7 @@ public class Game {
         Player drawer = players.get(drawingOrder.get(Drawer));
         if(!this.getGamePhase().equals("drawing") || name.equals(drawer.getUsername())){
             System.out.println("Returning 0");
-            return 0;
+            return 0;}
         if (this.playerCorrectGuesses.get(name)){
             System.out.println("Returning 2");
             return 2;
