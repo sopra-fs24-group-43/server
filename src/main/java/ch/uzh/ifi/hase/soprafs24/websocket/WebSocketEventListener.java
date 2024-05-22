@@ -56,7 +56,8 @@ public class WebSocketEventListener {
                         if (reload == null || !reload) {  //was it a disconnect? -> give no time to reconnect
                             if (player.getRole().equals("admin")) {  //admin or player
                                 game.deletegame(gameId);
-                                QuestionToSend questionToSend = new QuestionToSend("deletegame");
+                                QuestionToSend questionToSend = new QuestionToSend();
+                                questionToSend.setType("deletegame");
                                 this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);  //for the players in the Lobby
                                 this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
 

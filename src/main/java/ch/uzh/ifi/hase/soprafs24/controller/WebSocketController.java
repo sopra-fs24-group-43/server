@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.external_api.GetWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.TimerService;
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
@@ -30,12 +31,14 @@ public class WebSocketController {
     RandomGenerators randomGenerators;
     TimerService timerService;
     ReconnectionHelper reconnectionHelper;
+    GetWordlist getWordlist;
 
-    public WebSocketController( WebSocketService webSocketService) {
+    public WebSocketController( WebSocketService webSocketService, RandomGenerators randomGenerators, GetWordlist getWordlist) {
         this.webSocketService = webSocketService;
-        this.randomGenerators = new RandomGenerators();
+        this.randomGenerators = randomGenerators;
         this.timerService = new TimerService(webSocketService);
         this.reconnectionHelper = new ReconnectionHelper(webSocketService);
+        this.getWordlist = getWordlist;
     }
 
     @MessageMapping("/landing/createguestplayer")
@@ -44,12 +47,21 @@ public class WebSocketController {
         InboundPlayer inboundPlayer = PlayerRepository.createPlayerFromGuest();
         this.webSocketService.sendMessageToClients("/topic/landing", inboundPlayer);
     }
+    @MessageMapping("/landing/creategame2")
+    public void creategame2(int gameId){
+        ReconnectionDTO reconnectionDTO = new ReconnectionDTO();
+        reconnectionDTO.setType("recon");
+        reconnectionDTO.setGameId(gameId);
+        reconnectionDTO.setRole("player");
+        this.webSocketService.sendMessageToClients("/topic/landing", reconnectionDTO);  //for the creator of the game
+
+    }
     @MessageMapping("/landing/creategame")
     public void creategame(InboundPlayer inboundPlayer){ //the client can't know the gameId of the game when he first creates it so he can just pass some int (e.g. 1001)
         Player player = new Player(inboundPlayer.getUsername(),
                 inboundPlayer.getUserId(), inboundPlayer.getIsGuest(),inboundPlayer.getGameId(),
                 inboundPlayer.getFriends(), inboundPlayer.getRole());
-        Game game = new Game(player, webSocketService, timerService);
+        Game game = new Game(player, webSocketService, timerService, randomGenerators, getWordlist);
         int gameId = randomGenerators.GameIdGenerator();
         while (GameRepository.gameIdtaken(gameId)) {
             gameId = randomGenerators.GameIdGenerator();
@@ -59,9 +71,12 @@ public class WebSocketController {
         PlayerRepository.addPlayer(playerId, gameId, player);
         game.setGameId(gameId);
         GameRepository.addGame(gameId,game);
-        QuestionToSend questionToSend = new QuestionToSend("creategame");
+        QuestionToSend questionToSend = new QuestionToSend();
+        questionToSend.setType("creategame");
         questionToSend.setGameId(gameId);
         questionToSend.setUserId(player.getUserId());
+
+
         //new below
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the creator of the game
         //and for the Landingpage to update List of Lobbies, will trigger a getallgames
@@ -70,7 +85,10 @@ public class WebSocketController {
     public void deletegame(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
         game.deletegame(gameId);
-        QuestionToSend questionToSend = new QuestionToSend("deletegame");
+        QuestionToSend questionToSend = new QuestionToSend();
+        questionToSend.setType("deletegame");
+        questionToSend.setGameId(null);
+        questionToSend.setUserId(null);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);  //for the players in the Lobby
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
@@ -119,7 +137,8 @@ public class WebSocketController {
 
         int playerId = inboundPlayer.getUserId();
         PlayerRepository.addPlayer(playerId, gameId, player);
-        QuestionToSend questionToSend = new QuestionToSend("joingame");
+        QuestionToSend questionToSend = new QuestionToSend();
+        questionToSend.setType("joingame");
         //new beloew
 
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", inboundPlayer); //should return something joiner doesnt need to receive it
@@ -129,7 +148,15 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/leavegame/{playerId}")
     public void leavegame(@DestinationVariable int gameId, @DestinationVariable int playerId){ //needs change = can admin leavegame or only deletegame?
         Game game = GameRepository.findByGameId(gameId);
-        game.leavegame(playerId, gameId);
+        if (game != null) {
+            game.leavegame(playerId, gameId);
+        }
+        QuestionToSend questionToSend = new QuestionToSend();
+        questionToSend.setType("leavegame");
+
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); //should return something joiner doesnt need to receive it
+        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
+
 /*
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         PlayerRepository.removePlayer(inboundPlayer.getUserId(),gameId);
@@ -139,13 +166,20 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/updategamesettings")
     public void updategamesettings(@DestinationVariable int gameId, GameSettingsDTO gameSettingsDTO){
         Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            return;
+        }
         game.updateGameSettings(gameSettingsDTO);
+
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameSettingsDTO);
 
     }
     @MessageMapping("/games/{gameId}/getlobbyinfo")
     public void getlobbyinfo(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            return;
+        }
         LobbyInfo lobbyInfo = new LobbyInfo();
         lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
@@ -159,7 +193,8 @@ public class WebSocketController {
         Game game = GameRepository.findByGameId(gameId);
         game.startGame();
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
-        QuestionToSend questionToSend = new QuestionToSend("startgame"); //this is solely for the Table to take the game off the List of lobbies
+        QuestionToSend questionToSend = new QuestionToSend(); //this is solely for the Table to take the game off the List of lobbies
+        questionToSend.setType("startgame");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
@@ -167,6 +202,9 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/getgamestate/{userId}")
     public void getgamestate(@DestinationVariable int gameId, @DestinationVariable int userId){
         Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            return;
+        }
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general/" + userId, gameStateDTO);
     }
@@ -207,21 +245,18 @@ public class WebSocketController {
     @MessageMapping("/landing/reconnect/{userId}")
     public void reconnect(@DestinationVariable int userId) {
         System.out.println("from reconnect: "+userId);
-        System.out.println(PlayerRepository.findByUserId(userId));
 
         if (PlayerRepository.findByUserId(userId) != null) {
             Player player = PlayerRepository.findByUserId(userId);
             int gameId = player.getGameId();
             Game game = GameRepository.findByGameId(gameId);
-            System.out.println(game);
             if (game == null) {
                 return;
             }
-            System.out.println(game.getPlayers().containsKey(userId));
-            System.out.println(game.getGameStarted());
             if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
                 game.intigrateIntoGame(userId, gameId);
-                QuestionToSend questionToSend = new QuestionToSend("sendcanvasforrecon");
+                QuestionToSend questionToSend = new QuestionToSend();
+                questionToSend.setType("sendcanvasforrecon");
                 questionToSend.setUserId(userId);
                 this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
             }
@@ -234,16 +269,16 @@ public class WebSocketController {
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/fill/" + userId, fillCoordinates);  //has userId in mapping!
     }
 
-
     @MessageMapping("/games/{gameId}/nextturn")
     public void nextturn(@DestinationVariable int gameId){
-        //System.out.println("nextturn in ws started");
         Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            return;
+        }
         game.nextturn(gameId);
         timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
-        //System.out.println("nextturn in ws ended");
 
     }
 
@@ -251,6 +286,9 @@ public class WebSocketController {
     public void sendchosenword(@DestinationVariable int gameId, ChooseWordDTO chooseWordDTO) {
         timerService.doShutDownTimer(gameId); //shutsdown timer from nextturn "choosing"
         Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            return;
+        }
         game.setActualCurrentWord(chooseWordDTO.getWord());
         game.setGamePhase("drawing");
         chooseWordDTO.setType("startdrawing");
@@ -262,6 +300,9 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/sendguess")
     public void sendguess(@DestinationVariable int gameId, Answer answer){
         Game game = GameRepository.findByGameId(gameId);
+        if (game == null) {
+            return;
+        }
         int flag = game.addAnswer(answer);
         if (flag == 2){
             answer.setPlayerHasGuessedCorrectly(true);
@@ -303,6 +344,7 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/getleaderboard")
     public void endturn(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
+
         LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
         if (game.getEndGame()){
             leaderboardDTO.setReason(game.getReason());
