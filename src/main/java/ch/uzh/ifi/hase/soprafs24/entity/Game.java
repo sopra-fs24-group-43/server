@@ -2,9 +2,10 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import java.util.*;
 
 
+import ch.uzh.ifi.hase.soprafs24.external_api.GetWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
 
-import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
+
 
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TimerRepository;
@@ -22,8 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LobbyInfo;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.QuestionToSend;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
@@ -42,11 +42,14 @@ public class Game {
      }
 }
 */
-@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
+@Getter
 public class Game {
     private boolean gameStarted;  //is set to true once get startgame was called
-    private RandomGenerators random;
+    private RandomGenerators randomGenerators;
     private HashMap<Integer, Player> players; //
     private Player admin; //
     private int gameId; //not done yet
@@ -65,9 +68,7 @@ public class Game {
 
     private HashMap<Player, Integer> points;
     private HashMap<Player, Integer> pointsOfCurrentTurn;
-
     private LeaderBoardDTO leaderboardDTO;
-
     //variables used to keep track of the game state
     private ArrayList<Answer> answers;
     private String actualCurrentWord;
@@ -93,13 +94,13 @@ public class Game {
     private TimerService timerService;
     private HashMap<String,List<String>> wordlists;
     private String reason;
+    private GetWordlist getWordlist;
     //private int nr_genres;
 
-     public Game(Player admin, WebSocketService webSocketService, TimerService timerService) {
-
+     public Game(Player admin, WebSocketService webSocketService, TimerService timerService, RandomGenerators randomGenerators, GetWordlist getWordlist) {
         this.gameStarted = false;
         this.endGame = false;
-        this.random = new RandomGenerators();
+        this.randomGenerators = randomGenerators;
         this.admin = admin;
         this.players = new HashMap<Integer, Player>();
         this.players.put(admin.getUserId(), admin);
@@ -108,7 +109,7 @@ public class Game {
         this.maxPlayers = 5;
         this.maxRounds = 5;
         this.turnLength = 60;
-        this.gamePassword = this.random.PasswordGenerator();
+        this.gamePassword = this.randomGenerators.PasswordGenerator();
         this.lobbyName = this.admin.getUsername() + "'s lobby";
         this.points = new HashMap<Player, Integer>();
         this.pointsOfCurrentTurn = new HashMap<Player, Integer>();
@@ -124,12 +125,12 @@ public class Game {
         this.playerCorrectGuesses = new HashMap<String, Boolean>();
         this.playerIdByName = new HashMap<String, Integer>();
         this.roundIsActive = false;
-        this.setGamePhase("inLobby");
+        this.gamePhase = "inLobby";
         this.webSocketService = webSocketService;
         this.timerService = timerService;
-
         this.wordlists = new HashMap<>();
         this.genres = new ArrayList<>();
+        this.getWordlist = getWordlist;
 
     }
     public Boolean getGameStarted() {
@@ -149,10 +150,9 @@ public class Game {
         this.answersReceived++;
         String name = answer.getUsername();
 
-        if(roundIsActive){
+        if(!roundIsActive){
          return 0;
         }
-
         if (this.playerCorrectGuesses.get(name)){
             return 2;
         }
@@ -221,21 +221,23 @@ public class Game {
         //ArrayList<String> genres = new ArrayList<>();
         //genres.addAll(selected_genres);
         //genres.addAll(Arrays.asList("Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"));
+        ArrayList<String> tempWordList = new ArrayList<>();
         for (int i = 0; i < genres.size(); i++) {
-            //this.wordlists.put(genres.get(i), getWordlist.getWordlist(genres.get(i)));
-            this.wordList.addAll(getWordlist.getWordlist(genres.get(i)));
-            //listlengths.add(getWordlist.getWordlist(genres.get(i)).size());
+            //this.wordlists.put(genres.get(i), getWordlist.getWordlist2(genres.get(i)));
+            tempWordList.addAll(getWordlist.getWordlist2(genres.get(i)));
+            //listlengths.add(getWordlist.getWordlist2(genres.get(i)).size());
         }
-        Collections.shuffle(wordList);
+        tempWordList = randomGenerators.DoShuffle(tempWordList);  //instead of Collections.shuffle(wordList);
+
         //System.out.println(wordList);
         //int nr_words = this.maxRounds*this.playersOriginally*3;
         //this.nr_genres = nr_words/40;
 
-        //List<String> wordlist1 = getWordlist.getWordlist(genre);
+        //List<String> wordlist1 = getWordlist.getWordlist2(genre);
         //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
         //List<String> wordlist2 = wordlist1.subList(0,nr);
         //List<String> wordlist2 = wordList.subList(0,nr_words);
-        return wordList;
+        return tempWordList;
     }
 /*
     public List<String> shufflewordList() {
@@ -256,10 +258,10 @@ public class Game {
 */
     public void startGame() {
         //this.wordList=shufflewordList();
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Science");
-        list.add("Animal");
-        this.genres = list;
+        //ArrayList<String> list = new ArrayList<>();
+        //list.add("Science");
+        //list.add("Animal");
+        //this.genres = list;
         this.wordList = setWordList(this.genres);
         this.gameStarted = true;
         this.gamePhase = "started";
@@ -377,10 +379,11 @@ public class Game {
         boolean wasAdmin = (player.getRole() == "admin");
         int currentPlayerCount = game.getPlayers().size();
         PlayerRepository.removePlayer(player.getUserId(), gameId);
-        QuestionToSend questionToSend = new QuestionToSend("leavegame");
-        questionToSend.setLeaver(player);
-        questionToSend.setWasAdmin(wasAdmin); //what should happen if player was the admin? (delete game or give admin to other player?)
-        questionToSend.setCurrentPlayerCount(currentPlayerCount);
+        QuestionToSend questionToSend = new QuestionToSend();
+        questionToSend.setType("leavegame");
+        //questionToSend.setLeaver(player);
+        //questionToSend.setWasAdmin(wasAdmin); //what should happen if player was the admin? (delete game or give admin to other player?)
+        //questionToSend.setCurrentPlayerCount(currentPlayerCount);
         LobbyInfo lobbyInfo = new LobbyInfo();
         lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
@@ -408,29 +411,41 @@ public class Game {
             game.setCurrentTurn(1);
             game.setCurrentRound(game.getCurrentRound()+1);
             choosenextdrawer(gameId);
-            int currentWordIndex = game.getCurrentWordIndex() + 3;
+            int currentWordIndex;
+            if (game.getGamePhase().equals("started")) {
+                currentWordIndex = 1;
+            }
+            else {
+                currentWordIndex = game.getCurrentWordIndex() + 3;
+            }
             game.setCurrentWordIndex(currentWordIndex);
         } else {
             turnOrRound = "Turn";
             game.setCurrentTurn(game.getCurrentTurn() + 1);
             choosenextdrawer(gameId);
-            int currentWordIndex = game.getCurrentWordIndex() + 3;
+            int currentWordIndex;
+            if (game.getGamePhase().equals("started")) {
+                currentWordIndex = 1;
+            }
+            else {
+                currentWordIndex = game.getCurrentWordIndex() + 3;
+            }
             game.setCurrentWordIndex(currentWordIndex);
         }
         game.setGamePhase("choosing");
-        System.out.println("NEXTTURN (T,R, action): " + game.getCurrentTurn() + ", "+ game.getCurrentRound() + ", " +turnOrRound);
+        System.out.println("NEXTTURN (T,R,I,action): " + game.getCurrentTurn() + ", "+ game.getCurrentRound() + ", " + game.getCurrentWordIndex() +", "+turnOrRound);
 
 
     }
     public void choosenextdrawer(int gameId) {
         Game game = GameRepository.findByGameId(gameId);
         int Drawer = (game.getDrawer()+1);
-        Drawer = Drawer % game.getDrawingOrder().size();
+        Drawer = Drawer % game.getDrawingOrderLeavers().size();
         System.out.println("DrawingOrderLeavers: "+game.getDrawingOrderLeavers());
         while (game.getDrawingOrderLeavers().get(Drawer) == 0) { //runs forever
             System.out.println("changed Drawer from " + (Drawer-1) + "to " + Drawer + "but" + Drawer + "was not connected");
             Drawer = Drawer+1; //should be Drawer
-            Drawer = Drawer % game.getDrawingOrder().size();
+            Drawer = Drawer % game.getDrawingOrderLeavers().size();
         }
         System.out.println("changed Drawer from " + (Drawer-1) + "to " + Drawer);
         game.setDrawer(Drawer);
@@ -448,10 +463,13 @@ public class Game {
         gameStateDTO.setPlayersOriginally(this.playersOriginally);
         gameStateDTO.setCurrentRound(this.currentRound);
         gameStateDTO.setCurrentTurn(this.currentTurn);
+
         ArrayList<String> threeWords = new ArrayList<>();
-        threeWords.add(wordList.get(this.currentWordIndex-1));
-        threeWords.add(wordList.get(this.currentWordIndex));
-        threeWords.add(wordList.get(this.currentWordIndex+1));
+        if (!wordList.isEmpty()) {
+            threeWords.add(this.wordList.get(this.currentWordIndex - 1));
+            threeWords.add(this.wordList.get(this.currentWordIndex));
+            threeWords.add(this.wordList.get(this.currentWordIndex + 1));
+        }
         gameStateDTO.setThreeWords(threeWords);
         gameStateDTO.setDrawer(this.Drawer);
         gameStateDTO.setDrawingOrder(this.drawingOrderLeavers);  //changed to drawingOrderLeavers

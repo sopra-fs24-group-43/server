@@ -66,7 +66,8 @@ sonarqube {
     properties {
         property "sonar.projectKey", "sopra-fs24-group-43_server"
         property "sonar.organization", "sopra-fs24-group-43"
-        property "sonar.host.url", "sonarcloud.io"
+        property "sonar.host.url", "https://sonarcloud.io"
+
     }
 }
 

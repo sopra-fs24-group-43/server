@@ -1,10 +1,13 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
-import ch.uzh.ifi.hase.soprafs24.external_api.getWordlist;
+import ch.uzh.ifi.hase.soprafs24.external_api.GetWordlist;
 import ch.uzh.ifi.hase.soprafs24.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs24.service.TimerService;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
+
+import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
+
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
@@ -26,9 +29,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameTest {
 
     @MockBean
+    private RandomGenerators randomGenerators;
+    @MockBean
+    private GetWordlist getWordlist;
+
+
+    @MockBean
     private WebSocketService webSocketService;
     @MockBean
     private TimerService timerService;
+
     @Mock
     private Player player;
     @Mock
@@ -50,7 +60,9 @@ public class GameTest {
         ArrayList<Integer> n2 = new ArrayList<>();
         n.add(1);
         player2 = new Player("2",2,false,1,n2,"Guesser");
-        game = new Game(player,webSocketService,timerService);
+        WebSocketService webSocketService = new WebSocketService();
+        TimerService timerService = new TimerService(webSocketService);
+        game = new Game(player, webSocketService, timerService, randomGenerators, getWordlist);
         ArrayList<Player> players = new ArrayList<>();
         HashMap<Integer,Player> plHM = new HashMap<>();
         plHM.put(1,player);
@@ -105,8 +117,8 @@ public class GameTest {
 
         for (int j = 0;j<game.getGenres().size();j++){
             List<String> l1 = new ArrayList<>();
-            l1.addAll(getWordlist.getWordlist(game.getGenres().get(j)));
-            List<String> l2 = getWordlist.getWordlist(game.getGenres().get(j));
+            l1.addAll(getWordlist.getWordlist2(game.getGenres().get(j)));
+            List<String> l2 = getWordlist.getWordlist2(game.getGenres().get(j));
             for (int i = 0;i<game.getWordList().size();i++) {
                 if (l1.contains(game.getWordList().get(i))) {
 
