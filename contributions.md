@@ -92,6 +92,38 @@ issue(client) #144 - https://github.com/sopra-fs24-group-43/client/issues/144 - 
 
 issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
 
+issue(client) #108 - https://github.com/sopra-fs24-group-43/client/issues/108 - Implementing websocket compatibility for hiding the tool menu from all clients (except from drawer) 
+
+issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
+
+issue(client) #109 - https://github.com/sopra-fs24-group-43/client/issues/109 - implementing websocket compatibility hiding "selected color button" from all clients (except drawer)
+
+issue(client) #110 - https://github.com/sopra-fs24-group-43/client/issues/110 - implementing websocket compatibility hiding "color buttons" from all clients (except drawer)
+
+issue(client) #111 - https://github.com/sopra-fs24-group-43/client/issues/111 - implementing websocket compatibility hiding "thickness change buttons" from all clients (except drawer)
+
+issue(client) #112 - https://github.com/sopra-fs24-group-43/client/issues/112 - implementing websocket compatibility hiding "draw, fill, eraser, erase all" buttons from all clients (except drawer)
+
+issue(client) #159 - https://github.com/sopra-fs24-group-43/client/issues/159 - Making hotkey (canvas tools) calls only functioning for the drawer.
+
+issue(client) #160 - https://github.com/sopra-fs24-group-43/client/issues/160 - Making hotkey (canvas tools) calls non-functioning when the chat input field is selected.
+
+issue(client) #171 - https://github.com/sopra-fs24-group-43/client/issues/171 - Implementing (global) hotkey changes in the settings for the canvas tools and fixing bug for the word selection
+
+issue(client) #173 - https://github.com/sopra-fs24-group-43/client/issues/173 - 
+
+issue(client) #175 - https://github.com/sopra-fs24-group-43/client/issues/175 - Implementing error message / handling when trying to set a hotkey to a letter which already is set for another hotkey
+
+issue(client) #178 - https://github.com/sopra-fs24-group-43/client/issues/178 - Implementing canvas hotkeys and function to change canvas hotkeys for guests
+
+issue(client) #50 - https://github.com/sopra-fs24-group-43/client/issues/50 - From the home screen, a user can click on a “profile” button, bringing them to their user profile. (front)
+
+issue(client) #180 - https://github.com/sopra-fs24-group-43/client/issues/180 - Displaying account information on profile page
+
+issue(client) #182 - https://github.com/sopra-fs24-group-43/client/issues/182 - 
+
+issue(client) #184 - https://github.com/sopra-fs24-group-43/client/issues/184 - Creating and implementing a "Freitagsmaler" logo 
+
 
 ## Markiian Dobosh
 
