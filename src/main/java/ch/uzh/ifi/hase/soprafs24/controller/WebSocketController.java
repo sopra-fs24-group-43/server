@@ -153,7 +153,8 @@ public class WebSocketController {
         }
         QuestionToSend questionToSend = new QuestionToSend();
         questionToSend.setType("leavegame");
-
+        questionToSend.setGameId(null);
+        questionToSend.setUserId(null);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); //should return something joiner doesnt need to receive it
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
 
@@ -299,6 +300,7 @@ public class WebSocketController {
     }
     @MessageMapping("/games/{gameId}/sendguess")
     public void sendguess(@DestinationVariable int gameId, Answer answer){
+        System.out.println("sendguess output");
         Game game = GameRepository.findByGameId(gameId);
         if (game == null) {
             return;
