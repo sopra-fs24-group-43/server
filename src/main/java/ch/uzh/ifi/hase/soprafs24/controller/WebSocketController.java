@@ -315,9 +315,9 @@ public class WebSocketController {
             answer.setIsCorrect(false);
         }
         answer.setType("Answer");
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", answer);
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/sendguess", answer);
 
-        if (game.getCurrentCorrectGuesses() >= game.getConnectedPlayers().size() && game.getTimeLeftInTurn() >= 0){
+        if (game.getCurrentCorrectGuesses() >= game.getConnectedPlayers().size()-1 && game.getTimeLeftInTurn() >= 0){
             timerService.doShutDownTimer(game.getGameId());  //shutsdown timer from sendchosenword "drawing"
             if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getConnectedPlayers().size()) {
                 game.setEndGame(true);
