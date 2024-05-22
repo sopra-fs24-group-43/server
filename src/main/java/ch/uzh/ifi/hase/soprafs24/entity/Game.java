@@ -469,13 +469,13 @@ public class Game {
         gameStateDTO.setCurrentRound(this.currentRound);
         gameStateDTO.setCurrentTurn(this.currentTurn);
 
-        ArrayList<String> threeWords = new ArrayList<>();
+        ArrayList<String> newthreeWords = new ArrayList<>();
         if (!wordList.isEmpty()) {
-            threeWords.add(this.wordList.get(this.currentWordIndex - 1));
-            threeWords.add(this.wordList.get(this.currentWordIndex));
-            threeWords.add(this.wordList.get(this.currentWordIndex + 1));
+            newthreeWords.add(this.wordList.get(this.currentWordIndex - 1));
+            newthreeWords.add(this.wordList.get(this.currentWordIndex));
+            newthreeWords.add(this.wordList.get(this.currentWordIndex + 1));
         }
-        gameStateDTO.setThreeWords(threeWords);
+        gameStateDTO.setThreeWords(newthreeWords);
         gameStateDTO.setDrawer(this.Drawer);
         gameStateDTO.setDrawingOrder(this.drawingOrderLeavers);  //changed to drawingOrderLeavers
         gameStateDTO.setMaxRounds(this.maxRounds);
