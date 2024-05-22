@@ -115,10 +115,10 @@ public class UserController {
     @PutMapping("/users/{id}/friends")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserGetDTO DeleteFriendOfUserByID (@PathVariable Long id, @RequestParam String friend_username) {
+    public void DeleteFriendOfUserByID (@PathVariable Long id, @RequestParam String friend_username) {
         User user = userService.getUserById(id);
-        User editedUser = userService.delete_Friend(user, friend_username);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
+        userService.delete_Friend(user, friend_username);
+        //return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
     }
 
 

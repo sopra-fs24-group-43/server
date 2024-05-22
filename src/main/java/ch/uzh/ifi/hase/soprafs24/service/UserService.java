@@ -155,7 +155,7 @@ public class UserService {
       User userById = this.userRepository.findUserById(id);
       return userById.getFriends();
     }
-  public User delete_Friend(User user, String f_username) {
+  public void delete_Friend(User user, String f_username) {
 
           User userByUsername = userRepository.findByUsername(f_username);
           if (userByUsername==null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User does not exist");}
@@ -168,7 +168,6 @@ public class UserService {
           friends2.remove(user.getUsername());
           friend.setFriends(friends);
 
-          return user;
   }
     public void sendFriendRequest(User user, String friend_username, Boolean d) {
       if (!d){
