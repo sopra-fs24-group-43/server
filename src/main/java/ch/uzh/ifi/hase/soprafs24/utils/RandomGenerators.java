@@ -1,7 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.utils;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 
-import java.util.Random;
+import java.util.*;
+
+@Service
 public class RandomGenerators {
     public Random random = new Random();
     public String PasswordGenerator() {
@@ -29,5 +33,10 @@ public class RandomGenerators {
             guestId = this.random.nextInt(10000) - 10010;
         }
         return guestId;
+    }
+    public ArrayList<String> DoShuffle(ArrayList<String> wordList) {
+        //make sure that the acutal game.wordList is shuffled with a setWordList(return list from this method)
+        Collections.shuffle(wordList);
+        return wordList;
     }
 }

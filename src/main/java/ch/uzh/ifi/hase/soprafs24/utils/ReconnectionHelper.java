@@ -35,7 +35,8 @@ public class ReconnectionHelper {
             }
             if (game.getPlayers().containsKey(userId) && game.getGameStarted()) {
                 if (reconOrReload) {
-                    QuestionToSend questionToSend = new QuestionToSend("sendcanvasforrecon");
+                    QuestionToSend questionToSend = new QuestionToSend();
+                    questionToSend.setType("sendcanvasforrecon");
                     questionToSend.setUserId(userId);
                     this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
                 }
