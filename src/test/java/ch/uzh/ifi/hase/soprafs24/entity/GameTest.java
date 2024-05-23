@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest()
-public class GameTest {/*
+public class GameTest {
 
     @MockBean
     private RandomGenerators randomGenerators;
@@ -145,19 +145,21 @@ public class GameTest {/*
         assertEquals(game.getConnectedPlayers(),playershm);
 
     }
-
-/*error this.websocketService is null
+/*
+error this.websocketService is null
     @Test
     void terminateGameTest() {
         game.startGame();
         game.terminategame(1,"admin left");
         assertEquals(null, GameRepository.findByGameId(1));
     }
+*/
 
- *//*
 
+/*
     @Test
     void nextturnTest() {
+
         ArrayList<String> words = new ArrayList<>();
         words.add("firstword");
         words.add("secondword");
@@ -184,7 +186,11 @@ public class GameTest {/*
         when(getWordlist.getWordlist2("Science")).thenReturn(words);
         when(getWordlist.getWordlist2("Animal")).thenReturn(words2);
         when(randomGenerators.DoShuffle(words3)).thenReturn(words3);
+        ArrayList<String> genres  =new ArrayList<>();
+        genres.add("Science");  //need to be the same that get mocked in getWordlist2 or getWordlist2 will just return null
+        genres.add("Animal");
         //added the above so startgame doesnt use getWordlist to get from API and then shuffles them (random)
+        game.setGenres(genres);
         game.startGame();
         game.nextturn(1);
         game.nextturn(1);
@@ -194,17 +200,20 @@ public class GameTest {/*
         int j = game.getDrawer();
         game.nextturn(1);
 
-        assertEquals("choosing",game.getGamePhase());
-        assertEquals(1,game.getCurrentTurn());
-        assertEquals(2,game.getCurrentRound());
-        assertEquals(0,game.getDrawer());
-        assertEquals(7,game.getCurrentWordIndex());  //changed to 7 (from 10) because the first nextturn doesnt add +3 (gamePhase == "started", after its "choosing")
+        assertEquals("choosing", game.getGamePhase());
+        assertEquals(1, game.getCurrentTurn());
+        assertEquals(2, game.getCurrentRound());
+        assertEquals(0, game.getDrawer());
+        assertEquals(7, game.getCurrentWordIndex());  //changed to 7 (from 10) because the first nextturn doesnt add +3 (gamePhase == "started", after its "choosing")
 
         GameStateDTO actual = game.receiveGameStateDTO();
+
 
         assertEquals(actual.getCurrentRound(),2);
         assertEquals(actual.getCurrentTurn(),1);
         assertEquals(actual.getDrawer(),0);
+
+
         //assertEquals(actual.getActualCurrentWord(),game.getCurrentWord());
         List<String> three_words = new ArrayList<>();
         //the threewords:
@@ -214,9 +223,10 @@ public class GameTest {/*
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()-1));  not need now cause it uses the Mock
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()));
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
-        assertEquals(actual.getThreeWords(),three_words);
+        assertEquals(three_words, actual.getThreeWords());
 
     }
+*/
 
 
     @Test
@@ -258,5 +268,5 @@ public class GameTest {/*
         assertEquals(actual.getPodium(),leaderboardDTO.getPodium());
 
         assertEquals(actual.getUserIdToPlayerSorted(),leaderboardDTO.getUserIdToPlayerSorted());
-    }*/
+    }
 }

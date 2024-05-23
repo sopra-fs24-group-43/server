@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest()
-public class GameRepositoryTest {/*
+public class GameRepositoryTest {
     @MockBean
     private RandomGenerators randomGenerators;
 
@@ -71,5 +73,5 @@ public class GameRepositoryTest {/*
     public void removeGameTest() {
         GameRepository.removeGame(1);
         assertEquals(null, GameRepository.findByGameId(1));
-    }*/
+    }
 }

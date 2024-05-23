@@ -133,6 +133,9 @@ public class Game {
         this.wordlists = new HashMap<>();
         this.genres = new ArrayList<>();
         this.getWordlist = getWordlist;
+        this.Drawer = -1;
+        this.answers = new ArrayList<Answer>();
+
 
     }
     public Boolean getGameStarted() {
@@ -150,18 +153,18 @@ public class Game {
     public int addAnswer(Answer answer) {
         this.answers.add(answer);
         this.answersReceived++;
+        if(this.gamePhase == "inLobby"){
+            return 3;
+        }
         String name = answer.getUsername();
         Player player = players.get(playerIdByName.get(name));
         Player drawer = players.get(drawingOrder.get(Drawer));
         if(!this.getGamePhase().equals("drawing") || name.equals(drawer.getUsername())){
-            System.out.println("Returning 0");
             return 0;}
         if (this.playerCorrectGuesses.get(name)){
-            System.out.println("Returning 2");
             return 2;
         }
         if (compareAnswer(answer.getAnswerString()) == 1){
-            System.out.println("Returning 1");
             this.currentCorrectGuesses++;
             this.pointsOfCurrentTurn.put(player, PointCalculatorGuesser.calculate(turnLength, timeLeftInTurn, currentCorrectGuesses));
             this.pointsOfCurrentTurn.put(drawer, PointCalculatorDrawer.calculate(turnLength, timeLeftInTurn, currentCorrectGuesses) + pointsOfCurrentTurn.get(drawer));
@@ -229,6 +232,9 @@ public class Game {
             tempWordList.addAll(getWordlist.getWordlist2(genres.get(i)));
             //listlengths.add(getWordlist.getWordlist2(genres.get(i)).size());
         }
+
+
+
         tempWordList = randomGenerators.DoShuffle(tempWordList);  //instead of Collections.shuffle(wordList);
 
         //System.out.println(wordList);
@@ -295,7 +301,7 @@ public class Game {
 
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         TimerRepository.haltTimer(gameId);
-        GameRepository.printAllAll();
+        //GameRepository.printAllAll();
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO); //endturn
         timerService.doTimer(20,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
@@ -383,6 +389,8 @@ public class Game {
         PlayerRepository.removePlayer(player.getUserId(), gameId);
         QuestionToSend questionToSend = new QuestionToSend();
         questionToSend.setType("leavegame");
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
         //questionToSend.setLeaver(player);
         //questionToSend.setWasAdmin(wasAdmin); //what should happen if player was the admin? (delete game or give admin to other player?)
         //questionToSend.setCurrentPlayerCount(currentPlayerCount);
@@ -392,8 +400,6 @@ public class Game {
         lobbyInfo.setPlayers(game.getPlayers());
         lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
-        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
     public void deletegame(int gameId) {  //does nothing if game doesnt exist
         System.out.println("deletegame gameId: "+gameId);

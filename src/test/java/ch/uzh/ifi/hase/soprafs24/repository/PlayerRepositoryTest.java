@@ -2,6 +2,8 @@ package ch.uzh.ifi.hase.soprafs24.repository;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -10,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,10 +28,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 public class PlayerRepositoryTest {
+
+
 
     @MockBean
     private PlayerRepository playerRepository;
+
+    @MockBean
+    private RandomGenerators randomGenerators;
 
     @Mock
     private Player player;
@@ -69,5 +79,30 @@ public class PlayerRepositoryTest {
             assertEquals(pl.getRole(), player.getRole());
         }
 
+    }
+/*
+    @Test
+    void createPlayerFromGuestTest() {
+        int guestId = 1111;
+        boolean isG = true;
+        when(randomGenerators.GuestIdGenerator()).thenReturn(guestId);
+        InboundPlayer guest = playerRepository.createPlayerFromGuest();
+        assertEquals(guest.getIsGuest(),isG);
+        assertEquals(guest.getUserId(),guestId);
+        assertEquals(guest.getUsername(),"guestuser" + guestId*-1);
+    }
+*/
+    @Test
+    void addPlayerTest() {
+
+
+        playerRepository.addPlayer(1,1,player);
+
+        HashMap<Integer, Player> playersinsamegame = playerRepository.findUsersByGameId(1);
+        HashMap<Integer, Player> m = new HashMap<>();
+        m.put(1,player);
+
+
+        assertEquals(playersinsamegame,m);
     }
 }
