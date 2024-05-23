@@ -27,8 +27,9 @@ public class UserServiceTest {
   @InjectMocks
   private UserService userService;
 
+  @Mock
   private User testUser2;
-
+  @Mock
   private User testUser;
 
   @BeforeEach
@@ -149,10 +150,10 @@ System.out.println(userRepository.findUserByUsername("testuser"));
       assertEquals(user.getId(), testUser.getId());
       assertEquals(testUser.getName(), user.getName());
       assertEquals(testUser.getUsername(), user.getUsername());
-  }*/
+  }
   //logouttest
 
-/*
+
   @Test
   public void delete_FriendTest() {
       User user = userService.createUser(testUser, true);

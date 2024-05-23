@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,10 +50,16 @@ public class UserControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
+  @Mock
   private User user;
+  @Mock
+  private User user2;
 
   @MockBean
   private UserService userService;
+
+    @Mock
+    private UserRepository userRepository;
 
   @BeforeEach
   public void setup() {
@@ -71,6 +79,22 @@ public class UserControllerTest {
       user.setLevel(1);
       user.setPassword("1");
       user.setStatus(UserStatus.ONLINE);
+
+      user2 = new User();
+      user2.setIsUser(true);
+      user2.setName("user2");
+      user2.setId(2L);
+      user2.setUsername("user2");
+      user2.setToken("2");
+      user2.setBirth_date("01.01.2000");
+      //Date date = new Date(2024,Calendar.JANUARY,1);
+      user2.setCreation_date(LocalDate.now());
+      List<String> friends2 = new ArrayList<String>();
+      friends2.add("1");
+      //friends.add("3");
+      //user2.setFriends(friends);
+      user2.setLevel(1);
+      user2.setPassword("1");
   }
 
   @Test
@@ -273,8 +297,12 @@ public class UserControllerTest {
 
     @Test
     public void sentFriendRequestTest() throws Exception{
-
+        given(userService.getUserById(eq(1L))).willReturn(user);
+        given(userService.getUserById(eq(2L))).willReturn(user2);
+        given(userRepository.findByUsername(eq("2"))).willReturn(user2);
+        given(userRepository.findByUsername(eq("1"))).willReturn(user);
         doNothing().when(userService).sendFriendRequest(Mockito.any(),eq("user2"),eq(true));
+
 
         MockHttpServletRequestBuilder postRequest = post("/users/" + user.getId() + "/openfriendrequests")
                 .contentType(MediaType.APPLICATION_JSON);
