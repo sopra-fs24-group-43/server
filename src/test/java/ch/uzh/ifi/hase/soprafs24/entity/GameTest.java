@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest()
-public class GameTest {/*
+public class GameTest {
 
     @MockBean
     private RandomGenerators randomGenerators;
@@ -154,8 +154,8 @@ public class GameTest {/*
         assertEquals(null, GameRepository.findByGameId(1));
     }
 
- *//*
-
+ */
+/*
     @Test
     void nextturnTest() {
         ArrayList<String> words = new ArrayList<>();
@@ -205,6 +205,7 @@ public class GameTest {/*
         assertEquals(actual.getCurrentRound(),2);
         assertEquals(actual.getCurrentTurn(),1);
         assertEquals(actual.getDrawer(),0);
+
         //assertEquals(actual.getActualCurrentWord(),game.getCurrentWord());
         List<String> three_words = new ArrayList<>();
         //the threewords:
@@ -216,7 +217,7 @@ public class GameTest {/*
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
         assertEquals(actual.getThreeWords(),three_words);
 
-    }
+    }*/
 
 
     @Test
@@ -258,5 +259,5 @@ public class GameTest {/*
         assertEquals(actual.getPodium(),leaderboardDTO.getPodium());
 
         assertEquals(actual.getUserIdToPlayerSorted(),leaderboardDTO.getUserIdToPlayerSorted());
-    }*/
+    }
 }
