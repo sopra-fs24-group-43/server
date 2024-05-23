@@ -232,6 +232,9 @@ public class Game {
             tempWordList.addAll(getWordlist.getWordlist2(genres.get(i)));
             //listlengths.add(getWordlist.getWordlist2(genres.get(i)).size());
         }
+
+
+
         tempWordList = randomGenerators.DoShuffle(tempWordList);  //instead of Collections.shuffle(wordList);
 
         //System.out.println(wordList);
