@@ -252,6 +252,14 @@ Issue(server) #103 https://github.com/sopra-fs24-group-43/server/issues/103 - in
 Issue(client) #43 - https://github.com/sopra-fs24-group-43/client/issues/43 - intigrate Guest in Landingpage and in RegandLogin  
 Issue(client) #39 - https://github.com/sopra-fs24-group-43/client/issues/39 - intigrate Guest in Landingpage and in RegandLogin
 
+7th week - 15.05    
+Issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - stomp for Word Selection and Timer     
+Issue(client) #164 - https://github.com/sopra-fs24-group-43/client/issues/164 - Reconnection in front end (pop up + logic)   
+Issue(server) #180 https://github.com/sopra-fs24-group-43/server/issues/180 - WsDisconnectEventListener     
+Issue(server) #181 https://github.com/sopra-fs24-group-43/server/issues/181 - add reload timer and logic on how to change the game when people disconnect and when people just disconnect for fraction of a second   
+Issue(client) #206 https://github.com/sopra-fs24-group-43/server/issues/206 - add reload ws send in client    
+Issue(server) #183 https://github.com/sopra-fs24-group-43/server/issues/183 - add logic and ws mapping to reconnect and get a pop up (also in front) to rejoin the game   
+Issue(server) #161 https://github.com/sopra-fs24-group-43/server/issues/161 - add more tests mostly ws and game   
 ## Robin Stirnimann
 
 ### 1st week - 12.04
