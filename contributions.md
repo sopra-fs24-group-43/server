@@ -2,9 +2,60 @@
 
 ## Dominique Oliver Heller 
 
-### 1st Week - 12.04
+### 1st Week - 10.04
 Issue(server) #35 - https://github.com/sopra-fs24-group-43/server/issues/35 Create POST
+
 Issue(server) #37 - https://github.com/sopra-fs24-group-43/server/issues/37 Create User and save in DB
+
+### 2nd week - 17.04
+
+
+
+### 3rd week - 24.04
+
+Issue(Server) #132 https://github.com/sopra-fs24-group-43/server/issues/132 Create DTO representation of game lobby settings for websockets
+
+Issue(Server) #133 https://github.com/sopra-fs24-group-43/server/issues/133 Create DTO representation of chat message for websockets
+
+Issue(Server) #134 https://github.com/sopra-fs24-group-43/server/issues/134 Create DTO representation of Leaderboard for websockets
+
+Issue(Server) #136 https://github.com/sopra-fs24-group-43/server/issues/136 Create DTO representation of individual leaderboard entry for websockets
+
+Issue(Server) #137 https://github.com/sopra-fs24-group-43/server/issues/137 Create DTO representation of a player joining a lobby for websockets
+
+Issue(Server) #138 https://github.com/sopra-fs24-group-43/server/issues/138 Create DTO representation of the next round preparation for websockets
+
+Issue(Server) #142 https://github.com/sopra-fs24-group-43/server/issues/142 Create Lobby entity with ability to change settings using a DTO representation
+
+### 4th week - 03.05
+
+
+
+### 5th week - 08.05
+
+Issue(Server) #84 https://github.com/sopra-fs24-group-43/server/issues/84 scale the amounts of points with respect to the time left in the turn and give a portion of them to the drawer.
+
+Issue(Server) #85 https://github.com/sopra-fs24-group-43/server/issues/85 send a message from the websocket to the client with the needed information.
+
+Issue(Server) #86 https://github.com/sopra-fs24-group-43/server/issues/86 scale the amounts of points with respect to the time left in the turn.
+
+Issue(Server) #87 https://github.com/sopra-fs24-group-43/server/issues/87 send a message from the websocket to the client with the needed information.
+
+### 6th week - 15.05
+
+Issue(Server) #169 https://github.com/sopra-fs24-group-43/server/issues/169 Add A method to the game to compare a sent answer to the solution
+
+Issue(Server) #170 https://github.com/sopra-fs24-group-43/server/issues/170 Make sure when the last player has correctly guessed, the current turn is ended
+
+Issue(Server) #171 https://github.com/sopra-fs24-group-43/server/issues/171 Ensure the server response has the necessary information for the client to know if it should display the message or not, as well as know which players have guessed correctly
+
+Issue(Server) #172 https://github.com/sopra-fs24-group-43/server/issues/172 When a player guesses correctly, points should be added to their total
+
+### 7th week - 22.05
+
+Issue(Server) #203 https://github.com/sopra-fs24-group-43/server/issues/203 Update the users point total and level after each game
+
+Issue(Server) #204 https://github.com/sopra-fs24-group-43/server/issues/204 Provide Backend Methods to retrieve the global leaderboard
 
 ## Simon Klipp
 
