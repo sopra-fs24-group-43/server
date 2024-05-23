@@ -216,6 +216,13 @@ Issue(client) #97 - https://github.com/sopra-fs24-group-43/client/issues/97 - se
 Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - set and automativcaly change the drawtime setting  
 Issue(client) #133 - https://github.com/sopra-fs24-group-43/client/issues/133 - implement the button for quiting the lobby  
 Issue(client) #134 - https://github.com/sopra-fs24-group-43/client/issues/134 - implement the button for deleting the lobby  
+
+### 7th week - 23.05
+Issue(client) #185 - https://github.com/sopra-fs24-group-43/client/issues/185 - implement the button for deleting the lobby  
+Issue(client) #186 - https://github.com/sopra-fs24-group-43/client/issues/186 - implement friends list (front)  
+Issue(client) #6 - https://github.com/sopra-fs24-group-43/client/issues/6 - design & code the post-game lobby view  
+Issue(client) #7 - https://github.com/sopra-fs24-group-43/client/issues/7 - present the drawings as background  
+Issue(client) #8 - https://github.com/sopra-fs24-group-43/client/issues/8 - show the leaderboard/podium  
  
 ## Florian Mattmüller
 
