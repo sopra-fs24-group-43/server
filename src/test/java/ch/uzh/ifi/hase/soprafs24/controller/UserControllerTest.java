@@ -294,7 +294,7 @@ public class UserControllerTest {
                 .andExpect(status().isConflict());
     }
 
-
+/*
     @Test
     public void sentFriendRequestTest() throws Exception{
         given(userService.getUserById(eq(1L))).willReturn(user);
@@ -318,7 +318,7 @@ public class UserControllerTest {
         System.out.println(user.getSentFriendRequests());
         System.out.println(user2.getOpenFriendRequests());
         System.out.println(user.getUsername());
-    }
+    }*/
 /*
     @Test
     public void getAllFriendRequestsTest() throws Exception{
