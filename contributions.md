@@ -29,13 +29,11 @@ Issue(Server) #142 https://github.com/sopra-fs24-group-43/server/issues/142 Crea
 
 ### 4th week - 03.05
 
-
-
-### 5th week - 08.05
-
 Issue(Server) #84 https://github.com/sopra-fs24-group-43/server/issues/84 scale the amounts of points with respect to the time left in the turn and give a portion of them to the drawer.
 
 Issue(Server) #85 https://github.com/sopra-fs24-group-43/server/issues/85 send a message from the websocket to the client with the needed information.
+
+### 5th week - 08.05
 
 Issue(Server) #86 https://github.com/sopra-fs24-group-43/server/issues/86 scale the amounts of points with respect to the time left in the turn.
 
