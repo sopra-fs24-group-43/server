@@ -196,23 +196,23 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
                 .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
     }
-    /*//todo
+
     @Test
-    public void delete_guest_user() throws Exception {
+    public void deleteUserTest() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("user1");
 
 
-        given(userService.logout(Mockito.any()));
+        doNothing().when(userService).deleteUser(Mockito.any());
 
-        MockHttpServletRequestBuilder putRequest = delete("/users")
+        MockHttpServletRequestBuilder deleteRequest = delete("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userPostDTO));
 
-        mockMvc.perform(putRequest).andExpect(status().isNoContent());
+        mockMvc.perform(deleteRequest).andExpect(status().isNoContent());
 
     }
-    */
+
     @Test
     public void test_user_login_invalid_credentials() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
@@ -313,10 +313,37 @@ public class UserControllerTest {
                         .param("delete","false"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated());
+        //openfriendrequests?
 
         System.out.println(user.getSentFriendRequests());
         System.out.println(user2.getOpenFriendRequests());
         System.out.println(user.getUsername());
+    }
+
+    @Test
+    public void getAllFriendRequestsTest() throws Exception{
+        List<User> allUsers = Collections.singletonList(user2);
+        given(userService.getUsers()).willReturn(allUsers);
+
+        long userId = user.getId();
+
+      given(userService.getUserById(eq(1L))).willReturn(user);
+      List<String> l1 = new ArrayList<>();
+      l1.add("2");
+      //given(userService.getOpenFriendRequests(userId)).willReturn(l1);
+        given(userService.getUserByUsername("user2")).willReturn(user2);
+
+        MockHttpServletRequestBuilder getRequest = get("/users/" + userId + "/openfriendrequests")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(getRequest)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].username", is(user2.getUsername())));;
+               // .andExpect(jsonPath("$.openFriendRequests", is(user.getOpenFriendRequests())));
+
+        System.out.println(user.getOpenFriendRequests());
     }
     /*
         @Test

@@ -14,6 +14,7 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillToolCoordinates;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
@@ -887,5 +888,28 @@ public class WebSocketControllerTest {
         gameStateDTO.setActualCurrentWord(null);
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
+    }
+
+    @Test
+    public void fillCanvasTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/" + gameId + "fillTool",
+                new WsTestUtils.MyStompFrameHandlerFillToolCoordinates((payload) -> resultKeeper.complete(payload)));
+
+        Thread.sleep(1000);
+
+        FillToolCoordinates fillToolCoordinates = new FillToolCoordinates();
+        fillToolCoordinates.setFillSelected(true);
+
+
+        Thread.sleep(1000);
+        webSocketController.fillCanvas(gameId, fillToolCoordinates);
+
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(fillToolCoordinates);
     }
 }

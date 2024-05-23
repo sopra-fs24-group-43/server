@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller.wscontroller;
 
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillToolCoordinates;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
@@ -234,6 +235,26 @@ public class WsTestUtils {
         @Override
         public void handleFrame(StompHeaders headers, Object payload) {
             Answer obj = (Answer) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+    public static class MyStompFrameHandlerFillToolCoordinates implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerFillToolCoordinates(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return FillToolCoordinates.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            FillToolCoordinates obj = (FillToolCoordinates) payload;
             log.info("received message: {} with headers: {}", obj, headers);
             frameHandler.accept(payload);
         }
