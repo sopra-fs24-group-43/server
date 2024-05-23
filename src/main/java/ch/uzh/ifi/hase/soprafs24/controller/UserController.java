@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserUpdatePointsDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -164,5 +165,12 @@ public class UserController {
             userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(friendByUsername));
         }
         return userGetDTOs;
+    }
+
+    @PutMapping("users/{id}/updatePoints")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updatePoints(@PathVariable Long id, @RequestParam Integer points){
+      userService.updateUserPoints(id, points);
     }
 }
