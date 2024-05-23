@@ -169,6 +169,9 @@ public class WebSocketController {
     public void getlobbyinfo(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
         if (game == null) {
+            QuestionToSend questionToSend = new QuestionToSend();
+            questionToSend.setType("lobbyIsNull");
+            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
             return;
         }
         LobbyInfo lobbyInfo = new LobbyInfo();
