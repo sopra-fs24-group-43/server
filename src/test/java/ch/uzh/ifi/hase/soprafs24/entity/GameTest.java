@@ -156,6 +156,7 @@ error this.websocketService is null
 */
 
 
+
     @Test
     void nextturnTest() {
 
@@ -207,9 +208,12 @@ error this.websocketService is null
 
         GameStateDTO actual = game.receiveGameStateDTO();
 
-        assertEquals(actual.getCurrentRound(), 2);
-        assertEquals(actual.getCurrentTurn(), 1);
-        assertEquals(actual.getDrawer(), 0);
+
+        assertEquals(actual.getCurrentRound(),2);
+        assertEquals(actual.getCurrentTurn(),1);
+        assertEquals(actual.getDrawer(),0);
+
+
         //assertEquals(actual.getActualCurrentWord(),game.getCurrentWord());
         List<String> three_words = new ArrayList<>();
         //the threewords:
