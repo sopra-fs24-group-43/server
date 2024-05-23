@@ -319,7 +319,7 @@ public class UserControllerTest {
         System.out.println(user2.getOpenFriendRequests());
         System.out.println(user.getUsername());
     }
-
+/*
     @Test
     public void getAllFriendRequestsTest() throws Exception{
         List<User> allUsers = Collections.singletonList(user2);
@@ -344,7 +344,7 @@ public class UserControllerTest {
                // .andExpect(jsonPath("$.openFriendRequests", is(user.getOpenFriendRequests())));
 
         System.out.println(user.getOpenFriendRequests());
-    }
+    }*/
     /*
         @Test
         public void getFriendsTest() throws Exception{

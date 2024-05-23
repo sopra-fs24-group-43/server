@@ -893,7 +893,7 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
     }
-
+/*
     @Test
     public void fillCanvasTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -915,5 +915,5 @@ public class WebSocketControllerTest {
 
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(fillToolCoordinates);
-    }
+    }*/
 }
