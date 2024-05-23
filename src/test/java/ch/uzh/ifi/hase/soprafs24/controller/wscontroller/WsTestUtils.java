@@ -1,9 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.controller.wscontroller;
 
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.FillToolCoordinates;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.*;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -255,6 +252,106 @@ public class WsTestUtils {
         @Override
         public void handleFrame(StompHeaders headers, Object payload) {
             FillToolCoordinates obj = (FillToolCoordinates) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+    public static class MyStompFrameHandlerDrawCoordinates implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerDrawCoordinates(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return DrawCoordinates.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            DrawCoordinates obj = (DrawCoordinates) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+    public static class MyStompFrameHandlerEraserCoordinates implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerEraserCoordinates(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return EraserCoordinates.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            EraserCoordinates obj = (EraserCoordinates) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+    public static class MyStompFrameHandlerEraseAllCoordinates implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerEraseAllCoordinates(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return EraseAllCoordinates.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            EraseAllCoordinates obj = (EraseAllCoordinates) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+    public static class MyStompFrameHandlerFillCoordinates implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerFillCoordinates(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return FillCoordinates.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            FillCoordinates obj = (FillCoordinates) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+    public static class MyStompFrameHandlerCoordinates implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerCoordinates(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return Coordinates.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            Coordinates obj = (Coordinates) payload;
             log.info("received message: {} with headers: {}", obj, headers);
             frameHandler.accept(payload);
         }

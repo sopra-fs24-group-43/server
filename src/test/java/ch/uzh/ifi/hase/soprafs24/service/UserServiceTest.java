@@ -129,7 +129,7 @@ public class UserServiceTest {
       assertNotNull(user.getToken());
       assertEquals(UserStatus.OFFLINE, user.getStatus());
   }
-/*
+
   @Test
   public void loginUserTest() {
       userService.createUser(testUser, true);
@@ -177,6 +177,6 @@ System.out.println(userRepository.findUserByUsername(testUser2.getUsername()));
       userService.delete_Friend(user,"2");
       List<String> l1 = new ArrayList<>();
       assertEquals(testUser.getFriends(),l1);
-  }*/
+  }
 
 }
