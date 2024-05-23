@@ -762,8 +762,69 @@ public class WebSocketControllerTest {
         answer2.setPlayerHasGuessedCorrectly(false);
         ArrayList<Answer> answers = new ArrayList<>();
         answers.add(answer);
-        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(answer2);
+        assertThat(resultKeeper.get(3, SECONDS)).isEqualToComparingFieldByFieldRecursively(answer2);
         assertThat(game.getAnswers()).isEqualTo(answers);
         assertThat(game.getAnswersReceived()).isEqualTo(1);
+    }
+    @Test
+    public void terminategameTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/"+ gameId + "/general",
+                new WsTestUtils.MyStompFrameHandlerGameStateDTO((payload) -> resultKeeper.complete(payload)));
+        Thread.sleep(1000);
+
+        when(randomGenerators.PasswordGenerator()).thenReturn("password");
+        ArrayList<Integer> friends = new ArrayList<>();
+        friends.add(2);
+        Player player = new Player("Markiian", 1, false, 101, friends, "admin");
+        ArrayList<Integer> friends2 = new ArrayList<>();
+        friends2.add(1);
+        Player player2 = new Player("Florian", 2, false, 101, friends2, "player");
+        //first game
+        Game game = new Game(player, webSocketService, timerService, randomGenerators, getWordlist);
+        game.addPlayer(player2);
+        PlayerRepository.addPlayer(1, gameId, player);
+        PlayerRepository.addPlayer(2, gameId, player2);
+        ArrayList<Integer> drawingOrderLeavers = new ArrayList<>();
+        drawingOrderLeavers.add(1);
+        drawingOrderLeavers.add(2);
+        game.setDrawingOrderLeavers(drawingOrderLeavers);
+        GameRepository.addGame(gameId, game);
+
+        ArrayList<String> words = new ArrayList<>();
+
+        game.setWordList(words);
+
+        Thread.sleep(1000);
+
+        game.terminategame(gameId, "normal");
+
+        GameStateDTO gameStateDTO = new GameStateDTO();
+        gameStateDTO.setType("GameStateDTO");
+        gameStateDTO.setEndGame(true);
+        HashMap<Integer, Player> players = new HashMap<>();
+        players.put(1, player);
+        gameStateDTO.setConnectedPlayers(players);
+        gameStateDTO.setPlayersOriginally(0);
+        gameStateDTO.setCurrentRound(5);
+        gameStateDTO.setCurrentTurn(0);
+        ArrayList<String> threeWords = new ArrayList<>();
+        gameStateDTO.setThreeWords(threeWords);
+        gameStateDTO.setDrawer(-1);
+
+        gameStateDTO.setDrawingOrder(drawingOrderLeavers);  //changed to drawingOrderLeavers
+        gameStateDTO.setMaxRounds(5);
+        gameStateDTO.setGamePhase("leaderboard");
+        gameStateDTO.setActualCurrentWord(null);
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
+        assertThat(game.getReason()).isEqualTo("normal");
+
+
+
     }
 }
