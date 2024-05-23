@@ -175,6 +175,33 @@ issue(client) #182 - https://github.com/sopra-fs24-group-43/client/issues/182 -
 
 issue(client) #184 - https://github.com/sopra-fs24-group-43/client/issues/184 - Creating and implementing a "Freitagsmaler" logo 
 
+### 7th week - 23.05
+issue(client) #108 - https://github.com/sopra-fs24-group-43/client/issues/108 - 
+
+issue(client) #109 - https://github.com/sopra-fs24-group-43/client/issues/109 - 
+
+issue(client) #110 - https://github.com/sopra-fs24-group-43/client/issues/110 - 
+
+issue(client) #111 - https://github.com/sopra-fs24-group-43/client/issues/111 - 
+
+issue(client) #112 - https://github.com/sopra-fs24-group-43/client/issues/112 - 
+
+issue(client) #159 - https://github.com/sopra-fs24-group-43/client/issues/159 - 
+
+issue(client) #160 - https://github.com/sopra-fs24-group-43/client/issues/160 - 
+
+issue(client) #171 - https://github.com/sopra-fs24-group-43/client/issues/171 - 
+
+issue(client) #173 - https://github.com/sopra-fs24-group-43/client/issues/173 - 
+
+issue(client) #175 - https://github.com/sopra-fs24-group-43/client/issues/175 - 
+
+issue(client) #178 - https://github.com/sopra-fs24-group-43/client/issues/178 - 
+
+issue(client) #50 - https://github.com/sopra-fs24-group-43/client/issues/50 - 
+
+issue(client) #180 - https://github.com/sopra-fs24-group-43/client/issues/180 - 
+
 
 ## Markiian Dobosh
 
