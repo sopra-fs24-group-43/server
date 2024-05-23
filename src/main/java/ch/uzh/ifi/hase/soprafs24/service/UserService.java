@@ -256,4 +256,13 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
     }
   }
+
+  public void updateUserPoints(Long id, Integer points) {
+      User user = userRepository.findUserById(id);
+      int curLevel = user.getLevel();
+      curLevel += points;
+      user.setLevel(curLevel);
+      userRepository.save(user);
+      userRepository.flush();
+  }
 }

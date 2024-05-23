@@ -47,15 +47,6 @@ public class WebSocketController {
         InboundPlayer inboundPlayer = PlayerRepository.createPlayerFromGuest();
         this.webSocketService.sendMessageToClients("/topic/landing", inboundPlayer);
     }
-    @MessageMapping("/landing/creategame2")
-    public void creategame2(int gameId){
-        ReconnectionDTO reconnectionDTO = new ReconnectionDTO();
-        reconnectionDTO.setType("recon");
-        reconnectionDTO.setGameId(gameId);
-        reconnectionDTO.setRole("player");
-        this.webSocketService.sendMessageToClients("/topic/landing", reconnectionDTO);  //for the creator of the game
-
-    }
     @MessageMapping("/landing/creategame")
     public void creategame(InboundPlayer inboundPlayer){ //the client can't know the gameId of the game when he first creates it so he can just pass some int (e.g. 1001)
         Player player = new Player(inboundPlayer.getUsername(),
