@@ -179,8 +179,11 @@ public class WebSocketController {
     public void getlobbyinfo(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
         if (game == null) {
+            QuestionToSend questionToSend = new QuestionToSend();
+            questionToSend.setType("lobbyIsNull");
+            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
             return;
-        }
+        } 
         LobbyInfo lobbyInfo = new LobbyInfo();
         lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
@@ -306,13 +309,13 @@ public class WebSocketController {
             return;
         }
         int flag = game.addAnswer(answer);
-        if (flag == 2){
+        if (flag == 2){ // if player guessed correctly (to hide the message for others, and display it to one user)
             answer.setPlayerHasGuessedCorrectly(true);
             answer.setIsCorrect(false);
-        } else if (flag == 1){
+        } else if (flag == 1){ // the guess is correct for other users, user has guessed correctly
             answer.setPlayerHasGuessedCorrectly(false);
             answer.setIsCorrect(true);
-        } else {
+        } else { // sending messages without checking for correctness 
             answer.setPlayerHasGuessedCorrectly(false);
             answer.setIsCorrect(false);
         }
