@@ -723,7 +723,7 @@ public class WebSocketControllerTest {
         int gameId = 101;
 
         stompSession.subscribe(
-                "/topic/games/"+ gameId + "/general",
+                "/topic/games/"+ gameId + "/sendguess",
                 new WsTestUtils.MyStompFrameHandlerAnswer((payload) -> resultKeeper.complete(payload)));
         Thread.sleep(1000);
 
@@ -823,8 +823,69 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
         assertThat(game.getReason()).isEqualTo("normal");
+    }
 
+    @Test
+    public void intigrateintogameTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
 
+        int gameId = 101;
 
+        stompSession.subscribe(
+                "/topic/games/"+ gameId + "/general",
+                new WsTestUtils.MyStompFrameHandlerGameStateDTO((payload) -> resultKeeper.complete(payload)));
+        Thread.sleep(1000);
+
+        when(randomGenerators.PasswordGenerator()).thenReturn("password");
+        ArrayList<Integer> friends = new ArrayList<>();
+        friends.add(2);
+        Player player = new Player("Markiian", 1, false, 101, friends, "admin");
+        ArrayList<Integer> friends2 = new ArrayList<>();
+        friends2.add(1);
+        Player player2 = new Player("Florian", 2, false, 101, friends2, "player");
+        //first game
+        Game game = new Game(player, webSocketService, timerService, randomGenerators, getWordlist);
+        game.addPlayer(player2);
+        PlayerRepository.addPlayer(1, gameId, player);
+        PlayerRepository.addPlayer(2, gameId, player2);
+        ArrayList<Integer> drawingOrderLeavers = new ArrayList<>();
+        drawingOrderLeavers.add(1);
+        drawingOrderLeavers.add(0);
+        game.setDrawingOrderLeavers(drawingOrderLeavers);
+        HashMap<Integer, Player> connectedPlayers = new HashMap<>();
+        connectedPlayers.put(1, player);
+        game.setConnectedPlayers(connectedPlayers);
+        GameRepository.addGame(gameId, game);
+
+        ArrayList<String> words = new ArrayList<>();
+
+        game.setWordList(words);
+
+        Thread.sleep(1000);
+
+        game.intigrateIntoGame(2, gameId);
+
+        GameStateDTO gameStateDTO = new GameStateDTO();
+        gameStateDTO.setType("GameStateDTO");
+        gameStateDTO.setEndGame(false);
+        HashMap<Integer, Player> players = new HashMap<>();
+        players.put(1, player);
+        players.put(2, player2);
+        gameStateDTO.setConnectedPlayers(players);
+        gameStateDTO.setPlayersOriginally(0);
+        gameStateDTO.setCurrentRound(0);
+        gameStateDTO.setCurrentTurn(0);
+        ArrayList<String> threeWords = new ArrayList<>();
+        gameStateDTO.setThreeWords(threeWords);
+        gameStateDTO.setDrawer(-1);
+        ArrayList<Integer> newdrawingOrderLeavers = new ArrayList<>();
+        newdrawingOrderLeavers.add(1);
+        newdrawingOrderLeavers.add(2);
+        gameStateDTO.setDrawingOrder(newdrawingOrderLeavers);  //changed to drawingOrderLeavers
+        gameStateDTO.setMaxRounds(5);
+        gameStateDTO.setGamePhase("inLobby");
+        gameStateDTO.setActualCurrentWord(null);
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
     }
 }
