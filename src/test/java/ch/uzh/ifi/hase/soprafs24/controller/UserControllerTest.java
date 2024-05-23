@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,6 +28,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -267,6 +269,53 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
     }
+
+
+    @Test
+    public void sentFriendRequestTest() throws Exception{
+
+        doNothing().when(userService).sendFriendRequest(Mockito.any(),eq("user2"),eq(true));
+
+        MockHttpServletRequestBuilder postRequest = post("/users/" + user.getId() + "/openfriendrequests")
+                .contentType(MediaType.APPLICATION_JSON);
+        // .param("f_username", f_username)
+        //.param("delete", delete);
+        mockMvc.perform((postRequest)
+                        .param("friend_username","user2")
+                        .param("delete","false"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isCreated());
+
+        System.out.println(user.getSentFriendRequests());
+        System.out.println(user2.getOpenFriendRequests());
+        System.out.println(user.getUsername());
+    }
+    /*
+        @Test
+        public void getFriendsTest() throws Exception{
+
+            given(userService.getFriends(eq(1L))).willReturn(user.getFriends());
+
+            MockHttpServletRequestBuilder getRequest = get("/users/" + 1L + "/friends")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(1L));
+            mockMvc.perform(getRequest)
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.friends", is(user.getFriends())));
+        }
+
+        @Test
+        public void DeleteFriendOfUserByIDTest() throws Exception{
+            doNothing().when(userService).delete_Friend(Mockito.any(),eq("2"));
+
+            MockHttpServletRequestBuilder putRequest = put("/users/" + 1L + "/friends")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(1L));
+            mockMvc.perform(putRequest)
+                    .andExpect(status().isOk());
+
+        }
+    */
 /*
     @Test
     public void getFriendsTest() throws Exception{
