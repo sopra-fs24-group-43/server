@@ -133,6 +133,9 @@ public class Game {
         this.wordlists = new HashMap<>();
         this.genres = new ArrayList<>();
         this.getWordlist = getWordlist;
+        this.Drawer = -1;
+        this.answers = new ArrayList<Answer>();
+
 
     }
     public Boolean getGameStarted() {
@@ -383,6 +386,8 @@ public class Game {
         PlayerRepository.removePlayer(player.getUserId(), gameId);
         QuestionToSend questionToSend = new QuestionToSend();
         questionToSend.setType("leavegame");
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
+        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
         //questionToSend.setLeaver(player);
         //questionToSend.setWasAdmin(wasAdmin); //what should happen if player was the admin? (delete game or give admin to other player?)
         //questionToSend.setCurrentPlayerCount(currentPlayerCount);
@@ -392,8 +397,6 @@ public class Game {
         lobbyInfo.setPlayers(game.getPlayers());
         lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
-        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
     public void deletegame(int gameId) {  //does nothing if game doesnt exist
         System.out.println("deletegame gameId: "+gameId);

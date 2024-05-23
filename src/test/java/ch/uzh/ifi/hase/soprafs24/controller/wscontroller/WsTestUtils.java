@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.controller.wscontroller;
 
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
@@ -159,6 +160,7 @@ public class WsTestUtils {
 
         private final Consumer<Object> frameHandler;
 
+
         public MyStompFrameHandlerLobbyInfo(Consumer<Object> frameHandler) {
             this.frameHandler = frameHandler;
         }
@@ -191,6 +193,47 @@ public class WsTestUtils {
         @Override
         public void handleFrame(StompHeaders headers, Object payload) {
             GameStateDTO obj = (GameStateDTO) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+
+    public static class MyStompFrameHandlerChooseWordDTO implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerChooseWordDTO(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return ChooseWordDTO.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            ChooseWordDTO obj = (ChooseWordDTO) payload;
+            log.info("received message: {} with headers: {}", obj, headers);
+            frameHandler.accept(payload);
+        }
+    }
+    public static class MyStompFrameHandlerAnswer implements StompFrameHandler {
+
+        private final Consumer<Object> frameHandler;
+
+        public MyStompFrameHandlerAnswer(Consumer<Object> frameHandler) {
+            this.frameHandler = frameHandler;
+        }
+
+        @Override
+        public Type getPayloadType(StompHeaders headers) {
+            return Answer.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            Answer obj = (Answer) payload;
             log.info("received message: {} with headers: {}", obj, headers);
             frameHandler.accept(payload);
         }
