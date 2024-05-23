@@ -296,7 +296,7 @@ public class Game {
 
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         TimerRepository.haltTimer(gameId);
-        GameRepository.printAllAll();
+        //GameRepository.printAllAll();
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO); //endturn
         timerService.doTimer(20,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard

@@ -194,17 +194,17 @@ public class GameTest {
         int j = game.getDrawer();
         game.nextturn(1);
 
-        assertEquals("choosing",game.getGamePhase());
-        assertEquals(1,game.getCurrentTurn());
-        assertEquals(2,game.getCurrentRound());
-        assertEquals(0,game.getDrawer());
-        assertEquals(7,game.getCurrentWordIndex());  //changed to 7 (from 10) because the first nextturn doesnt add +3 (gamePhase == "started", after its "choosing")
+        assertEquals("choosing", game.getGamePhase());
+        assertEquals(1, game.getCurrentTurn());
+        assertEquals(2, game.getCurrentRound());
+        assertEquals(0, game.getDrawer());
+        assertEquals(7, game.getCurrentWordIndex());  //changed to 7 (from 10) because the first nextturn doesnt add +3 (gamePhase == "started", after its "choosing")
 
         GameStateDTO actual = game.receiveGameStateDTO();
 
-        assertEquals(actual.getCurrentRound(),2);
-        assertEquals(actual.getCurrentTurn(),1);
-        assertEquals(actual.getDrawer(),0);
+        assertEquals(actual.getCurrentRound(), 2);
+        assertEquals(actual.getCurrentTurn(), 1);
+        assertEquals(actual.getDrawer(), 0);
         //assertEquals(actual.getActualCurrentWord(),game.getCurrentWord());
         List<String> three_words = new ArrayList<>();
         //the threewords:
@@ -214,9 +214,10 @@ public class GameTest {
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()-1));  not need now cause it uses the Mock
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()));
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
-        assertEquals(actual.getThreeWords(),three_words);
+        assertEquals(actual.getThreeWords(), three_words);
 
     }
+
 
 
     @Test
