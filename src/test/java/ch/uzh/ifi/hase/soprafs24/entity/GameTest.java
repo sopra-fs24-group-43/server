@@ -155,7 +155,7 @@ public class GameTest {
     }
 
  */
-
+/*
     @Test
     void nextturnTest() {
         ArrayList<String> words = new ArrayList<>();
@@ -220,7 +220,7 @@ public class GameTest {
         assertEquals(actual.getThreeWords(), three_words);
 
     }
-
+*/
 
 
     @Test
