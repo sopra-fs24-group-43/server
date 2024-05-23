@@ -144,20 +144,6 @@ issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - 
 
 issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
 
-issue(client) #173 - https://github.com/sopra-fs24-group-43/client/issues/173 - 
-
-issue(client) #175 - https://github.com/sopra-fs24-group-43/client/issues/175 - Implementing error message / handling when trying to set a hotkey to a letter which already is set for another hotkey
-
-issue(client) #178 - https://github.com/sopra-fs24-group-43/client/issues/178 - Implementing canvas hotkeys and function to change canvas hotkeys for guests
-
-issue(client) #50 - https://github.com/sopra-fs24-group-43/client/issues/50 - From the home screen, a user can click on a “profile” button, bringing them to their user profile. (front)
-
-issue(client) #180 - https://github.com/sopra-fs24-group-43/client/issues/180 - Displaying account information on profile page
-
-issue(client) #182 - https://github.com/sopra-fs24-group-43/client/issues/182 - 
-
-issue(client) #184 - https://github.com/sopra-fs24-group-43/client/issues/184 - Creating and implementing a "Freitagsmaler" logo 
-
 
 ### 7th week - 23.05
 issue(client) #108 - https://github.com/sopra-fs24-group-43/client/issues/108 - Implementing websocket compatibility for hiding the tool menu from all clients (except from drawer) 
