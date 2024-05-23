@@ -62,7 +62,7 @@ bootJar {
     archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
-sonarqube {
+sonar {
     properties {
         property "sonar.projectKey", "sopra-fs24-group-43_server"
         property "sonar.organization", "sopra-fs24-group-43"

@@ -9,6 +9,6 @@ public class Answer {
     private String username;
     private String answerString;
 
-    private boolean IsCorrect;
-    private boolean playerHasGuessedCorrectly;
+    private Boolean IsCorrect;
+    private Boolean playerHasGuessedCorrectly;
 }

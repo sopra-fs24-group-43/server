@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.AbstractSoftAssertions.assertAll;
@@ -65,9 +68,10 @@ public class WebSocketControllerTest {
     private WebSocketStompClient stompClient;
     private StompSession stompSession;
     private final WsTestUtils wsTestUtils = new WsTestUtils();
-
+    //Lock sequential = new ReentrantLock();
     @BeforeEach
     public void setUp() throws Exception {
+        //sequential.lock();
         //port = 8080;
         System.out.println(port);
         String wsUrl = "ws://localhost:" + port + "/ws";
@@ -77,6 +81,8 @@ public class WebSocketControllerTest {
 
     @AfterEach
     public void teardown() throws Exception {
+        //sequential.unlock();
+        //stompClient.stop();
         Game game = GameRepository.findByGameId(1);
         timerService.doShutDownTimer(1);
         if (game != null) {
@@ -88,8 +94,8 @@ public class WebSocketControllerTest {
         }
         timerService.doShutDownTimer(101);
         Game game3 = GameRepository.findByGameId(102);
-        if (game2 != null) {
-            game2.deletegame(1);
+        if (game3 != null) {
+            game3.deletegame(1);
         }
         timerService.doShutDownTimer(102);
     }
@@ -249,11 +255,11 @@ public class WebSocketControllerTest {
 
         int gameId = 101;
 
-        stompSession.subscribe(
+        StompSession.Subscription Subscription = stompSession.subscribe(
                 "/topic/landing",
                 new WsTestUtils.MyStompFrameHandlerQuestionToSend((payload) -> resultKeeper.complete(payload)));
 
-        stompSession.subscribe(
+        StompSession.Subscription Subscription2 = stompSession.subscribe(
                 "/topic/games/" + gameId + "/general",
                 new WsTestUtils.MyStompFrameHandlerInboundPlayer((payload) -> resultKeeper2.complete(payload)));
 
@@ -288,8 +294,11 @@ public class WebSocketControllerTest {
         questionToSend.setUserId(null);
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);
         assertThat(resultKeeper2.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(inboundPlayer);  //never halt most of the time
+        Subscription.unsubscribe();
+        Subscription2.unsubscribe();
+
     }
-    /*
+
     @Test
     public void leavegameTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -297,11 +306,11 @@ public class WebSocketControllerTest {
 
         int gameId = 101;
 
-        Object Subsctiption = stompSession.subscribe(
+        StompSession.Subscription Subscription = stompSession.subscribe(
                 "/topic/landing",
                 new WsTestUtils.MyStompFrameHandlerQuestionToSend((payload) -> resultKeeper.complete(payload)));
 
-        Object Subsctiption2 = stompSession.subscribe(
+        StompSession.Subscription Subscription2= stompSession.subscribe(
                 "/topic/games/" + gameId + "/general",
                 new WsTestUtils.MyStompFrameHandlerQuestionToSend((payload) -> resultKeeper2.complete(payload)));
         /*
@@ -319,7 +328,7 @@ public class WebSocketControllerTest {
         PlayerRepository.addPlayer(2, gameId, player2);
         GameRepository.addGame(gameId, game);
         */
-        /*
+
         Thread.sleep(1000);
 
         webSocketController.leavegame(gameId, 2);
@@ -330,8 +339,10 @@ public class WebSocketControllerTest {
         questionToSend.setUserId(null);
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);
         assertThat(resultKeeper2.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);  //never halt most of the time
+        Subscription.unsubscribe();
+        Subscription2.unsubscribe();
     }
-    */
+
     @Test
     public void updategamesettingsTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -570,7 +581,7 @@ public class WebSocketControllerTest {
         gameStateDTO.setCurrentTurn(0);
         ArrayList<String> threeWords = new ArrayList<>();
         gameStateDTO.setThreeWords(threeWords);
-        gameStateDTO.setDrawer(0);
+        gameStateDTO.setDrawer(-1);
         ArrayList<Integer> drawingOrderLeavers = new ArrayList<>();
         //drawingOrderLeavers.add(1);
         //drawingOrderLeavers.add(2);
@@ -581,7 +592,7 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
     }
-    /*
+
     @Test
     public void nextturnTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -591,9 +602,6 @@ public class WebSocketControllerTest {
         stompSession.subscribe(
                 "/topic/games/"+ gameId + "/general",
                 new WsTestUtils.MyStompFrameHandlerGameStateDTO((payload) -> resultKeeper.complete(payload)));
-
-
-
         Thread.sleep(1000);
 
         when(randomGenerators.PasswordGenerator()).thenReturn("password");
@@ -636,7 +644,7 @@ public class WebSocketControllerTest {
         when(getWordlist.getWordlist2("Animal")).thenReturn(words2);
         when(randomGenerators.DoShuffle(words3)).thenReturn(words3);
         */
-    /*
+
         webSocketController.nextturn(gameId);
 
 
@@ -655,10 +663,107 @@ public class WebSocketControllerTest {
 
         gameStateDTO.setDrawingOrder(drawingOrderLeavers);  //changed to drawingOrderLeavers
         gameStateDTO.setMaxRounds(5);
-        gameStateDTO.setGamePhase("inLobby");
+        gameStateDTO.setGamePhase("choosing");
         gameStateDTO.setActualCurrentWord(null);
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
     }
-*/
+
+    @Test
+    public void sendchosenword() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/"+ gameId + "/general",
+                new WsTestUtils.MyStompFrameHandlerChooseWordDTO((payload) -> resultKeeper.complete(payload)));
+        Thread.sleep(1000);
+
+        when(randomGenerators.PasswordGenerator()).thenReturn("password");
+        ArrayList<Integer> friends = new ArrayList<>();
+        friends.add(2);
+        Player player = new Player("Markiian", 1, false, 101, friends, "admin");
+        ArrayList<Integer> friends2 = new ArrayList<>();
+        friends2.add(1);
+        Player player2 = new Player("Florian", 2, false, 101, friends2, "player");
+        //first game
+        Game game = new Game(player, webSocketService, timerService, randomGenerators, getWordlist);
+        game.addPlayer(player2);
+        PlayerRepository.addPlayer(1, gameId, player);
+        PlayerRepository.addPlayer(2, gameId, player2);
+        ArrayList<Integer> drawingOrderLeavers = new ArrayList<>();
+        drawingOrderLeavers.add(1);
+        drawingOrderLeavers.add(2);
+        game.setDrawingOrderLeavers(drawingOrderLeavers);
+        GameRepository.addGame(gameId, game);
+
+        Thread.sleep(1000);
+
+        ChooseWordDTO chooseWordDTO = new ChooseWordDTO();
+        chooseWordDTO.setType("chooseword");
+        chooseWordDTO.setWordIndex(1);
+        chooseWordDTO.setWord("Family");
+
+        webSocketController.sendchosenword(gameId, chooseWordDTO);
+
+        ChooseWordDTO chooseWordDTO2 = new ChooseWordDTO();
+        chooseWordDTO2.setType("startdrawing");
+        chooseWordDTO2.setWordIndex(1);
+        chooseWordDTO2.setWord("Family");
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(chooseWordDTO2);
+        assertThat(game.getActualCurrentWord()).isEqualTo("Family");
+        assertThat(game.getGamePhase()).isEqualTo("drawing");
+    }
+
+    @Test
+    public void sendguess() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/"+ gameId + "/general",
+                new WsTestUtils.MyStompFrameHandlerAnswer((payload) -> resultKeeper.complete(payload)));
+        Thread.sleep(1000);
+
+        when(randomGenerators.PasswordGenerator()).thenReturn("password");
+        ArrayList<Integer> friends = new ArrayList<>();
+        friends.add(2);
+        Player player = new Player("Markiian", 1, false, 101, friends, "admin");
+        ArrayList<Integer> friends2 = new ArrayList<>();
+        friends2.add(1);
+        Player player2 = new Player("Florian", 2, false, 101, friends2, "player");
+        //first game
+        Game game = new Game(player, webSocketService, timerService, randomGenerators, getWordlist);
+        game.addPlayer(player2);
+        PlayerRepository.addPlayer(1, gameId, player);
+        PlayerRepository.addPlayer(2, gameId, player2);
+        ArrayList<Integer> drawingOrderLeavers = new ArrayList<>();
+        drawingOrderLeavers.add(1);
+        drawingOrderLeavers.add(2);
+        game.setDrawingOrderLeavers(drawingOrderLeavers);
+        GameRepository.addGame(gameId, game);
+
+        Thread.sleep(1000);
+        Answer answer = new Answer();
+        answer.setType("Answer");
+        answer.setUsername("Markiian");
+        answer.setAnswerString("Birthday");
+        answer.setIsCorrect(null);
+        answer.setPlayerHasGuessedCorrectly(null);
+
+        webSocketController.sendguess(gameId, answer);
+        Answer answer2 = new Answer();
+        answer2.setType("Answer");
+        answer2.setUsername("Markiian");
+        answer2.setAnswerString("Birthday");
+        answer2.setIsCorrect(false);
+        answer2.setPlayerHasGuessedCorrectly(false);
+        ArrayList<Answer> answers = new ArrayList<>();
+        answers.add(answer);
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(answer2);
+        assertThat(game.getAnswers()).isEqualTo(answers);
+        assertThat(game.getAnswersReceived()).isEqualTo(1);
+    }
 }
