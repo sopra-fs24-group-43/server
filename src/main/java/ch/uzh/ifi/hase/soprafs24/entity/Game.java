@@ -150,18 +150,18 @@ public class Game {
     public int addAnswer(Answer answer) {
         this.answers.add(answer);
         this.answersReceived++;
+        if(this.gamePhase == "inLobby"){
+            return 3;
+        }
         String name = answer.getUsername();
         Player player = players.get(playerIdByName.get(name));
         Player drawer = players.get(drawingOrder.get(Drawer));
         if(!this.getGamePhase().equals("drawing") || name.equals(drawer.getUsername())){
-            System.out.println("Returning 0");
             return 0;}
         if (this.playerCorrectGuesses.get(name)){
-            System.out.println("Returning 2");
             return 2;
         }
         if (compareAnswer(answer.getAnswerString()) == 1){
-            System.out.println("Returning 1");
             this.currentCorrectGuesses++;
             this.pointsOfCurrentTurn.put(player, PointCalculatorGuesser.calculate(turnLength, timeLeftInTurn, currentCorrectGuesses));
             this.pointsOfCurrentTurn.put(drawer, PointCalculatorDrawer.calculate(turnLength, timeLeftInTurn, currentCorrectGuesses) + pointsOfCurrentTurn.get(drawer));

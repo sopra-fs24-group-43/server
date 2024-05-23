@@ -318,7 +318,9 @@ public class WebSocketController {
         }
         answer.setType("Answer");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/sendguess", answer);
-
+        if (flag == 3){
+            return;
+        }
         if (game.getCurrentCorrectGuesses() >= game.getConnectedPlayers().size()-1 && game.getTimeLeftInTurn() >= 0){
             timerService.doShutDownTimer(game.getGameId());  //shutsdown timer from sendchosenword "drawing"
             if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getConnectedPlayers().size()) {
