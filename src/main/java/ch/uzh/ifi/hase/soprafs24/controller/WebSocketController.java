@@ -141,6 +141,7 @@ public class WebSocketController {
         questionToSend.setType("joingame");
         //new beloew
 
+
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", inboundPlayer); //should return something joiner doesnt need to receive it
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
@@ -155,8 +156,6 @@ public class WebSocketController {
         questionToSend.setType("leavegame");
         questionToSend.setGameId(null);
         questionToSend.setUserId(null);
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend); //should return something joiner doesnt need to receive it
-        this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
 
 /*
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
@@ -277,9 +276,9 @@ public class WebSocketController {
             return;
         }
         game.nextturn(gameId);
-        timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+        timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
 
     }
 
@@ -318,7 +317,9 @@ public class WebSocketController {
         }
         answer.setType("Answer");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/sendguess", answer);
-
+        if (flag == 3){
+            return;
+        }
         if (game.getCurrentCorrectGuesses() >= game.getConnectedPlayers().size()-1 && game.getTimeLeftInTurn() >= 0){
             timerService.doShutDownTimer(game.getGameId());  //shutsdown timer from sendchosenword "drawing"
             if (game.getCurrentRound()==game.getMaxRounds() && game.getCurrentTurn()== game.getConnectedPlayers().size()) {

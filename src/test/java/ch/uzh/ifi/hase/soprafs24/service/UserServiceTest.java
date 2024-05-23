@@ -21,6 +21,7 @@ public class UserServiceTest {
   @InjectMocks
   private UserService userService;
 
+
   private User testUser;
 
   @BeforeEach

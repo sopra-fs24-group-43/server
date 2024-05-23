@@ -45,7 +45,6 @@ public class UserServiceIntegrationTest {
 
     // when
     User createdUser = userService.createUser(testUser, true);
-
     // then
     assertEquals(testUser.getId(), createdUser.getId());
     assertEquals(testUser.getName(), createdUser.getName());
@@ -53,6 +52,7 @@ public class UserServiceIntegrationTest {
     assertNotNull(createdUser.getToken());
     assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
   }
+
 
   @Test
   public void createUser_duplicateUsername_throwsException() {
