@@ -432,7 +432,7 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(lobbyInfo);
     }
-    /*
+
     @Test
     public void startgameTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -463,7 +463,10 @@ public class WebSocketControllerTest {
         PlayerRepository.addPlayer(1, gameId, player);
         PlayerRepository.addPlayer(2, gameId, player2);
         GameRepository.addGame(gameId, game);
-
+        ArrayList<String> genres  =new ArrayList<>();
+        genres.add("Science");
+        genres.add("Animal");
+        game.setGenres(genres);
         Thread.sleep(1000);
 
 
@@ -516,7 +519,8 @@ public class WebSocketControllerTest {
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
         assertThat(resultKeeper2.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);
     }
-*/
+
+
     @Test
     public void getgamestateTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
