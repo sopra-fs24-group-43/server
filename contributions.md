@@ -303,40 +303,59 @@ Issue(server) #161 https://github.com/sopra-fs24-group-43/server/issues/161 - ad
 
 ### 1st week - 12.04
 Issue(server) #103 - https://github.com/sopra-fs24-group-43/server/issues/103 - creating guest user entity
+
 Issue(server) #104 - https://github.com/sopra-fs24-group-43/server/issues/104 - adding controller method for guest user
+
 Issue(server) #105 - https://github.com/sopra-fs24-group-43/server/issues/105 - adding service method for guest user
+
 Issue(server) #106 - https://github.com/sopra-fs24-group-43/server/issues/106 - adding guest user deletion
 
 ### 2nd week - 17.04
 Issue(server) #116 - https://github.com/sopra-fs24-group-43/server/issues/116 - implementing login
+
 Issue(server) #117 - https://github.com/sopra-fs24-group-43/server/issues/117 - implementing logout
+
 Issue(server) #118 - https://github.com/sopra-fs24-group-43/server/issues/118 - displaying profile page
+
 Issue(server) #119 - https://github.com/sopra-fs24-group-43/server/issues/119 - enable profile editing
+
 Issue(server) #121 - https://github.com/sopra-fs24-group-43/server/issues/121 - friend list backend
+
 Issue(server) #122 - https://github.com/sopra-fs24-group-43/server/issues/122 - displaying friend list
+
 Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - enable adding friends
+
 Issue(server) #124 - https://github.com/sopra-fs24-group-43/server/issues/124 - enable deleting friends
 
 ### 3nd week - 24.04
 Issue(server) #140 - https://github.com/sopra-fs24-group-43/server/issues/140 - implementing lobby framework (backend)
+
 Issue(server) #141 - https://github.com/sopra-fs24-group-43/server/issues/141 - implementing lobby creation (backend)
 
 ### 4th week - 03.05
 Issue(server) #143 - https://github.com/sopra-fs24-group-43/server/issues/143 - implement end turn in websocketcontroller, which calculates and updates leaderboard
+
 Issue(server) #144 - https://github.com/sopra-fs24-group-43/server/issues/144 - implement postgame (websockets)
+
 Issue(server) #145 - https://github.com/sopra-fs24-group-43/server/issues/145 - implement endgame (websockets)
 
 ### 5th week - 08.05
 Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added rest endpoint tests
+
 Issue(server) #121 - https://github.com/sopra-fs24-group-43/server/issues/121 - fixing friend request implementation
+
 Issue(server) #122 - https://github.com/sopra-fs24-group-43/server/issues/122 - fixes for displaying friends
+
 Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - fixes for adding to friend list
 
 ### 6th week - 15.05
 Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for entity, repository
+
 Issue(server) #155 - https://github.com/sopra-fs24-group-43/server/issues/155 - added implementation for external api call (getting the words based on category)
 
 ### 7th week - 23.05
 Issue(client) #205 - https://github.com/sopra-fs24-group-43/client/issues/205 - implement dark mode (frontend)
+
 Issue(server) #206 - https://github.com/sopra-fs24-group-43/server/issues/206 - enable changing hotkeys (backend)
+
 Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for controller, service
