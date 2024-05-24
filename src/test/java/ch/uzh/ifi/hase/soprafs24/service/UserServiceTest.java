@@ -67,7 +67,7 @@ public class UserServiceTest {
     assertEquals(testUser.getName(), createdUser.getName());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
+    assertEquals(UserStatus.ONLINE, createdUser.getStatus());
   }
 
   @Test
@@ -127,7 +127,7 @@ public class UserServiceTest {
       assertEquals(testUser.getHotkeyInputEraser(), userInput.getHotkeyInputEraser());
       assertEquals(testUser.getHotkeyInputClear(), userInput.getHotkeyInputClear());
       assertNotNull(user.getToken());
-      assertEquals(UserStatus.OFFLINE, user.getStatus());
+      assertEquals(UserStatus.ONLINE, user.getStatus());
   }
 /*
   @Test

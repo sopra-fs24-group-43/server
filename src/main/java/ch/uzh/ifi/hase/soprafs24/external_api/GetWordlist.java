@@ -13,33 +13,12 @@ import java.util.List;
 public class GetWordlist {
     private GetWordlist() {}
 
-    //scam XDgetw
-    /*public static List<String> getWords(String genre) {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://twinword-word-associations-v1.p.rapidapi.com/associations/?entry="+genre))
-                    .header("X-RapidAPI-Key", "99c8d838cdmsh893fe75567c4b4fp1fd315jsn278211498350")
-                    .header("X-RapidAPI-Host", "twinword-word-associations-v1.p.rapidapi.com")
-                    .method("GET", HttpRequest.BodyPublishers.noBody())
-                    .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-            List<String> list = parser(response);
-            //List<String> wordlist = JsonParser(response);
-            System.out.println(list);
-            return list;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "error occurred while fetching wordlist" + e.getMessage());
-        }}
-    */
     public  List<String> getWordlist2(String genre) { //removed the static
         try {
             final String uri = "https://api.datamuse.com/words?rel_jja="+genre;
             RestTemplate restTemplate = new RestTemplate();
             String result = restTemplate.getForObject(uri, String.class);
             List<String> wordlist = JsonParser(result);
-            //System.out.println(wordlist);
             return wordlist;
         }
         catch (Exception e) {
@@ -58,18 +37,5 @@ public class GetWordlist {
             }
         }
         return wordlist2;
-    }/*//old
-    public static List<String> parser(HttpResponse response) {
-        String list = response.toString();
-        List<String> list3 = new ArrayList<>();
-        String[] list2 = list.split(":");
-        for (int i = 0; i<list2.length;i++) {
-            if (i==6) {
-                list3.add("[");
-                list3.add(list2[i]);
-                list3.add("]");
-            }
-        }
-        return list3;
-    }*/
+    }
 }

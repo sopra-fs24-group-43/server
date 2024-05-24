@@ -131,7 +131,7 @@ public class UserService {
 
   public User createUser(User newUser, Boolean isUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.OFFLINE);
+    newUser.setStatus(UserStatus.ONLINE);
     newUser.setIsUser(isUser);
     if (isUser) {
         checkIfUserExists(newUser);}

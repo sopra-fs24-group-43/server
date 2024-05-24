@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
@@ -15,9 +16,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.MultiValueMap;
@@ -28,9 +31,11 @@ import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -58,7 +63,7 @@ public class UserControllerTest {
   @MockBean
   private UserService userService;
 
-    @Mock
+    @MockBean
     private UserRepository userRepository;
 
   @BeforeEach
@@ -73,12 +78,16 @@ public class UserControllerTest {
       //Date date = new Date(2024,Calendar.JANUARY,1);
       user.setCreation_date(LocalDate.now());
       List<String> friends = new ArrayList<String>();
-      friends.add("2");
-      friends.add("3");
+      friends.add("user2");
+      //friends.add("3");
       user.setFriends(friends);
       user.setLevel(1);
+      user.setXp(1);
       user.setPassword("1");
       user.setStatus(UserStatus.ONLINE);
+      List<String> empty = new ArrayList<>();
+      user.setOpenFriendRequests(empty);
+      user.setSentFriendRequests(empty);
 
       user2 = new User();
       user2.setIsUser(true);
@@ -90,11 +99,14 @@ public class UserControllerTest {
       //Date date = new Date(2024,Calendar.JANUARY,1);
       user2.setCreation_date(LocalDate.now());
       List<String> friends2 = new ArrayList<String>();
-      friends2.add("1");
+      friends2.add("user1");
       //friends.add("3");
-      //user2.setFriends(friends);
+      user2.setFriends(friends);
       user2.setLevel(1);
       user2.setPassword("1");
+      List<String> empty2 = new ArrayList<>();
+      user2.setOpenFriendRequests(empty2);
+      user2.setSentFriendRequests(empty2);
   }
 
   @Test
@@ -293,14 +305,43 @@ public class UserControllerTest {
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
     }
-
 /*
     @Test
+    public void test_update_points() throws Exception {
+
+        given(userService.createUser(Mockito.any(), eq(true))).willReturn(user);
+        //given(userService.createUser(Mockito.any(), eq(true))).willReturn(user2);
+
+        long userId = user.getId();
+
+        doNothing().when(userService).updateUserPoints(Mockito.any(),eq(10));
+        //userService.updateUserPoints(1L,10);
+        MockHttpServletRequestBuilder putRequest = put("/users/" + userId + "/updatePoints")
+                .contentType(MediaType.APPLICATION_JSON);
+/*
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+        verify(userService).updateUserPoints(eq(1L),eq(10));
+        //assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+        System.out.println(MediaType.APPLICATION_JSON.toString());
+        System.out.println(result.getRequest().getContentType());
+        System.out.println(result.getResponse().getStatus());*/
+/*
+        mockMvc.perform(putRequest)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+    }*/
+
+
+    @Test
     public void sentFriendRequestTest() throws Exception{
-        given(userService.getUserById(eq(1L))).willReturn(user);
-        given(userService.getUserById(eq(2L))).willReturn(user2);
-        given(userRepository.findByUsername(eq("2"))).willReturn(user2);
-        given(userRepository.findByUsername(eq("1"))).willReturn(user);
+      given(userService.createUser(Mockito.any(), eq(true))).willReturn(user);
+      //given(userService.createUser(Mockito.any(), eq(true))).willReturn(user2);
+        given(userService.getUserById(Mockito.any())).willReturn(user);
+        //given(userService.getUserById(eq(2L))).willReturn(user2);
+        given(userRepository.findByUsername(Mockito.any())).willReturn(user2);
+        //given(userRepository.findByUsername(eq("1"))).willReturn(user);
         doNothing().when(userService).sendFriendRequest(Mockito.any(),eq("user2"),eq(true));
 
 
@@ -318,12 +359,16 @@ public class UserControllerTest {
         System.out.println(user.getSentFriendRequests());
         System.out.println(user2.getOpenFriendRequests());
         System.out.println(user.getUsername());
-    }*/
-/*
+    }
+
     @Test
     public void getAllFriendRequestsTest() throws Exception{
-        List<User> allUsers = Collections.singletonList(user2);
-        given(userService.getUsers()).willReturn(allUsers);
+        given(userService.createUser(Mockito.any(), eq(true))).willReturn(user);
+       // given(userService.createUser(Mockito.any(), eq(true))).willReturn(user2);
+
+
+        //List<User> allUsers = Collections.singletonList(user2);
+        //given(userService.getUsers()).willReturn(allUsers);
 
         long userId = user.getId();
 
@@ -331,105 +376,172 @@ public class UserControllerTest {
       List<String> l1 = new ArrayList<>();
       l1.add("2");
       //given(userService.getOpenFriendRequests(userId)).willReturn(l1);
-        given(userService.getUserByUsername("user2")).willReturn(user2);
+        //given(userService.getUserByUsername(eq("user2"))).willReturn(user2);
+        given(userService.getUserByUsername(Mockito.any())).willReturn(user2);
+        //given(userService.getOpenFriendRequests(eq(1L))).willReturn(l1);
+        given(userService.getOpenFriendRequests(Mockito.any())).willReturn(l1);
 
         MockHttpServletRequestBuilder getRequest = get("/users/" + userId + "/openfriendrequests")
                 .contentType(MediaType.APPLICATION_JSON);
-
+        System.out.println(user.getOpenFriendRequests());
         mockMvc.perform(getRequest)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].username", is(user2.getUsername())));;
-               // .andExpect(jsonPath("$.openFriendRequests", is(user.getOpenFriendRequests())));
+                .andExpect(jsonPath("$[0].username", is(user2.getUsername())))
+                .andExpect(jsonPath("$[0].openFriendRequests", is(user.getOpenFriendRequests())))
+                .andExpect(jsonPath("$[0].sentFriendRequests", is(user.getSentFriendRequests())));
 
         System.out.println(user.getOpenFriendRequests());
-    }*/
-    /*
+    }
+
         @Test
         public void getFriendsTest() throws Exception{
 
-            given(userService.getFriends(eq(1L))).willReturn(user.getFriends());
+            given(userService.createUser(Mockito.any(), eq(true))).willReturn(user);
+            //given(userService.createUser(Mockito.any(), eq(true))).willReturn(user2);
 
-            MockHttpServletRequestBuilder getRequest = get("/users/" + 1L + "/friends")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(1L));
+            List<User> allUsers = Collections.singletonList(user2);
+            //given(userService.getUsers()).willReturn(allUsers);
+
+            long userId = user.getId();
+
+            given(userService.getUserById(eq(1L))).willReturn(user);
+            List<String> l1 = new ArrayList<>();
+            l1.add("user2");
+            given(userService.getOpenFriendRequests(userId)).willReturn(l1);
+            //given(userService.getUserByUsername(eq("user2"))).willReturn(user2);
+            given(userService.getUserByUsername(Mockito.any())).willReturn(user2);
+            //given(userService.getSentFriendRequests(eq(1L))).willReturn(l1);
+            given(userService.getSentFriendRequests(Mockito.any())).willReturn(l1);
+
+            UserGetDTO userGetDTO = new UserGetDTO();
+            userGetDTO.setUsername("user2");
+            userGetDTO.setName("user2");
+            List<String> f = new ArrayList<>();
+            f.add("user1");
+            userGetDTO.setFriends(f);
+            List<UserGetDTO> userGetDTOs = Collections.singletonList(userGetDTO);
+
+            List<String> f2 = new ArrayList<>();
+            f2.add("user2");
+
+            given(userService.getFriends(Mockito.any())).willReturn(f2);
+
+            MockHttpServletRequestBuilder getRequest = get("/users/" + userId + "/friends")
+                    .contentType(MediaType.APPLICATION_JSON);
             mockMvc.perform(getRequest)
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.friends", is(user.getFriends())));
-        }
 
+                    .andDo(MockMvcResultHandlers.print())
+                    .andExpect(status().isOk())
+
+                    .andExpect(jsonPath("$[0].username", is("user2")))
+                    .andExpect(jsonPath("$[0].friends", is(f2)));
+        }
+/*
         @Test
         public void DeleteFriendOfUserByIDTest() throws Exception{
-            doNothing().when(userService).delete_Friend(Mockito.any(),eq("2"));
+            given(userService.createUser(Mockito.any(), eq(true))).willReturn(user);
 
-            MockHttpServletRequestBuilder putRequest = put("/users/" + 1L + "/friends")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(1L));
+
+
+            long userId = user.getId();
+
+            given(userService.getUserById(eq(1L))).willReturn(user);
+            List<String> l1 = new ArrayList<>();
+            l1.add("user2");
+
+            given(userService.getUserByUsername(Mockito.any())).willReturn(user2);
+            List<String> f2 = new ArrayList<>();
+            f2.add("user2");
+
+            given(userService.getFriends(Mockito.any())).willReturn(f2);
+
+            doNothing().when(userService).delete_Friend(Mockito.any(),Mockito.any());
+
+            MockHttpServletRequestBuilder putRequest = put("/users/" + userId + "/friends")
+                    .contentType(MediaType.APPLICATION_JSON);
             mockMvc.perform(putRequest)
                     .andExpect(status().isOk());
 
-        }
-    */
-/*
+        }*/
+
     @Test
-    public void getFriendsTest() throws Exception{
+    public void getAllSentFriendRequestsTest() throws Exception{
+        given(userService.createUser(Mockito.any(), eq(true))).willReturn(user);
+        //given(userService.createUser(Mockito.any(), eq(true))).willReturn(user2);
 
-        given(userService.getFriends(eq(1L))).willReturn(user.getFriends());
 
-        MockHttpServletRequestBuilder getRequest = get("/users/" + 1L + "/friends")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(1L));
+        //List<User> allUsers = Collections.singletonList(user2);
+        //given(userService.getUsers()).willReturn(allUsers);
+
+        long userId = user.getId();
+
+        given(userService.getUserById(eq(1L))).willReturn(user);
+        List<String> l1 = new ArrayList<>();
+        l1.add("user2");
+        //given(userService.getOpenFriendRequests(userId)).willReturn(l1);
+        //given(userService.getUserByUsername(eq("user2"))).willReturn(user2);
+        given(userService.getUserByUsername(Mockito.any())).willReturn(user2);
+        //given(userService.getSentFriendRequests(eq(1L))).willReturn(l1);
+        given(userService.getSentFriendRequests(Mockito.any())).willReturn(l1);
+
+        MockHttpServletRequestBuilder getRequest = get("/users/" + userId + "/sentfriendrequests")
+                .contentType(MediaType.APPLICATION_JSON);
+        System.out.println(user.getSentFriendRequests());
         mockMvc.perform(getRequest)
-                .andExpect(status().isOk());
-    }
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].username", is(user2.getUsername())))
+                .andExpect(jsonPath("$[0].openFriendRequests", is(user.getOpenFriendRequests())))
+                .andExpect(jsonPath("$[0].sentFriendRequests", is(user.getSentFriendRequests())));
 
+        System.out.println(user.getSentFriendRequests());
+    }
+    /*
     @Test
-    public void DeleteFriendOfUserByIDTest() throws Exception{
+    public void acceptOrDenyFriendRequestsTest() throws Exception{
+        given(userService.createUser(Mockito.any(), eq(true))).willReturn(user);
+        given(userService.createUser(Mockito.any(), eq(true))).willReturn(user2);
 
 
-    }
-*/
-    /*//TODO!
-    @Test
-    public void test_add_friends() throws Exception {
+        List<User> allUsers = Collections.singletonList(user2);
+        given(userService.getUsers()).willReturn(allUsers);
 
-        // this mocks the UserService -> we define above what the userService should
-        // return when getUsers() is called
-        given(userService.add_or_delete_Friend(Mockito.any(),eq("user2"),eq(true))).willReturn(user);
+        long userId = user.getId();
 
-        // when
-        MockHttpServletRequestBuilder putRequest = put("/users/" + user.getId() + "/friends").contentType(MediaType.APPLICATION_JSON)
-                .param("f_username", "user2")
-                .param("false_for_delete_true_for_add", "true");
+        //given(userService.getUserById(eq(1L))).willReturn(user);
+        given(userService.getUserById(Mockito.any())).willReturn(user);
+        List<String> l1 = new ArrayList<>();
+        List<String> empty = new ArrayList<>();
+        l1.add("user2");
+        //given(userService.getOpenFriendRequests(userId)).willReturn(l1);
+        //given(userService.getUserByUsername(eq("user2"))).willReturn(user2);
+        given(userService.getUserByUsername(Mockito.any())).willReturn(user2);
+        //given(userService.getOpenFriendRequests(eq(1L))).willReturn(l1);
+        //given(userService.getSentFriendRequests(eq(1L))).willReturn(empty);
+        given(userService.getOpenFriendRequests(Mockito.any())).willReturn(l1);
+        given(userService.getSentFriendRequests(Mockito.any())).willReturn(empty);
+        given(userService.accept_or_deny_Friend_Request_receiver(Mockito.any(),Mockito.any(),eq(true))).willReturn(user);
+        doNothing().when(userService).accept_or_deny_Friend_Request_sender(Mockito.any(),Mockito.any(),eq(true));
 
+        MockHttpServletRequestBuilder putRequest = put("/users/" + userId + "/openfriendrequests")
+                .contentType(MediaType.APPLICATION_JSON);
+        System.out.println(user.getOpenFriendRequests());
+        mockMvc.perform((putRequest)
+                .param("friend_username","user2")
+                .param("delete","true"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].username", is(user.getUsername())))
+                .andExpect(jsonPath("$[0].friends", is(l1)))
+                .andExpect(jsonPath("$[0].openFriendRequests", is(user.getOpenFriendRequests())))
+                .andExpect(jsonPath("$[0].sentFriendRequests", is(user.getSentFriendRequests())));
 
-        // then
-        mockMvc.perform(putRequest).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.username", is(user.getUsername())))
-                .andExpect(jsonPath("$.friends", hasSize(3)))
-                .andExpect(jsonPath("$.friends", is(user.getFriends())));
-    }
-
-
-    @Test
-    public void test_get_friends() throws Exception {
-
-        // String friend_3 = user.getFriends();
-        // this mocks the UserService -> we define above what the userService should
-        // return when getUsers() is called
-        given(userService.getFriends(eq(1L))).willReturn(user.getFriends());
-
-        // when
-        MockHttpServletRequestBuilder getRequest = get("/users/" + user.getId() + "/friends").contentType(MediaType.APPLICATION_JSON);
-
-        // then
-        mockMvc.perform(getRequest).andExpect(status().isOk())
-                //.andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$.friends.[0].username", is(user.getFriends().get(0))))
-                .andExpect(jsonPath("$[0]", is(user.getFriends())));
-    }
-//test_delete_friends
+        System.out.println(user.getSentFriendRequests());
+    }*/
 
     /**
          * Helper Method to convert userPostDTO into a JSON string such that the input
