@@ -58,8 +58,11 @@ public class WebSocketEventListener {
                                 game.deletegame(gameId);
                                 QuestionToSend questionToSend = new QuestionToSend();
                                 questionToSend.setType("deletegame");
+                                questionToSend.setUserId(null);
+                                questionToSend.setGameId(null);
                                 this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);  //for the players in the Lobby
                                 this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
+
 
                             }
                             else {

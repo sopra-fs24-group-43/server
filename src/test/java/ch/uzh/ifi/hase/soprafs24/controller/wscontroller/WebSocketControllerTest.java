@@ -29,10 +29,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import org.junit.jupiter.api.Test;
@@ -1422,7 +1426,7 @@ public class WebSocketControllerTest {
         assertThat(resultKeeper.get(4, SECONDS)).isEqualToComparingFieldByFieldRecursively(reconnectionDTO);
 
     }
-    /*
+
     @Test
     public void reconnectTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -1498,17 +1502,12 @@ public class WebSocketControllerTest {
         assertThat(resultKeeper.get(4, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
 
     }
-    */
-    /*
+
+
     @Test
     public void wsdisconnecteventlistenerTest() throws Exception {
-        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
-
         int gameId = 101;
 
-        stompSession.subscribe(
-                "/topic/games/" + gameId + "/general",
-                new WsTestUtils.MyStompFrameHandlerQuestionToSend((payload) -> resultKeeper.complete(payload)));
 
         when(randomGenerators.PasswordGenerator()).thenReturn("password");
         ArrayList<Integer> friends = new ArrayList<>();
@@ -1532,24 +1531,21 @@ public class WebSocketControllerTest {
         ArrayList<String> words = new ArrayList<>();
 
         game.setWordList(words);
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create();
-        HashMap<String, Object> sessionAttributes = new HashMap<>();
-        headerAccessor.setSessionAttributes(sessionAttributes);
         SessionAttributeDTO sessionAttributeDTO = new SessionAttributeDTO();
         sessionAttributeDTO.setUserId(1);
         sessionAttributeDTO.setReload(null);
-        webSocketController.senduserIdAttr(sessionAttributeDTO,  headerAccessor);
-
+        stompSession.send("/app/games/senduserId",sessionAttributeDTO);
         Thread.sleep(1000);
-        stompSession.disconnect();
+        stompSession.disconnect();  //EventListener deletes game cause leaver was admin
         Thread.sleep(1000);
-        QuestionToSend questionToSend = new QuestionToSend();
-        questionToSend.setType("deletegame");
-
-
-        assertThat(resultKeeper.get(4, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);
-
+        Game game2 = GameRepository.findByGameId(gameId);
+        if (game2 == null) {
+            assert(true);
+        }
+        else {
+            assert(false);
+        }
     }
-    */
+
 
 }
