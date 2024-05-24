@@ -30,6 +30,8 @@ public class UserPutDTO {
 
     private int level;
 
+    private int xp;
+
     private Boolean isUser;
 
     private LocalDate creation_date;

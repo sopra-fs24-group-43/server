@@ -29,6 +29,8 @@ public class UserPostDTO {
 
   private int level;
 
+  private int xp;
+
     private List<String> friends;
 
     private LocalDate creation_date;
