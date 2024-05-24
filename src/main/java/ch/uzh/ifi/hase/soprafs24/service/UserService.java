@@ -57,6 +57,10 @@ public class UserService {
           user.setName(userInput.getName());
       }
 
+      if (userInput.getPassword()!=null){
+        user.setPassword(userInput.getPassword());
+    }
+
       if (userInput.getHotkeyInputDraw()!=null){
           user.setHotkeyInputDraw(userInput.getHotkeyInputDraw());
       }
