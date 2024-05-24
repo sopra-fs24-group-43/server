@@ -264,11 +264,13 @@ public class UserService {
 
   public void updateUserPoints(Long id, Integer points) {
       User user = userRepository.findUserById(id);
-      int curXP = user.getXp();
-      curXP += points;
-      user.setXp(curXP);
-      user.setLevel((int)Math.ceil((double)curXP/(double)3000));
-      userRepository.save(user);
-      userRepository.flush();
+      if(user != null) {
+          int curXP = user.getXp();
+          curXP += points;
+          user.setXp(curXP);
+          user.setLevel((int) Math.ceil((double) curXP / (double) 3000));
+          userRepository.save(user);
+          userRepository.flush();
+      }
   }
 }
