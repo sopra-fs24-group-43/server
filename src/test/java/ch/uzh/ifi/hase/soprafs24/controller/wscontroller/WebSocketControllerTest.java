@@ -588,6 +588,7 @@ public class WebSocketControllerTest {
         gameStateDTO.setEndGame(false);
         HashMap<Integer, Player> players = new HashMap<>();
         players.put(1, player);
+        players.put(2, player2);
         gameStateDTO.setConnectedPlayers(players);
         gameStateDTO.setPlayersOriginally(0);
         gameStateDTO.setCurrentRound(0);
@@ -666,6 +667,7 @@ public class WebSocketControllerTest {
         gameStateDTO.setEndGame(false);
         HashMap<Integer, Player> players = new HashMap<>();
         players.put(1, player);
+        players.put(2, player2);
         gameStateDTO.setConnectedPlayers(players);
         gameStateDTO.setPlayersOriginally(0);
         gameStateDTO.setCurrentRound(0);
@@ -821,6 +823,7 @@ public class WebSocketControllerTest {
         gameStateDTO.setEndGame(true);
         HashMap<Integer, Player> players = new HashMap<>();
         players.put(1, player);
+        players.put(2, player2);
         gameStateDTO.setConnectedPlayers(players);
         gameStateDTO.setPlayersOriginally(0);
         gameStateDTO.setCurrentRound(5);

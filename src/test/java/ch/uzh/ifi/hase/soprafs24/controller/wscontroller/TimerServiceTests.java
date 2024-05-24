@@ -285,7 +285,9 @@ public class TimerServiceTests {
         Game game2 = GameRepository.findByGameId(gameId);
         HashMap<Integer, Player> players = new HashMap<>();
         players.put(1,player);
-        assertThat(game2.getPlayers()).isEqualTo(players);
+        HashMap<Integer, Player> playersactual = new HashMap<>();
+        playersactual = game2.getPlayers();
+        assertThat(playersactual).isEqualTo(players);
         QuestionToSend questionToSend = new QuestionToSend();
         questionToSend.setType("leavegame");
         assertThat(resultKeeper.get(4, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);

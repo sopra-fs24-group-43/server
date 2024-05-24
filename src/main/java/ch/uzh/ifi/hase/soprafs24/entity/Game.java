@@ -133,6 +133,7 @@ public class Game {
         this.gameStarted = gameStarted;
     }
     public void addPlayer(Player player) {
+         this.connectedPlayers.put(player.getUserId(), player);
         this.players.put(player.getUserId(), player);
         this.playerIdByName.put(player.getUsername(), player.getUserId());
     }
@@ -286,7 +287,10 @@ public class Game {
         Game game = GameRepository.findByGameId(gameId);
         System.out.println("executing lostConnectionToPlayer: "+ userId);
         Player player = game.getPlayers().get(userId);
-        game.getConnectedPlayers().remove(userId);
+        HashMap<Integer, Player> connectedPlayers2 = game.getConnectedPlayers();
+        connectedPlayers2.remove(userId);
+        game.setConnectedPlayers(connectedPlayers2);
+        System.out.println("connectedPlayers: "+ game.getConnectedPlayers());
         if (game.getAdmin().getUserId() == player.getUserId()) { //if leaver was admin
             this.terminategame(gameId, "admin left");
         }
@@ -307,6 +311,7 @@ public class Game {
                 System.out.println("is he drawer: "+(indexOfDrawer == game.getDrawer()));
                 System.out.println("GamePhase: "+ game.getGamePhase());
                 GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+                System.out.println("connectedPlayers in GameStateDTO: "+ game.getConnectedPlayers());
                 this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
                 if (indexOfDrawer == game.getDrawer() && (game.getGamePhase().equals("choosing") || game.getGamePhase().equals("drawing"))) {
                     //if this, then endturn
@@ -328,7 +333,6 @@ public class Game {
                         timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
                     }
                 }
-
             }
     }
 
@@ -350,7 +354,7 @@ public class Game {
         LobbyInfo lobbyInfo = new LobbyInfo();
         lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
-        lobbyInfo.setPlayers(game.getPlayers());
+        lobbyInfo.setPlayers(game.getConnectedPlayers());
         lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
     }
