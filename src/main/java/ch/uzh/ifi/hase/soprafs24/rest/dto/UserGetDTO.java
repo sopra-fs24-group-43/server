@@ -21,6 +21,7 @@ public class UserGetDTO {
   private Long id;
   private String name;
   private String username;
+  private String password;
   private UserStatus status;
 
   private Boolean isUser;
@@ -39,6 +40,7 @@ public class UserGetDTO {
 
   private List<String> openFriendRequests;
   private List<String> sentFriendRequests;
+  
 /*
   public Boolean getIsUser() {
         return isUser;
