@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest()
@@ -156,7 +159,7 @@ error this.websocketService is null
 */
 
 
-/*
+
     @Test
     void nextturnTest() {
 
@@ -193,7 +196,20 @@ error this.websocketService is null
         game.setGenres(genres);
         game.startGame();
         game.nextturn(1);
+        GameStateDTO actual3 = game.receiveGameStateDTO();
+
+        assertEquals(actual3.getCurrentRound(),1);
+        assertEquals(actual3.getCurrentTurn(),1);
+
+
         game.nextturn(1);
+        GameStateDTO actual2 = game.receiveGameStateDTO();
+
+        assertEquals(actual2.getCurrentRound(),1);
+        assertEquals(actual2.getCurrentTurn(),2);
+        assertEquals(actual2.getDrawer(),1);
+
+
         //game.setCurrentTurn(2);
         //game.setCurrentRound(1);
         int i = game.getCurrentWordIndex();
@@ -225,8 +241,35 @@ error this.websocketService is null
         //three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
         assertEquals(three_words, actual.getThreeWords());
 
+
     }
-*/
+
+    @Test
+    void addAnswerTest() {
+        game.startGame();
+        game.nextturn(1);
+        game.nextturn(1);
+        game.setActualCurrentWord("word");
+        game.setGamePhase("drawing");
+
+
+        Answer answer = new Answer();
+        answer.setUsername("1");
+        answer.setIsCorrect(true);
+        answer.setPlayerHasGuessedCorrectly(false);
+        answer.setAnswerString("word");
+        answer.setType("Answer");
+
+
+        int value = game.addAnswer(answer);
+
+
+        assertEquals(value, 1);
+        assertNotEquals(game.getPointsOfCurrentTurn().get(player), game.getPointsOfCurrentTurn().get(player2));
+        assertEquals(game.getCurrentCorrectGuesses(),1);
+        assertEquals(game.getPlayerCorrectGuesses().get("1"),true);
+    }
+
 
 
     @Test
