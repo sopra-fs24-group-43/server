@@ -524,7 +524,7 @@ public class WebSocketControllerTest {
 
         QuestionToSend questionToSend = new QuestionToSend();
         questionToSend.setType("startgame");
-
+        questionToSend.setGameId(101);
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
         assertThat(resultKeeper2.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);
     }

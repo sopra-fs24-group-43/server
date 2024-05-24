@@ -42,18 +42,23 @@ public class WebSocketController {
         this.getWordlist = getWordlist;
     }
     @MessageMapping("/games/{gameId}/invitefriend/{userId}")
-    public void invitefriend(@DestinationVariable int gameId, @DestinationVariable int userId) {
+    public void invitefriend(@DestinationVariable int gameId, @DestinationVariable int userId, QuestionToSend questionToSend) {
         Game game = GameRepository.findByGameId(gameId);
         if (game != null) {
-                QuestionToSend questionToSend = new QuestionToSend();
-                questionToSend.setType("invitefriend");
-                questionToSend.setUserId(userId); //userId of the friend that got invited
-                questionToSend.setGameId(gameId);
-            this.webSocketService.sendMessageToClients("/topic/landing/"+userId, questionToSend);
             Player player = PlayerRepository.findByUserId(userId);
+            if (player.getGameId() == gameId) {
+                return;
+            }
+            InviteFriendDTO inviteFriendDTO = new InviteFriendDTO();
+            inviteFriendDTO.setType("invitefriend");
+            inviteFriendDTO.setUserId(userId); //userId of the friend that got invited
+            inviteFriendDTO.setGameId(gameId);
+            Player player1 = PlayerRepository.findByUserId(questionToSend.getUserId());
+            inviteFriendDTO.setUsername(player1.getUsername());
+            this.webSocketService.sendMessageToClients("/topic/landing/"+userId, inviteFriendDTO);
             if (player != null) {
                 if (player.getGameId() != -1) {
-                    this.webSocketService.sendMessageToClients("/topic/games/" + player.getGameId() + "/general/"+userId, questionToSend);  //for the players in the Lobby
+                    this.webSocketService.sendMessageToClients("/topic/games/" + player.getGameId() + "/general/"+userId, inviteFriendDTO);  //for the players in the Lobby
                 }
             }
         }
@@ -212,6 +217,8 @@ public class WebSocketController {
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         QuestionToSend questionToSend = new QuestionToSend(); //this is solely for the Table to take the game off the List of lobbies
         questionToSend.setType("startgame");
+        questionToSend.setGameId(gameId);  //added mark
+        this.webSocketService.sendMessageToClients("/topic/landing/gameId", questionToSend);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
