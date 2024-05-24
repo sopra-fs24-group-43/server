@@ -383,16 +383,7 @@ public class WebSocketController {
 
     }
 
-    /*//old
-    @MessageMapping("game/{gameId}/postgame")
-    @SendTo("game/{gameId}/general")
-    public void postgame(@DestinationVariable long gameId) {
-        Game game = GameRepository.findByGameId((int) gameId);
-        LeaderBoardDTO leaderboardDTO = game.calculateLeaderboard();
 
-        this.webSocketService.sendMessageToClients("game/{gameId}", leaderboardDTO);
-    }
-    */
     @MessageMapping("/games/{gameId}/coordinates") //also change the MessageMapping and channel to sendCanvas
     public void sendCanvas(@DestinationVariable int gameId, Coordinates coordinates){
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/coordinates", coordinates);

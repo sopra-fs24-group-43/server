@@ -151,7 +151,7 @@ public class UserService {
   }
 
     public void deleteUser(User guest) {
-        //check if not isUser?
+
         userRepository.delete(guest);
         userRepository.flush();
     }
@@ -168,7 +168,7 @@ public class UserService {
           friends.remove(f_username);
           user.setFriends(friends);
 
-          //User friend = userRepository.findByUsername(f_username);
+
           List<String> friends2 = userByUsername.getFriends();
           friends2.remove(user.getUsername());
           userByUsername.setFriends(friends2);
@@ -211,9 +211,7 @@ public class UserService {
     public User accept_or_deny_Friend_Request_receiver (User user, String friend_username, Boolean b){
         if (b) {
             List<String> friends = user.getFriends();
-            //System.out.println(friends);
             friends.add(friend_username);
-            //System.out.println(friends);
             user.setFriends(friends);
 
             List<String> friendsRequests = user.getOpenFriendRequests();

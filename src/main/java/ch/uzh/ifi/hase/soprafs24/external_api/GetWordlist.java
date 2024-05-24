@@ -19,6 +19,7 @@ public class GetWordlist {
             RestTemplate restTemplate = new RestTemplate();
             String result = restTemplate.getForObject(uri, String.class);
             List<String> wordlist = JsonParser(result);
+            System.out.println(wordlist);
             return wordlist;
         }
         catch (Exception e) {
