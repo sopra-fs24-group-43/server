@@ -41,7 +41,23 @@ public class WebSocketController {
         this.reconnectionHelper = new ReconnectionHelper(webSocketService);
         this.getWordlist = getWordlist;
     }
-
+    @MessageMapping("/games/{gameId}/invitefriend/{userId}")
+    public void invitefriend(@DestinationVariable int gameId, @DestinationVariable int userId) {
+        Game game = GameRepository.findByGameId(gameId);
+        if (game != null) {
+                QuestionToSend questionToSend = new QuestionToSend();
+                questionToSend.setType("invitefriend");
+                questionToSend.setUserId(userId); //userId of the friend that got invited
+                questionToSend.setGameId(gameId);
+            this.webSocketService.sendMessageToClients("/topic/landing/"+userId, questionToSend);
+            Player player = PlayerRepository.findByUserId(userId);
+            if (player != null) {
+                if (player.getGameId() != -1) {
+                    this.webSocketService.sendMessageToClients("/topic/games/" + player.getGameId() + "/general/"+userId, questionToSend);  //for the players in the Lobby
+                }
+            }
+        }
+    }
     @MessageMapping("/landing/createguestplayer")
     public void createguestplayer() { //how does client know its his response and not for some other client?
         //returns inboundPlayer with type = createguestplayer and with some fields = null
