@@ -142,6 +142,7 @@ public class UserService {
     }
     newUser.setCreation_date(LocalDate.now());
     newUser.setLevel(1);
+    newUser.setXp(0);
     newUser = userRepository.save(newUser);
     userRepository.flush();
 
@@ -263,9 +264,10 @@ public class UserService {
 
   public void updateUserPoints(Long id, Integer points) {
       User user = userRepository.findUserById(id);
-      int curLevel = user.getLevel();
-      curLevel += points;
-      user.setLevel(curLevel);
+      int curXP = user.getXp();
+      curXP += points;
+      user.setXp(curXP);
+      user.setLevel((int)Math.ceil((double)curXP/(double)3000));
       userRepository.save(user);
       userRepository.flush();
   }

@@ -53,6 +53,9 @@ public class User implements Serializable {
   private int level;
 
   @Column
+  private int xp;
+
+  @Column
   private LocalDate creation_date;
 
   @Column
@@ -114,6 +117,13 @@ public class User implements Serializable {
   public void setLevel(int level) {
         this.level = level;
     }
+
+  public int getXp(){
+        return xp;
+  }
+  public void setXp(int xp){
+        this.xp = xp;
+  }
 
   public String getPassword() {return password;}
   public void setPassword(String password) {
