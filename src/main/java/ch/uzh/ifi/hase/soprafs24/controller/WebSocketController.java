@@ -236,7 +236,6 @@ public class WebSocketController {
         headerAccessor.getSessionAttributes().put("userId", sessionAttributeDTO.getUserId());
         Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
         System.out.println("sessionAttr: "+sessionAttributes);
-
     }
     @MessageMapping("/landing/alertreconnect/{userId}")
     public void alertreconnect(@DestinationVariable int userId, SimpMessageHeaderAccessor headerAccessor) {
