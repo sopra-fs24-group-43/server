@@ -169,6 +169,7 @@ public class TimerService {
         TimerRepository.addAllTasks(gameId, tasks);
         //threadPool.shutdown();
     }
+    /*
     public void setLowerTime(int Length, int Interval, int gameId, String destination, String gamephase) {
         //for checking whether the timer should be set to a lower Length after a correct guess
         //then deletes the current timer and start a new one with the new shorter Length
@@ -190,8 +191,9 @@ public class TimerService {
             sendback sendback = new sendback(okay);
             this.webSocketService.sendMessageToClients(destination, sendback);
         });
-        */
+
     }
+    */
     public void doShutDownTimer(int gameId) {
         //for deleting the current timer because all players guessed correctly before the time ran out or stopping old timer
         ScheduledThreadPoolExecutor threadPool =  TimerRepository.findTimerByGameId(gameId);

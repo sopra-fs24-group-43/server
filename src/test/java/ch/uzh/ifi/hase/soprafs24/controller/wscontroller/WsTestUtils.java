@@ -236,6 +236,7 @@ public class WsTestUtils {
             frameHandler.accept(payload);
         }
     }
+
     public static class MyStompFrameHandlerFillToolCoordinates implements StompFrameHandler {
 
         private final Consumer<Object> frameHandler;
@@ -356,4 +357,5 @@ public class WsTestUtils {
             frameHandler.accept(payload);
         }
     }
+
 }
