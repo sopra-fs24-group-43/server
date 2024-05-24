@@ -37,7 +37,7 @@ public class GlobalLeaderboardService {
             LeaderboardEntryDTO entry = new LeaderboardEntryDTO();
             entry.setUserID(user.getId());
             entry.setLevel(user.getLevel());
-            entry.setXP(user.getLevel());
+            entry.setXP(user.getXp());
             entry.setUsername(user.getUsername());
             list.add(entry);
         }

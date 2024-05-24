@@ -31,6 +31,7 @@ public class UserGetDTO {
 
   private int level;
 
+  private int xp;
 
   private LocalDate creation_date;
 
