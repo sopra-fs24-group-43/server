@@ -179,11 +179,8 @@ public class WebSocketController {
     public void getlobbyinfo(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
         if (game == null) {
-            QuestionToSend questionToSend = new QuestionToSend();
-            questionToSend.setType("lobbyIsNull");
-            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", questionToSend);
             return;
-        } 
+        }
         LobbyInfo lobbyInfo = new LobbyInfo();
         lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
@@ -279,28 +276,30 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/nextturn")
     public void nextturn(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
-        if (game != null) {
-            game.nextturn(gameId);
-            GameStateDTO gameStateDTO = game.receiveGameStateDTO();
-            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
-            timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
+        if (game == null) {
+            return;
         }
+        game.nextturn(gameId);
+        GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+        timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
+
     }
 
     @MessageMapping("/games/{gameId}/sendchosenword")
     public void sendchosenword(@DestinationVariable int gameId, ChooseWordDTO chooseWordDTO) {
         timerService.doShutDownTimer(gameId); //shutsdown timer from nextturn "choosing"
         Game game = GameRepository.findByGameId(gameId);
-        if (game != null) {
-            game.setActualCurrentWord(chooseWordDTO.getWord());
-            game.setGamePhase("drawing");
-            chooseWordDTO.setType("startdrawing");
-            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", chooseWordDTO);
-            System.out.println("sendchosenwordtimer");
-
-            timerService.doTimer(game.getTurnLength(),1, gameId, "/topic/games/" + gameId + "/general", "drawing"); //Timer to play turn (drawing & guessing)
+        if (game == null) {
+            return;
         }
+        game.setActualCurrentWord(chooseWordDTO.getWord());
+        game.setGamePhase("drawing");
+        chooseWordDTO.setType("startdrawing");
+        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", chooseWordDTO);
+        System.out.println("sendchosenwordtimer");
 
+        timerService.doTimer(game.getTurnLength(),1, gameId, "/topic/games/" + gameId + "/general", "drawing"); //Timer to play turn (drawing & guessing)
     }
     @MessageMapping("/games/{gameId}/sendguess")
     public void sendguess(@DestinationVariable int gameId, Answer answer){
@@ -310,18 +309,26 @@ public class WebSocketController {
             return;
         }
         int flag = game.addAnswer(answer);
-        if (flag == 2){ // if player guessed correctly (to hide the message for others, and display it to one user)
+        if (flag == 2){
             answer.setPlayerHasGuessedCorrectly(true);
             answer.setIsCorrect(false);
-        } else if (flag == 1){ // the guess is correct for other users, user has guessed correctly
+        } else if (flag == 1){
             answer.setPlayerHasGuessedCorrectly(false);
             answer.setIsCorrect(true);
-        } else { // sending messages without checking for correctness 
+            Answer correctGuessNotification = new Answer();
+            correctGuessNotification.setUsername(answer.getUsername());
+            correctGuessNotification.setAnswerString(answer.getUsername() + " has guessed the word correctly!");
+            correctGuessNotification.setType("notification");
+            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/sendguess", correctGuessNotification);
+        } else {
             answer.setPlayerHasGuessedCorrectly(false);
             answer.setIsCorrect(false);
-        }
+        } 
+        if (!answer.IsCorrect) {
         answer.setType("Answer");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/sendguess", answer);
+        }
+        
         if (flag == 3){
             return;
         }
@@ -345,7 +352,6 @@ public class WebSocketController {
                 System.out.println("endturn");
                 timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
             }
-
         }
     }
 
