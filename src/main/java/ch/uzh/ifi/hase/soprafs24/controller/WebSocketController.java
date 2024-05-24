@@ -302,12 +302,20 @@ public class WebSocketController {
         } else if (flag == 1){
             answer.setPlayerHasGuessedCorrectly(false);
             answer.setIsCorrect(true);
+            Answer correctGuessNotification = new Answer();
+            correctGuessNotification.setUsername(answer.getUsername());
+            correctGuessNotification.setAnswerString(answer.getUsername() + " has guessed the word correctly!");
+            correctGuessNotification.setType("notification");
+            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/sendguess", correctGuessNotification);
         } else {
             answer.setPlayerHasGuessedCorrectly(false);
             answer.setIsCorrect(false);
-        }
+        } 
+        if (!answer.IsCorrect) {
         answer.setType("Answer");
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/sendguess", answer);
+        }
+        
         if (flag == 3){
             return;
         }
@@ -331,7 +339,6 @@ public class WebSocketController {
                 System.out.println("endturn");
                 timerService.doTimer(5,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
             }
-
         }
     }
 
