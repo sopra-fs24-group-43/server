@@ -217,6 +217,8 @@ public class WebSocketController {
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         QuestionToSend questionToSend = new QuestionToSend(); //this is solely for the Table to take the game off the List of lobbies
         questionToSend.setType("startgame");
+        questionToSend.setGameId(gameId);  //added mark
+        this.webSocketService.sendMessageToClients("/topic/landing/gameId", questionToSend);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
