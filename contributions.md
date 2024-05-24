@@ -176,6 +176,42 @@ issue(client) #182 - https://github.com/sopra-fs24-group-43/client/issues/182 -
 
 issue(client) #184 - https://github.com/sopra-fs24-group-43/client/issues/184 - Creating and implementing a "Freitagsmaler" logo 
 
+issue(client) #190 - https://github.com/sopra-fs24-group-43/client/issues/190 - Guest user should not be able to edit profile
+
+issue(client) #191 - https://github.com/sopra-fs24-group-43/client/issues/191 - When reconnecting to a game the latest / newest canvas should be visible still instead of empty canvas
+
+issue(client) #192 - https://github.com/sopra-fs24-group-43/client/issues/192 - Creating GlobalLeaderboard popover view. 
+
+issue(client) #198 - https://github.com/sopra-fs24-group-43/client/issues/198 - Implement GlobalLeaderboard with backend functionality, UI and Design
+
+issue(client) #201 - https://github.com/sopra-fs24-group-43/client/issues/201 - Disabling Profile and Leaderboard button when in Lobby and Game view
+
+issue(client) #210 - https://github.com/sopra-fs24-group-43/client/issues/210 - Creating a notification to all players when a player has guessed the word correctly and hiding the correct answer from the other players
+
+issue(client) #44 - https://github.com/sopra-fs24-group-43/client/issues/44 - decide who does the checking (front)
+
+issue(client) #45 - https://github.com/sopra-fs24-group-43/client/issues/45 - design & code input field (front)
+
+issue(client) #46 - https://github.com/sopra-fs24-group-43/client/issues/46 - send credentials to server (front)
+
+issue(client) #47 - https://github.com/sopra-fs24-group-43/client/issues/47 - receive response (front)
+
+issue(client) #48 - https://github.com/sopra-fs24-group-43/client/issues/48 - change view accordingly (front)
+
+issue(client) #212 - https://github.com/sopra-fs24-group-43/client/issues/212 - make every name of users in the app clickable and redirect to their profile page.
+
+issue(client) #213 - https://github.com/sopra-fs24-group-43/client/issues/213 - create dynamic profile pages (based on userid)
+
+issue(client) #222 - https://github.com/sopra-fs24-group-43/client/issues/222 - Hiding the "create lobby" button for not logged in / guest users
+
+issue(client) #223 - https://github.com/sopra-fs24-group-43/client/issues/223 - Implementing lobby guard, game guard, and login guard correctly.
+
+issue(client) #226 - https://github.com/sopra-fs24-group-43/client/issues/226 - Implement functionality to hide and show password when on own profile and always hide password when logging in / registering.
+
+issue(client) #227 - https://github.com/sopra-fs24-group-43/client/issues/227 - Error message when exceeding max. amount of letters for username, name, password in login or register and profile changes.
+
+issue(client) #228 - https://github.com/sopra-fs24-group-43/client/issues/228 - Error message pop up when entering wrong credentials in login fields
+
 
 ## Markiian Dobosh
 
