@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Game;
 import ch.uzh.ifi.hase.soprafs24.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,16 +13,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PlayerRepository {
-    private static final RandomGenerators randomgenerators = new RandomGenerators();
+
+
     private static final HashMap<Integer, Player> playerRepouserId = new HashMap<>(); //<userId, Player>
     private static final HashMap<Integer, HashMap<Integer, Player>> playerRepogameId = new HashMap<>(); //<gameId, <userId, Player>>
     private static final HashMap<Integer, Player>  playerRepoguest = new HashMap<>(); //<guestId, Playe>
     private PlayerRepository() {
+
     }
     //you can and should only use public methods with game.examplemethod();
-    public static InboundPlayer createPlayerFromGuest() {
+    public static InboundPlayer createPlayerFromGuest(int guestId) {
         // gameId = null, role = null and only added to playerRepoguest
-        int guestId = randomgenerators.GuestIdGenerator();
         String guestusername = "guestuser" + guestId*-1;
         boolean isGuest = true;
         Integer gameId = -1;
@@ -108,7 +110,7 @@ public class PlayerRepository {
         playerRepogameId.remove(gameId);
     }
 
-    private static Player findByGuestId(int guestId) { //works only for guests
+    public static Player findByGuestId(int guestId) { //works only for guests
         return playerRepoguest.get(guestId);
     }
 
