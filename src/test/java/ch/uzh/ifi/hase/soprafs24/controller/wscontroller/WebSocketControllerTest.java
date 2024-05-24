@@ -13,10 +13,11 @@ import ch.uzh.ifi.hase.soprafs24.utils.RandomGenerators;
 
 import ch.uzh.ifi.hase.soprafs24.repository.PlayerRepository;
 
+
 import ch.uzh.ifi.hase.soprafs24.utils.ReconnectionHelper;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.Answer;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
-import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.InboundPlayer;
+
+import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.*;
+
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.*;
 import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.AfterEach;
@@ -893,7 +894,6 @@ public class WebSocketControllerTest {
 
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(gameStateDTO);
     }
-
     @Test
     public void lostconnectiongameTest() throws Exception {
         CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
@@ -1085,5 +1085,144 @@ public class WebSocketControllerTest {
         reconnectionDTO.setGameId(gameId);
         reconnectionDTO.setRole("player");
         assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(reconnectionDTO);
+    }
+
+    @Test
+    public void fillCanvasFillToolTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/" + gameId + "/fillTool",
+                new WsTestUtils.MyStompFrameHandlerFillToolCoordinates((payload) -> resultKeeper.complete(payload)));
+
+        Thread.sleep(1000);
+
+        FillToolCoordinates fillToolCoordinates = new FillToolCoordinates();
+        fillToolCoordinates.setFillSelected(true);
+
+
+        Thread.sleep(1000);
+        webSocketController.fillCanvas(gameId, fillToolCoordinates);
+
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(fillToolCoordinates);
+    }
+    @Test
+    public void fillCanvasDrawTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/" + gameId + "/draw",
+                new WsTestUtils.MyStompFrameHandlerDrawCoordinates((payload) -> resultKeeper.complete(payload)));
+
+        Thread.sleep(1000);
+
+        DrawCoordinates drawCoordinates = new DrawCoordinates();
+        drawCoordinates.setDrawSelected(true);
+
+
+        Thread.sleep(1000);
+        webSocketController.fillCanvas(gameId, drawCoordinates);
+
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(drawCoordinates);
+    }
+    @Test
+    public void fillCanvasEraserTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/" + gameId + "/eraser",
+                new WsTestUtils.MyStompFrameHandlerEraserCoordinates((payload) -> resultKeeper.complete(payload)));
+
+        Thread.sleep(1000);
+
+        EraserCoordinates eraserCoordinates = new EraserCoordinates();
+        eraserCoordinates.setEraserSelected(true);
+
+
+        Thread.sleep(1000);
+        webSocketController.fillCanvas(gameId, eraserCoordinates);
+
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(eraserCoordinates);
+    }
+    @Test
+    public void fillCanvasEraseAllTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/" + gameId + "/eraseAll",
+                new WsTestUtils.MyStompFrameHandlerEraseAllCoordinates((payload) -> resultKeeper.complete(payload)));
+
+        Thread.sleep(1000);
+
+        EraseAllCoordinates eraseAllCoordinates = new EraseAllCoordinates();
+        eraseAllCoordinates.setEraseAllVar("EraseAll");
+
+
+        Thread.sleep(1000);
+        webSocketController.fillCanvas(gameId, eraseAllCoordinates);
+
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(eraseAllCoordinates);
+    }
+    @Test
+    public void fillCanvasFillTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/" + gameId + "/fill",
+                new WsTestUtils.MyStompFrameHandlerFillCoordinates((payload) -> resultKeeper.complete(payload)));
+
+        Thread.sleep(1000);
+
+        FillCoordinates fillCoordinates = new FillCoordinates();
+        fillCoordinates.setImageDataBuffer("imageDataBuffer");
+
+
+        Thread.sleep(1000);
+        webSocketController.fillCanvas(gameId, fillCoordinates);
+
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(fillCoordinates);
+    }
+    @Test
+    public void sendCanvasCoordinatesTest() throws Exception {
+        CompletableFuture<Object> resultKeeper = new CompletableFuture<>();
+
+        int gameId = 101;
+
+        stompSession.subscribe(
+                "/topic/games/" + gameId + "/coordinates",
+                new WsTestUtils.MyStompFrameHandlerCoordinates((payload) -> resultKeeper.complete(payload)));
+
+        Thread.sleep(1000);
+
+        Coordinates coordinates = new Coordinates();
+        coordinates.setEraserSelected(true);
+        coordinates.setX(1);
+        coordinates.setY(1);
+        coordinates.setSelectedColor("blue");
+        coordinates.setStrokeSize(2);
+        coordinates.setNewX(2);
+        coordinates.setNewY(2);
+
+
+        Thread.sleep(1000);
+        webSocketController.sendCanvas(gameId, coordinates);
+
+
+        assertThat(resultKeeper.get(2, SECONDS)).isEqualToComparingFieldByFieldRecursively(coordinates);
     }
 }

@@ -52,7 +52,7 @@ public class GetWordlist {
         String[] wordlist;
         String json1=json.substring(1,json.length()-1);
         wordlist = json1.split(",");
-        for (int i = 0; i<wordlist.length;i++) {
+        for (int i = 0; i<wordlist.length-12;i++) {
             if (i%2!=1) {
                 wordlist2.add(wordlist[i].substring(8, wordlist[i].length()));
             }

@@ -2,9 +2,58 @@
 
 ## Dominique Oliver Heller 
 
-### 1st Week - 12.04
+### 1st Week - 10.04
 Issue(server) #35 - https://github.com/sopra-fs24-group-43/server/issues/35 Create POST
+
 Issue(server) #37 - https://github.com/sopra-fs24-group-43/server/issues/37 Create User and save in DB
+
+### 2nd week - 17.04
+
+
+
+### 3rd week - 24.04
+
+Issue(Server) #132 https://github.com/sopra-fs24-group-43/server/issues/132 Create DTO representation of game lobby settings for websockets
+
+Issue(Server) #133 https://github.com/sopra-fs24-group-43/server/issues/133 Create DTO representation of chat message for websockets
+
+Issue(Server) #134 https://github.com/sopra-fs24-group-43/server/issues/134 Create DTO representation of Leaderboard for websockets
+
+Issue(Server) #136 https://github.com/sopra-fs24-group-43/server/issues/136 Create DTO representation of individual leaderboard entry for websockets
+
+Issue(Server) #137 https://github.com/sopra-fs24-group-43/server/issues/137 Create DTO representation of a player joining a lobby for websockets
+
+Issue(Server) #138 https://github.com/sopra-fs24-group-43/server/issues/138 Create DTO representation of the next round preparation for websockets
+
+Issue(Server) #142 https://github.com/sopra-fs24-group-43/server/issues/142 Create Lobby entity with ability to change settings using a DTO representation
+
+### 4th week - 03.05
+
+Issue(Server) #84 https://github.com/sopra-fs24-group-43/server/issues/84 scale the amounts of points with respect to the time left in the turn and give a portion of them to the drawer.
+
+Issue(Server) #85 https://github.com/sopra-fs24-group-43/server/issues/85 send a message from the websocket to the client with the needed information.
+
+### 5th week - 08.05
+
+Issue(Server) #86 https://github.com/sopra-fs24-group-43/server/issues/86 scale the amounts of points with respect to the time left in the turn.
+
+Issue(Server) #87 https://github.com/sopra-fs24-group-43/server/issues/87 send a message from the websocket to the client with the needed information.
+
+### 6th week - 15.05
+
+Issue(Server) #169 https://github.com/sopra-fs24-group-43/server/issues/169 Add A method to the game to compare a sent answer to the solution
+
+Issue(Server) #170 https://github.com/sopra-fs24-group-43/server/issues/170 Make sure when the last player has correctly guessed, the current turn is ended
+
+Issue(Server) #171 https://github.com/sopra-fs24-group-43/server/issues/171 Ensure the server response has the necessary information for the client to know if it should display the message or not, as well as know which players have guessed correctly
+
+Issue(Server) #172 https://github.com/sopra-fs24-group-43/server/issues/172 When a player guesses correctly, points should be added to their total
+
+### 7th week - 22.05
+
+Issue(Server) #203 https://github.com/sopra-fs24-group-43/server/issues/203 Update the users point total and level after each game
+
+Issue(Server) #204 https://github.com/sopra-fs24-group-43/server/issues/204 Provide Backend Methods to retrieve the global leaderboard
 
 ## Simon Klipp
 
@@ -93,9 +142,11 @@ issue(client) #144 - https://github.com/sopra-fs24-group-43/client/issues/144 - 
 
 issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
 
-issue(client) #108 - https://github.com/sopra-fs24-group-43/client/issues/108 - Implementing websocket compatibility for hiding the tool menu from all clients (except from drawer) 
-
 issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - Implementing the "Word Selection" pop-up view and style sheet
+
+
+### 7th week - 23.05
+issue(client) #108 - https://github.com/sopra-fs24-group-43/client/issues/108 - Implementing websocket compatibility for hiding the tool menu from all clients (except from drawer) 
 
 issue(client) #109 - https://github.com/sopra-fs24-group-43/client/issues/109 - implementing websocket compatibility hiding "selected color button" from all clients (except drawer)
 
@@ -112,6 +163,7 @@ issue(client) #160 - https://github.com/sopra-fs24-group-43/client/issues/160 - 
 issue(client) #171 - https://github.com/sopra-fs24-group-43/client/issues/171 - Implementing (global) hotkey changes in the settings for the canvas tools and fixing bug for the word selection
 
 issue(client) #173 - https://github.com/sopra-fs24-group-43/client/issues/173 - 
+
 issue(client) #175 - https://github.com/sopra-fs24-group-43/client/issues/175 - Implementing error message / handling when trying to set a hotkey to a letter which already is set for another hotkey
 
 issue(client) #178 - https://github.com/sopra-fs24-group-43/client/issues/178 - Implementing canvas hotkeys and function to change canvas hotkeys for guests
@@ -164,6 +216,13 @@ Issue(client) #97 - https://github.com/sopra-fs24-group-43/client/issues/97 - se
 Issue(client) #98 - https://github.com/sopra-fs24-group-43/client/issues/98 - set and automativcaly change the drawtime setting  
 Issue(client) #133 - https://github.com/sopra-fs24-group-43/client/issues/133 - implement the button for quiting the lobby  
 Issue(client) #134 - https://github.com/sopra-fs24-group-43/client/issues/134 - implement the button for deleting the lobby  
+
+### 7th week - 23.05
+Issue(client) #185 - https://github.com/sopra-fs24-group-43/client/issues/185 - implement the button for deleting the lobby  
+Issue(client) #186 - https://github.com/sopra-fs24-group-43/client/issues/186 - implement friends list (front)  
+Issue(client) #6 - https://github.com/sopra-fs24-group-43/client/issues/6 - design & code the post-game lobby view  
+Issue(client) #7 - https://github.com/sopra-fs24-group-43/client/issues/7 - present the drawings as background  
+Issue(client) #8 - https://github.com/sopra-fs24-group-43/client/issues/8 - show the leaderboard/podium  
  
 ## Florian Mattmüller
 
@@ -200,6 +259,14 @@ Issue(server) #103 https://github.com/sopra-fs24-group-43/server/issues/103 - in
 Issue(client) #43 - https://github.com/sopra-fs24-group-43/client/issues/43 - intigrate Guest in Landingpage and in RegandLogin  
 Issue(client) #39 - https://github.com/sopra-fs24-group-43/client/issues/39 - intigrate Guest in Landingpage and in RegandLogin
 
+7th week - 15.05    
+Issue(client) #148 - https://github.com/sopra-fs24-group-43/client/issues/148 - stomp for Word Selection and Timer     
+Issue(client) #164 - https://github.com/sopra-fs24-group-43/client/issues/164 - Reconnection in front end (pop up + logic)   
+Issue(server) #180 https://github.com/sopra-fs24-group-43/server/issues/180 - WsDisconnectEventListener     
+Issue(server) #181 https://github.com/sopra-fs24-group-43/server/issues/181 - add reload timer and logic on how to change the game when people disconnect and when people just disconnect for fraction of a second   
+Issue(client) #206 https://github.com/sopra-fs24-group-43/server/issues/206 - add reload ws send in client    
+Issue(server) #183 https://github.com/sopra-fs24-group-43/server/issues/183 - add logic and ws mapping to reconnect and get a pop up (also in front) to rejoin the game   
+Issue(server) #161 https://github.com/sopra-fs24-group-43/server/issues/161 - add more tests mostly ws and game   
 ## Robin Stirnimann
 
 ### 1st week - 12.04
@@ -228,11 +295,16 @@ Issue(server) #144 - https://github.com/sopra-fs24-group-43/server/issues/144 - 
 Issue(server) #145 - https://github.com/sopra-fs24-group-43/server/issues/145 - implement endgame (websockets)
 
 ### 5th week - 08.05
-Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added rest endpoint tests (part of 161)
+Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added rest endpoint tests
 Issue(server) #121 - https://github.com/sopra-fs24-group-43/server/issues/121 - fixing friend request implementation
 Issue(server) #122 - https://github.com/sopra-fs24-group-43/server/issues/122 - fixes for displaying friends
 Issue(server) #123 - https://github.com/sopra-fs24-group-43/server/issues/123 - fixes for adding to friend list
 
 ### 6th week - 15.05
-Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for entity, repository (part of 161)
+Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for entity, repository
 Issue(server) #155 - https://github.com/sopra-fs24-group-43/server/issues/155 - added implementation for external api call (getting the words based on category)
+
+### 7th week - 23.05
+Issue(client) #205 - https://github.com/sopra-fs24-group-43/client/issues/205 - implement dark mode (frontend)
+Issue(server) #206 - https://github.com/sopra-fs24-group-43/server/issues/206 - enable changing hotkeys (backend)
+Issue(server) #161 - https://github.com/sopra-fs24-group-43/server/issues/161 - added tests for controller, service
