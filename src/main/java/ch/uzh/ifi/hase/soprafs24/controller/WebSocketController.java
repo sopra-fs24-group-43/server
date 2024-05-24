@@ -44,10 +44,16 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/invitefriend/{userId}")
     public void invitefriend(@DestinationVariable int gameId, @DestinationVariable int userId, QuestionToSend questionToSend) {
         Game game = GameRepository.findByGameId(gameId);
+        System.out.println(game);
         if (game != null) {
             Player player = PlayerRepository.findByUserId(userId);
-            if (player.getGameId() == gameId) {
-                return;
+            System.out.println(player);
+            if (player != null){
+                System.out.println(player.getGameId());
+                System.out.println(player.getUserId());
+                if (player.getGameId() == gameId) {
+                    return;
+                }
             }
             InviteFriendDTO inviteFriendDTO = new InviteFriendDTO();
             inviteFriendDTO.setType("invitefriend");
@@ -218,7 +224,7 @@ public class WebSocketController {
         QuestionToSend questionToSend = new QuestionToSend(); //this is solely for the Table to take the game off the List of lobbies
         questionToSend.setType("startgame");
         questionToSend.setGameId(gameId);  //added mark
-        this.webSocketService.sendMessageToClients("/topic/landing/gameId", questionToSend);
+        this.webSocketService.sendMessageToClients("/topic/landing/" + gameId, questionToSend);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/landing", questionToSend);  //for the Landingpage to update List of Lobbies, will trigger a getallgames
     }
