@@ -209,7 +209,7 @@ public class WebSocketController {
         LobbyInfo lobbyInfo = new LobbyInfo();
         lobbyInfo.setType("getlobbyinfo");
         lobbyInfo.setGameId(gameId);
-        lobbyInfo.setPlayers(game.getPlayers());
+        lobbyInfo.setPlayers(game.getConnectedPlayers());
         lobbyInfo.setGameSettingsDTO(game.getGameSettingsDTO());
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", lobbyInfo);
     }
