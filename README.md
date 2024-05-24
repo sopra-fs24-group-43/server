@@ -2,7 +2,7 @@
 
 <h3 align="center">
   <br>
-  <img src="/ReadMeImages/Logo18.png"> <height="200"></a>
+  <img src="/ReadMeImages/logo18.png" height="200"></a>
 </h3>
 
 ## Introduction
