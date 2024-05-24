@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
@@ -44,8 +45,17 @@ public class WebSocketController {
     @MessageMapping("/landing/createguestplayer")
     public void createguestplayer() { //how does client know its his response and not for some other client?
         //returns inboundPlayer with type = createguestplayer and with some fields = null
-        InboundPlayer inboundPlayer = PlayerRepository.createPlayerFromGuest();
+        int guestId = this.randomGenerators.GuestIdGenerator();
+        InboundPlayer inboundPlayer = PlayerRepository.createPlayerFromGuest(guestId);
         this.webSocketService.sendMessageToClients("/topic/landing", inboundPlayer);
+    }
+    @MessageMapping("/landing/deletetempguestplayer/{guestId}")
+    public void deletetempguestplayer(@DestinationVariable int guestId) {
+        System.out.println("deleting temp guest player");
+        PlayerRepository.printAllPlayers();
+        PlayerRepository.removePlayer(guestId, -1);
+        PlayerRepository.printAllPlayers();
+
     }
     @MessageMapping("/landing/creategame")
     public void creategame(InboundPlayer inboundPlayer){ //the client can't know the gameId of the game when he first creates it so he can just pass some int (e.g. 1001)
@@ -208,6 +218,9 @@ public class WebSocketController {
     public void senduserIdAttr(SessionAttributeDTO sessionAttributeDTO, SimpMessageHeaderAccessor headerAccessor){
         System.out.println("from senduserId: "+sessionAttributeDTO.getUserId());
         headerAccessor.getSessionAttributes().put("userId", sessionAttributeDTO.getUserId());
+        Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
+        System.out.println("sessionAttr: "+sessionAttributes);
+
     }
     @MessageMapping("/landing/alertreconnect/{userId}")
     public void alertreconnect(@DestinationVariable int userId, SimpMessageHeaderAccessor headerAccessor) {

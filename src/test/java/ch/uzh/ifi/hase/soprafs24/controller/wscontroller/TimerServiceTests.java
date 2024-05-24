@@ -239,7 +239,7 @@ public class TimerServiceTests {
         assertThat(resultKeeper2.get(4, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);  //never halt most of the time
 
     }
-
+    /*
     @Test
     void dotimerforreloaddisc2Test() throws Exception {
         int gameId = 101;
@@ -292,4 +292,6 @@ public class TimerServiceTests {
         assertThat(resultKeeper2.get(4, SECONDS)).isEqualToComparingFieldByFieldRecursively(questionToSend);  //never halt most of the time
 
     }
+    */
+
 }

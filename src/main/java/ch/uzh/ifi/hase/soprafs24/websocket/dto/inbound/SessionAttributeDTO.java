@@ -1,17 +1,17 @@
 package ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound;
 
 public class SessionAttributeDTO {
-    private int userId;
-    private boolean reload;
+    private Integer userId;
+    private Boolean reload;
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    public int getUserId() {
+    public Integer getUserId() {
         return this.userId;
     }
-    public void setReload(boolean reload) {this.reload = reload;}
-    public boolean getReload() {
+    public void setReload(Boolean reload) {this.reload = reload;}
+    public Boolean getReload() {
         return this.reload;
     }
 }
