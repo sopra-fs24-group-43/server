@@ -141,7 +141,7 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void accept_or_deny_Friend_Request_Test() {
+    public void accept_or_deny_Friend_Request_and_delete_Test() {
         assertNull(userRepository.findByUsername("testUsername"));
         assertNull(userRepository.findByUsername("testUsername2"));
 
@@ -180,5 +180,12 @@ public class UserServiceIntegrationTest {
         //assertEquals(createdUser.getFriends(),friends1);
         assertEquals(createdUser2.getFriends().get(0),friends2.get(0));
 
+        userService.delete_Friend(createdUser,"testUsername2");
+
+        assertEquals(empty,createdUser.getFriends());
+        //assertEquals(empty,createdUser2.getFriends());
+
+        userService.deleteUser(createdUser);
+        assertNull(userRepository.findByUsername("testUsername"));
     }
     }
