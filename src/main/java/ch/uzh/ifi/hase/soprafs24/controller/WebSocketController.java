@@ -263,30 +263,28 @@ public class WebSocketController {
     @MessageMapping("/games/{gameId}/nextturn")
     public void nextturn(@DestinationVariable int gameId){
         Game game = GameRepository.findByGameId(gameId);
-        if (game == null) {
-            return;
+        if (game != null) {
+            game.nextturn(gameId);
+            GameStateDTO gameStateDTO = game.receiveGameStateDTO();
+            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
+            timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
         }
-        game.nextturn(gameId);
-        GameStateDTO gameStateDTO = game.receiveGameStateDTO();
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
-        timerService.doTimer(15,1, gameId, "/topic/games/" + gameId + "/general", "choosing"); //Timer to choose word
-
     }
 
     @MessageMapping("/games/{gameId}/sendchosenword")
     public void sendchosenword(@DestinationVariable int gameId, ChooseWordDTO chooseWordDTO) {
         timerService.doShutDownTimer(gameId); //shutsdown timer from nextturn "choosing"
         Game game = GameRepository.findByGameId(gameId);
-        if (game == null) {
-            return;
-        }
-        game.setActualCurrentWord(chooseWordDTO.getWord());
-        game.setGamePhase("drawing");
-        chooseWordDTO.setType("startdrawing");
-        this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", chooseWordDTO);
-        System.out.println("sendchosenwordtimer");
+        if (game != null) {
+            game.setActualCurrentWord(chooseWordDTO.getWord());
+            game.setGamePhase("drawing");
+            chooseWordDTO.setType("startdrawing");
+            this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", chooseWordDTO);
+            System.out.println("sendchosenwordtimer");
 
-        timerService.doTimer(game.getTurnLength(),1, gameId, "/topic/games/" + gameId + "/general", "drawing"); //Timer to play turn (drawing & guessing)
+            timerService.doTimer(game.getTurnLength(),1, gameId, "/topic/games/" + gameId + "/general", "drawing"); //Timer to play turn (drawing & guessing)
+        }
+
     }
     @MessageMapping("/games/{gameId}/sendguess")
     public void sendguess(@DestinationVariable int gameId, Answer answer){
