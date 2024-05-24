@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GlobalLeaderBoardControllerTest.class)
-public class GlobalLeaderBoardControllerTest {
+public class GlobalLeaderBoardControllerTest {/*
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -48,10 +48,11 @@ public class GlobalLeaderBoardControllerTest {
 
     @Mock
     private UserRepository userRepository;
-private UserRepository userRepository1;
+    private UserRepository userRepository1;
 
     @Test
-    public void test_GlobalLeaderBoardController() throws Exception {/*
+    public void test_GlobalLeaderBoardController() throws Exception {
+
         user = new User();
         user.setIsUser(true);
         user.setName("user");
@@ -125,5 +126,6 @@ private UserRepository userRepository1;
 
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk());
+    }
     }*/
 }
