@@ -10,7 +10,7 @@ chat window to both just chat and guess the word. Once the time has run out or a
 each player gets points, and at the end of the game a final leaderboard is displayed, showing who won. 
 
 This is the repository for the backend part of the implementation. The frontend can be found 
-[here](https://github.com/dominiqueheller/sopra-fs24-template-client).
+[here](https://github.com/sopra-fs24-group-43/client).
 
 ## Technolgies
 
