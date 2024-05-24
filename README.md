@@ -1,4 +1,9 @@
-# SoPra FS24 Group 43: Freitagsmaler
+# SoPra FS24 Group 43
+
+<h3 align="center">
+  <br>
+  <img src="/ReadMeImages/Logo18.png"> <height="200"></a>
+</h3>
 
 ## Introduction
 
