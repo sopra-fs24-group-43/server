@@ -9,6 +9,6 @@ public class Answer {
     private String username;
     private String answerString; // chat message
 
-    private boolean IsCorrect; // to display that the guess has been guessed
-    private boolean playerHasGuessedCorrectly; // if it's true it should not display messages from the guessers
+    private Boolean IsCorrect; // to display that the guess has been guessed
+    private Boolean playerHasGuessedCorrectly; // if it's true it should not display messages from the guessers
 }
