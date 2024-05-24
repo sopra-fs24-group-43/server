@@ -162,7 +162,7 @@ issue(client) #160 - https://github.com/sopra-fs24-group-43/client/issues/160 - 
 
 issue(client) #171 - https://github.com/sopra-fs24-group-43/client/issues/171 - Implementing (global) hotkey changes in the settings for the canvas tools and fixing bug for the word selection
 
-issue(client) #173 - https://github.com/sopra-fs24-group-43/client/issues/173 - 
+issue(client) #173 - https://github.com/sopra-fs24-group-43/client/issues/173 - Implementing reset to default of canvas tools after each turn
 
 issue(client) #175 - https://github.com/sopra-fs24-group-43/client/issues/175 - Implementing error message / handling when trying to set a hotkey to a letter which already is set for another hotkey
 
@@ -171,8 +171,6 @@ issue(client) #178 - https://github.com/sopra-fs24-group-43/client/issues/178 - 
 issue(client) #50 - https://github.com/sopra-fs24-group-43/client/issues/50 - From the home screen, a user can click on a “profile” button, bringing them to their user profile. (front)
 
 issue(client) #180 - https://github.com/sopra-fs24-group-43/client/issues/180 - Displaying account information on profile page
-
-issue(client) #182 - https://github.com/sopra-fs24-group-43/client/issues/182 - 
 
 issue(client) #184 - https://github.com/sopra-fs24-group-43/client/issues/184 - Creating and implementing a "Freitagsmaler" logo 
 
