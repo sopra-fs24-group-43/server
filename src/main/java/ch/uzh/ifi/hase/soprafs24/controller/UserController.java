@@ -118,7 +118,7 @@ public class UserController {
     public void DeleteFriendOfUserByID (@PathVariable Long id, @RequestParam String friend_username) {
         User user = userService.getUserById(id);
         userService.delete_Friend(user, friend_username);
-        //return DTOMapper.INSTANCE.convertEntityToUserGetDTO(editedUser);
+
     }
 
 

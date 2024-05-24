@@ -29,19 +29,7 @@ import ch.uzh.ifi.hase.soprafs24.controller.WebSocketController;
 import ch.uzh.ifi.hase.soprafs24.service.WebSocketService;
 import org.springframework.web.client.RestTemplate;
 
-/*
-public class Game {
-     public String totalRounds;
-     public String totalPlayers;
-     public String roundLength;
-     public Game (String r,String p, String l) {
-         totalRounds = r;
-         totalPlayers = p;
-         roundLength = l;
 
-     }
-}
-*/
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -95,7 +83,7 @@ public class Game {
     private HashMap<String,List<String>> wordlists;
     private String reason;
     private GetWordlist getWordlist;
-    //private int nr_genres;
+
 
      public Game(Player admin, WebSocketService webSocketService, TimerService timerService, RandomGenerators randomGenerators, GetWordlist getWordlist) {
         this.gameStarted = false;
@@ -222,55 +210,20 @@ public class Game {
         return gameSettingsDTO;
     }
 
-    public List<String> setWordList(List<String> genres) {//genres: "Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"
-        //ArrayList<Integer> listlengths = new ArrayList<>();
-        //ArrayList<String> genres = new ArrayList<>();
-        //genres.addAll(selected_genres);
-        //genres.addAll(Arrays.asList("Science", "Philosophy", "Sport", "Animal", "Plant", "life", "human"));
+    public List<String> setWordList(List<String> genres) {
         ArrayList<String> tempWordList = new ArrayList<>();
         for (int i = 0; i < genres.size(); i++) {
-            //this.wordlists.put(genres.get(i), getWordlist.getWordlist2(genres.get(i)));
             tempWordList.addAll(getWordlist.getWordlist2(genres.get(i)));
-            //listlengths.add(getWordlist.getWordlist2(genres.get(i)).size());
         }
-
-
 
         tempWordList = randomGenerators.DoShuffle(tempWordList);  //instead of Collections.shuffle(wordList);
 
-        //System.out.println(wordList);
-        //int nr_words = this.maxRounds*this.playersOriginally*3;
-        //this.nr_genres = nr_words/40;
-
-        //List<String> wordlist1 = getWordlist.getWordlist2(genre);
-        //Collections.shuffle(wordlist1);//list was ordered in relevance to genre, so shuffling induces unrelated words...
-        //List<String> wordlist2 = wordlist1.subList(0,nr);
-        //List<String> wordlist2 = wordList.subList(0,nr_words);
         return tempWordList;
     }
-/*
-    public List<String> shufflewordList() {
-        ArrayList<String> wordpool = new ArrayList<String>();
-        List<String> wordpool2;
-        Collections.addAll(wordpool, "wedding", "interaction", "cheek", "quantity",
-                "manufacturer", "city", "assignment", "tale", "actor", "bonus", "ratio", "energy",
-                "son", "property", "collection", "theory", "procedure", "possession", "recommendation", "sister",
-                "currency", "diamond", "stranger", "cabinet", "variation", "dad", "winner", "sir",
-                "student", "event", "studio", "library", "highway", "category", "friendship", "camera",
-                "quality", "society", "thought", "atmosphere", "signature", "television", "audience",
-                "entry", "reception", "revolution", "hearing", "army", "conversation", "cancer");
-        Collections.shuffle(wordpool);
-        wordpool2 = wordpool.subList(0,25);
 
-        return wordpool2;
-    }
-*/
+
     public void startGame() {
-        //this.wordList=shufflewordList();
-        //ArrayList<String> list = new ArrayList<>();
-        //list.add("Science");
-        //list.add("Animal");
-        //this.genres = list;
+
         this.wordList = setWordList(this.genres);
         this.gameStarted = true;
         this.gamePhase = "started";
@@ -302,7 +255,7 @@ public class Game {
 
         GameStateDTO gameStateDTO = game.receiveGameStateDTO();
         TimerRepository.haltTimer(gameId);
-        //GameRepository.printAllAll();
+
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", gameStateDTO);
         this.webSocketService.sendMessageToClients("/topic/games/" + gameId + "/general", leaderboardDTO); //endturn
         timerService.doTimer(20,1, gameId, "/topic/games/" + gameId + "/general", "leaderboard"); //timer to look at leaderboard
@@ -534,34 +487,7 @@ public class Game {
         return leaderboardDTO;
 
     }
-    /*//old
-    public LeaderBoardDTO calculateLeaderboard() {
-        LeaderBoardDTO leaderboardDTO = new LeaderBoardDTO();
-        this.pointsOfCurrentTurn.forEach((key, value) -> {this.points.put(key, this.points.get(key)+value);});
 
-        leaderboardDTO.setUserIdToPlayer(this.players);
-
-        HashMap<Integer, Integer> map = new HashMap<>();
-        HashMap<Integer, Integer> map2 = new HashMap<>();
-
-        this.points.forEach((key, value) -> {map.put(key.getUserId(), value);});
-        leaderboardDTO.setTotalPoints(map);
-        this.points.forEach((key, value) -> {key.setTotalPoints(value);});
-
-        this.pointsOfCurrentTurn.forEach((key, value) -> {map2.put(key.getUserId(), value);});
-        leaderboardDTO.setNewlyEarnedPoints(map2);
-        this.pointsOfCurrentTurn.forEach((key, value) -> {key.setNewlyEarnedPoints(value);});
-
-
-        leaderboardDTO.setPodium(assignPodiumPosition());
-        this.assignPodiumPosition().forEach((key, value) -> {
-            PlayerRepository.findByUserId(key).setPodiumPosition(value);
-        });
-
-        return leaderboardDTO;
-
-    }
-*/
     public HashMap<Integer, Integer> assignPodiumPosition() {
         HashMap<Integer, Integer> map = new HashMap<>();
         this.points.forEach((key, value) -> {

@@ -13,24 +13,20 @@ import ch.uzh.ifi.hase.soprafs24.websocket.dto.inbound.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.websocket.dto.outbound.LeaderBoardDTO;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
+
 import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest()
@@ -42,23 +38,13 @@ public class GameTest {
     private GetWordlist getWordlist;
 
 
-    @MockBean
-    private WebSocketService webSocketService;
-    @MockBean
-    private TimerService timerService;
-
     @Mock
     private Player player;
     @Mock
     private Player player2;
     @Mock
     private Game game;
-    @Mock
-    private PlayerRepository playerRepository;
-    @Mock
-    private LeaderBoardDTO leaderBoardDTO;
-    @Mock
-    private GameStateDTO gameStateDTO;
+
 
     @BeforeEach
     void setup() {
@@ -120,19 +106,26 @@ public class GameTest {
     }
 
     @Test
-    void setWordListTest() {
+    void setWordListTest() throws InterruptedException {
+
         game.startGame();
+        List<String> l = new ArrayList<>();
+        l.add("Animal");
+        game.setGenres(l);
 
         for (int j = 0;j<game.getGenres().size();j++){
-            List<String> l1 = new ArrayList<>();
-            l1.addAll(getWordlist.getWordlist2(game.getGenres().get(j)));
+            List<String> l1 = new ArrayList<>(getWordlist.getWordlist2(game.getGenres().get(j)));
+            Thread.sleep(1000);
             List<String> l2 = getWordlist.getWordlist2(game.getGenres().get(j));
+            Thread.sleep(1000);
+
             for (int i = 0;i<game.getWordList().size();i++) {
                 if (l1.contains(game.getWordList().get(i))) {
 
                     assertTrue(l2.contains(game.getWordList().get(i)));
                     l1.remove(game.getWordList().get(i));
                 }}
+
     }}
 
     @Test
@@ -148,15 +141,7 @@ public class GameTest {
         assertEquals(game.getConnectedPlayers(),playershm);
 
     }
-/*
-error this.websocketService is null
-    @Test
-    void terminateGameTest() {
-        game.startGame();
-        game.terminategame(1,"admin left");
-        assertEquals(null, GameRepository.findByGameId(1));
-    }
-*/
+
 
 
 
@@ -210,8 +195,6 @@ error this.websocketService is null
         assertEquals(actual2.getDrawer(),1);
 
 
-        //game.setCurrentTurn(2);
-        //game.setCurrentRound(1);
         int i = game.getCurrentWordIndex();
         int j = game.getDrawer();
         game.nextturn(1);
@@ -236,9 +219,7 @@ error this.websocketService is null
         three_words.add("seventhword");
         three_words.add("eightword");
         three_words.add("ninthword");
-        //three_words.add(game.getWordList().get(game.getCurrentWordIndex()-1));  not need now cause it uses the Mock
-        //three_words.add(game.getWordList().get(game.getCurrentWordIndex()));
-        //three_words.add(game.getWordList().get(game.getCurrentWordIndex()+1));
+
         assertEquals(three_words, actual.getThreeWords());
 
 
