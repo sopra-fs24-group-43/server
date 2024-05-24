@@ -9,13 +9,11 @@ Issue(server) #37 - https://github.com/sopra-fs24-group-43/server/issues/37 Crea
 
 ### 2nd week - 17.04
 
-
-
-### 3rd week - 24.04
-
 Issue(Server) #132 https://github.com/sopra-fs24-group-43/server/issues/132 Create DTO representation of game lobby settings for websockets
 
 Issue(Server) #133 https://github.com/sopra-fs24-group-43/server/issues/133 Create DTO representation of chat message for websockets
+
+### 3rd week - 24.04
 
 Issue(Server) #134 https://github.com/sopra-fs24-group-43/server/issues/134 Create DTO representation of Leaderboard for websockets
 
