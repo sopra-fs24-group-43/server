@@ -129,56 +129,6 @@ public class UserServiceTest {
       assertNotNull(user.getToken());
       assertEquals(UserStatus.ONLINE, user.getStatus());
   }
-/*
-  @Test
-  public void loginUserTest() {
-      userService.createUser(testUser, true);
-System.out.println(testUser.getUsername());
-      UserPutDTO userPutDTO = new UserPutDTO();
-      userPutDTO.setUsername("testuser");
-      userPutDTO.setPassword("testuser");
-      User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
 
-
-      Mockito.when(userRepository.findUserByUsername(Mockito.any())).thenReturn(testUser);
-System.out.println(userInput.getUsername());
-System.out.println(testUser.getUsername());
-System.out.println(userRepository.findUserByUsername("testuser"));
-    //userRepository.save(testUser);
-
-      User user = userService.loginUser(userInput);
-
-      assertEquals(UserStatus.ONLINE, user.getStatus());
-      assertEquals(user.getId(), testUser.getId());
-      assertEquals(testUser.getName(), user.getName());
-      assertEquals(testUser.getUsername(), user.getUsername());
-  }*/
-  //logouttest
-/*
-
-  @Test
-  public void delete_FriendTest() {
-      User user = userService.createUser(testUser, true);
-
-      testUser2 = new User();
-      testUser2.setId(2L);
-      testUser2.setName("2");
-      testUser2.setUsername("2");
-      testUser2.setPassword("2");
-      List<String> l3 = new ArrayList<>();
-      l3.add("3");
-      testUser2.setFriends(l3);
-
-      Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser2);
-
-      userService.createUser(testUser2, true);
-
-      Mockito.when(userRepository.findUserByUsername(Mockito.any())).thenReturn(testUser2);
-System.out.println(testUser2.getUsername());
-System.out.println(userRepository.findUserByUsername(testUser2.getUsername()));
-      userService.delete_Friend(user,"2");
-      List<String> l1 = new ArrayList<>();
-      assertEquals(testUser.getFriends(),l1);
-  }*/
 
 }
